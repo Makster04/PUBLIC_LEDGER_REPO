@@ -13,7 +13,7 @@ The local server binds only to your computer. It uses `.local/records.sqlite` an
 1. Get the free keys below. Each key unlocks only its own sources, and the app runs without any of them.
 2. Copy `.dev.vars.example` to `.dev.vars` in this directory. Every key in the example is blank.
 3. Enter each key after its name. Keep this file private; Git ignores it.
-4. Restart the local server. Open **Updates** to see which keys are set and each source's progress.
+4. Restart the local server. Open **API updates** to see which keys are set and each API's progress, and **Website updates** for the official websites read directly.
 
 | Key in `.dev.vars` | Get it at | Unlocks |
 |---|---|---|
@@ -113,7 +113,7 @@ python3 -m venv .local/hv
 
 `data/seed.json`, when present, holds published snapshots from a completed refresh, so a new install shows campaign, PAC, outside-spending, legislation and vote data immediately instead of waiting hours, and works without API keys. **None has been committed yet**, so a new install currently starts empty and fills as the refresh runs. The file is loaded only when `.local/records.sqlite` is new; an existing database is never overwritten. Seeded records keep their original check dates, so with API keys an old seed refreshes in the background on the normal schedule. A seed made for a different cycle, Congress or session is ignored.
 
-To update it, let the local server finish its refresh (every job on **Updates** has completed at least once), then run `npm run seed:export` and commit `data/seed.json`. The export stops if any job has not completed yet (`npm run seed:export -- --partial` exports what has), and refuses to write a file containing any API key from `.dev.vars` or a link carrying a key.
+To update it, let the local server finish its refresh (every job on **API updates** and **Website updates** has completed at least once), then run `npm run seed:export` and commit `data/seed.json`. The export stops if any job has not completed yet (`npm run seed:export -- --partial` exports what has), and refuses to write a file containing any API key from `.dev.vars` or a link carrying a key.
 
 ## Scoring rules
 
@@ -149,7 +149,7 @@ Who assigns People/Profit and liberal/conservative marks, and how disagreements 
 
 The data underneath refreshes daily (see What refreshes). Scores are recalculated once a month, after review, matching the monthly donation data:
 
-1. Review everything new since the last update on **Updates** and each profile's Latest official records: votes, sponsorships, floor speeches, statements and campaign-site changes, fact-checks, ethics leads (court records, FEC enforcement records, DOJ press releases, news) and case changes, stock-trade disclosures (and `data/holdings-review.json`), donation and lobbying filings.
+1. Review everything new since the last update on **API updates**, **Website updates** and each profile's Latest official records: votes, sponsorships, floor speeches, statements and campaign-site changes, fact-checks, ethics leads (court records, FEC enforcement records, DOJ press releases, news) and case changes, stock-trade disclosures (and `data/holdings-review.json`), donation and lobbying filings.
 2. Mark new bills People or Profit from a cited analysis, with the reason.
 3. Match new actions to existing promises, and replace earlier statements with votes where Rule 1 applies.
 4. Run `npm run scores:monthly` to recalculate Promises delivered, Ethics and Workers > Profit for everyone and rerun the Money & Influence timing flags (`-- --dry-run` previews it).
@@ -249,7 +249,7 @@ Deployment remains a later manual step because this version was requested to sta
 
 ## Files
 
-- `public/` — the site: `app.js` (pages), `live.js` (Updates and latest official records), `grades.js` (every scoring rule, weight and threshold, and the outside-money ratio), `scoring.js` (each person's reviewed grades), `influence.js` (the Money & Influence Analysis), `charts.js` (chart builders), `lean.js` (liberal/conservative bill marks), `sectors.js` (industry sectors from SEC codes), `research.json` (reviewed research), `committees.json`, `committee-sectors.json`, `score-log.json` (every monthly score change), `funder-history.json`, `portraits/`
+- `public/` — the site: `app.js` (pages), `live.js` (API updates, Website updates and latest official records), `grades.js` (every scoring rule, weight and threshold, and the outside-money ratio), `scoring.js` (each person's reviewed grades), `influence.js` (the Money & Influence Analysis), `charts.js` (chart builders), `lean.js` (liberal/conservative bill marks), `sectors.js` (industry sectors from SEC codes), `research.json` (reviewed research), `committees.json`, `committee-sectors.json`, `score-log.json` (every monthly score change), `funder-history.json`, `portraits/`
 - `src/sources.mjs` — approved hosts, how each key is sent, and the original FEC, Congress.gov and roll-call adapters
 - `src/feeds.mjs` — the adapters for every source added since, one per job kind
 - `src/merge.mjs` — merging the same trade, state bill or article from several sources

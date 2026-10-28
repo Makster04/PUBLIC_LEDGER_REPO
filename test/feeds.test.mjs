@@ -190,6 +190,15 @@ test('new sources join an existing database once, wait for their keys, and chain
   const status=await getStatus({DB:db});
   assert.equal(status.jobs.find(j=>j.id==='courts:collins').error,'CourtListener API key needed');
   assert.equal(status.jobs.find(j=>j.id==='trades-bargo:collins').error,null,'Bargo runs without a key');
+  // Website updates lists the websites read directly; API updates lists the rest. House roll calls from 2023 on move to
+  // the API page once the Congress.gov key is set, since they come from its API then.
+  await addJob(db,'vote:H:2024:5','vote','h-2024-5',{chamber:'H',year:2024,number:5});
+  await addJob(db,'vote:H:2022:5','vote','h-2022-5',{chamber:'H',year:2022,number:5});
+  const site=(s,id)=>s.jobs.find(j=>j.id===id).site,plain=await getStatus({DB:db});
+  for(const id of ['house-fd','trades-house:perry','house-committees','vote:H:2024:5','vote:H:2022:5'])assert.equal(site(plain,id),true,id);
+  for(const id of ['courts:collins','trades-bargo:collins','donors:collins'])assert.equal(site(plain,id),false,id);
+  const keyed=await getStatus({DB:db,CONGRESS_API_KEY:'k'});
+  assert.equal(site(keyed,'vote:H:2024:5'),false);assert.equal(site(keyed,'vote:H:2022:5'),true);
   // Finishing the donors job fills in the organizations for the jobs that depend on it.
   await statement(db,"UPDATE jobs SET next_due=? WHERE id!='donors:collins'",Date.now()+DAYMS).run();
   await statement(db,"UPDATE jobs SET next_due=0 WHERE id='donors:collins'").run();
