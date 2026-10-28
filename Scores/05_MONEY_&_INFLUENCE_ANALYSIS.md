@@ -17,7 +17,7 @@ Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules 
 | [ ] | Contracts for Donors Index 📝 | Needs a table matching agencies to the committees that oversee them. |
 | [ ] | Foreign Agent Flag 🚩 | |
 | [ ] | Donor hover details | Three bullets: sector, what they do, and political stance with a cited source. Today the hover is one sentence. |
-| [ ] | Treemap of itemized PAC contributions by sector | A bar chart today. |
+| [x] | Treemap of itemized PAC contributions by sector | On the Money & Influence tab, colored People-aligned, Profit-aligned or Other. |
 | [ ] | SAM.gov: look up each organization once, then recheck monthly | Saves its 1-request-a-run limit. |
 | [ ] | Check for Epstein-linked donors in FEC records | Offered, not started. |
 | [ ] | Decide the graph for each index | |

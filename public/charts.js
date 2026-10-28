@@ -46,6 +46,15 @@ export function divergingRows(rows,{left='More for the wealthy and corporations'
     const d=r.value-50,w=Math.abs(d)/50*50;
     return `<div class="cx-row">${who(r)}<div class="cx-track cx-dtrack"><i class="cx-dbar ${d>=0?'r':'l'}" style="width:${Math.max(.6,w)}%;${d>=0?'left:50%':'right:50%'};background:${d>=0?ALIGN_COLOR.people:ALIGN_COLOR.profit}" data-tip="${esc(r.tip||`${r.label}: ${r.value}%`)}"></i></div><div class="cx-val"><b class="${r.cls||''}">${r.value}%</b>${r.note?`<small>${esc(r.note)}</small>`:''}</div></div>`;}).join('')}</div>`;
 }
+// Position by issue: a bar from the center line toward the liberal side (left) or the conservative side (right), the
+// same way round as the ideology scale. rows: [{label, sub, lean (-100 all conservative to +100 all liberal) or null,
+// value, note, tip, light (statements only), empty}].
+export function leanRows(rows){
+  return `<div class="cx-rows cx-lean"><div class="cx-row cx-dhead"><div></div><div class="cx-dlabels"><span>← Liberal</span><span>Conservative →</span></div><div></div></div>${rows.map(r=>{
+    if(r.lean==null)return `<div class="cx-row cx-ng">${who(r)}<div class="cx-track cx-dtrack"><span class="cx-ngt">${esc(r.empty||'No record yet')}</span></div><div class="cx-val">—</div></div>`;
+    const lib=r.lean>0,w=Math.abs(r.lean)/2;
+    return `<div class="cx-row">${who(r)}<div class="cx-track cx-dtrack"><i class="cx-dbar ${lib?'l':'r'}${r.light?' cx-light':''}" style="width:${Math.max(.6,w)}%;${lib?'right:50%':'left:50%'};background:${lib?'var(--dem)':'var(--rep)'}" data-tip="${esc(r.tip||r.label)}"></i></div><div class="cx-val"><b>${esc(r.value)}</b>${r.note?`<small>${esc(r.note)}</small>`:''}</div></div>`;}).join('')}</div>`;
+}
 // Horizontal bars by category (trades by sector), highlighted categories in the accent and the rest grey.
 export function categoryBars(rows,{highlightLabel,otherLabel}){
   const max=Math.max(1,...rows.map(r=>r.value));

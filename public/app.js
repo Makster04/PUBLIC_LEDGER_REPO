@@ -1,7 +1,7 @@
-import {KV_MIN,leanOfVote,whyNotMarked,sideTaken,keyVoteRows,keyVoteScore} from './lean.js';
+import {KV_MIN,leanOfVote,whyNotMarked,sideTaken,keyVoteRows,keyVoteScore,positionByCategory} from './lean.js';
 import {MIN_CHECKS,MIN_PVP_ACTIONS,ETHICS_COST,CASE_KIND,CASE_AGE,INDEX_COST,LATE_DAYS,WEIGHT,ACTION_TYPES,letter,billKey,matchScore,promiseScore,moneyRatio} from './grades.js';
 import {makeScorer,voteBill} from './scoring.js';
-import {hoverTips,tableView,legend,rankBars,stackRows,divergingRows,categoryBars,drawScatter,drawDelay,drawTradeTimeline,drawCaseTimeline,drawTreemap,drawMonthly,sectorSpendBars} from './charts.js';
+import {hoverTips,tableView,legend,rankBars,stackRows,divergingRows,leanRows,categoryBars,drawScatter,drawDelay,drawTradeTimeline,drawCaseTimeline,drawTreemap,drawMonthly,sectorSpendBars} from './charts.js';
 import {makeOrgs,SMALL_DOLLAR_ABOUT,EMPLOYER_ABOUT} from './orgs.js';
 import {ALIGN_LABEL,SECTOR_LABEL_EXTRA,TOP_DONORS,WINDOW_MONTHS,SWING,categoryAlign,outsideBySector,topDonors,voteDonorAlignment,timingFlags,positionChangeFlags,stockFlags,tradesInDonors,corp,addMonths} from './influence.js';
 (function(){
@@ -302,10 +302,13 @@ function pacCoverage(s){
 }
 function pacSectors(s){
   const p=s.pac;if(!p.byCat.length)return '';
-  const max=Math.max(...p.byCat.map(c=>c[1]));
-  return `<div class="chart"><h3>Itemized PAC contributions by sector</h3><div class="sub">${fmtFull(p.retrieved)} from ${p.nPacs} committees (${esc(p.window)}). <b>Sectors:</b> assigned by this app from each committee's name and sponsor, not by the FEC. Committees that can't be identified are left unclassified, not guessed.</div>
-    <div class="bars">${p.byCat.map(([k,v])=>`<div class="r"><div class="lab" title="${esc(DATA.categories[k])}">${esc(DATA.categories[k])}</div><div class="track"><b style="width:${Math.max(1,v/max*100)}%" data-tip="${esc(DATA.categories[k])}: ${fmtFull(v)} (${pct(v,p.retrieved)}%)"></b></div><div class="val">${fmt$(v)}</div></div>`).join('')}</div></div>`;
+  const tiles=pacSectorTiles(s),sum=k=>tiles.filter(x=>x.align===k).reduce((n,x)=>n+x.value,0);
+  return `<div class="chart"><h3>Itemized PAC contributions by sector</h3><div class="sub">${points([['Tile size',`The amount from each sector: ${fmtFull(p.retrieved)} from ${p.nPacs} committees (${esc(p.window)}).`],['Sectors','Assigned by this app from each committee\'s name and sponsor, not by the FEC. Committees that can\'t be identified are left unclassified, not guessed.']],'small')}</div>
+    <div class="cx-plot" id="pac-tm"></div>${legend([['var(--s1)',`People-aligned ${fmt$(sum('people'))}`],['var(--s5)',`Profit-aligned ${fmt$(sum('profit'))}`],['var(--cx-other)',`Other ${fmt$(sum('other'))}`]])}
+    ${tableView(['Sector','Amount','Share','Alignment'],tiles.map(x=>[esc(x.label),fmtFull(x.value),pct(x.value,p.retrieved)+'%',x.alignLabel]))}</div>`;
 }
+const pacSectorTiles=s=>s.pac.byCat.map(([k,v])=>{const align=categoryAlign(k);return {label:DATA.categories[k]||k,value:v,align,alignLabel:ALIGN_LABEL[align],about:`${pct(v,s.pac.retrieved)}% of the itemized PAC money`};});
+function mountPacSectors(s){if(!s.pac?.byCat?.length)return;const tiles=pacSectorTiles(s),f=()=>drawTreemap(document.getElementById('pac-tm'),tiles);f();resizers.push(f);}
 function pacTable(s,host){
   const p=s.pac;if(!p.rows.length){host.innerHTML='';return}
   let st={q:'',k:'amt',dir:-1,n:50};
@@ -893,7 +896,7 @@ function paneFinance(s,pane){
   <div id="iehost"></div>
   <div id="f-comb" style="margin-top:22px">${combinedBlock(s)}</div>
   <section id="live-records" style="margin-top:28px"></section>`;
-  pacTable(s,$('#pachost'));
+  mountPacSectors(s);pacTable(s,$('#pachost'));
   ieItems(s,$('#iehost'));
   mountAnalysis(s);hoverTips(pane);
   window.RecordLive.profile(s,$('#live-records'),['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']);
@@ -1403,18 +1406,38 @@ function committeeBlock(s){
   <ul class="list small cmte">${full.map(id=>{const c=seat(id),i=info(id),sec=(COMMITTEE_SECTORS[id]||{}).sectors||[],subs=list.filter(x=>x.id!==id&&fullCommittee(x.id)===id);
     return `<li>${i.url?`<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.name)} ↗</a>`:esc(i.name)}${c&&c.title?` <span class="chip ghost">${esc(c.title)}</span>`:''}${c?'':' <span class="small muted">(subcommittee seat only)</span>'}${sec.map(x=>` <span class="chip warn">${esc(x)}</span>`).join('')}${subs.length?`<div class="muted">Subcommittees: ${subs.map(x=>esc(info(x.id).name)+(x.title?` (${esc(x.title)})`:'')).join('; ')}</div>`:''}</li>`;}).join('')}</ul></section>`;
 }
+// Position by issue: where the record sits between liberal and conservative in each category (public/lean.js).
+// Context only, never part of a grade.
+function positionBlock(s){
+  const cats=positionByCategory(ISS,s.evidence),shown=cats.filter(c=>c.status==='placed'||c.status==='none');
+  const names=st=>cats.filter(c=>c.status===st).map(c=>c.label);
+  const kind=c=>c.record?(c.stated?'actions and statements':c.n===1?'action':'actions'):c.n===1?'statement':'statements';
+  const value=c=>c.lean===0?'Even':`${Math.max(c.lib,c.con)} of ${c.n}`,side=c=>c.lean===0?`${c.lib} each side`:c.lean>0?'liberal':'conservative';
+  // The issues behind each category, unless the only one has the category's own name.
+  const sub=c=>{const t=c.issues.map(i=>i.label).join(' · ');return t.toLowerCase()===c.label.toLowerCase()?'':t;};
+  const rows=shown.map(c=>c.status==='none'?{label:c.label,sub:sub(c),lean:null,empty:'No record yet'}:
+    {label:c.label,sub:sub(c),lean:c.lean,value:value(c),note:side(c),light:!c.record,
+      tip:`${c.label}: of ${c.n} ${kind(c)}, ${c.lib} on the liberal side and ${c.con} on the conservative side${c.record?'':' (statements only, counted at half)'}`});
+  if(!shown.some(c=>c.status==='placed'))return `<section class="recsec" id="rec-pos"><div class="kicker">Issue by issue</div><h3 style="margin-top:4px">Position by issue</h3><p class="small muted">No votes, bills or statements on the tracked issues yet for ${esc(s.short)}.</p></section>`;
+  return `<section class="recsec" id="rec-pos"><div class="kicker">Issue by issue</div><h3 style="margin-top:4px">Position by issue</h3>
+    ${points([['How to read it','A bar to the left means more of the record is on the liberal side of that issue, and to the right the conservative side. The longer the bar, the more consistent the record. A short bar near the center means a mixed record.'],['Based on','Votes, sponsored bills and official acts on each issue, one credit per bill. Statements count at half, and only where there is no recorded action (paler bars).'],['Context only','Never part of a grade. Which side of each issue counts as liberal is listed on the <a href="#method">Methodology</a> page.']],'small')}
+    ${leanRows(rows)}
+    ${points([names('unsided').length&&['Not on the scale',`${esc(names('unsided').join(', '))}. Their issues split both parties, so they aren't marked liberal or conservative.`],names('untracked').length&&['Not tracked yet',esc(names('untracked').join(', '))+'.']],'small')}
+    ${tableView(['Category','Liberal side','Conservative side','Based on'],shown.map(c=>[esc(c.label),c.status==='placed'?c.lib:'—',c.status==='placed'?c.con:'—',c.status==='placed'?`${c.n} ${kind(c)}`:'No record yet']))}</section>`;
+}
 function recordInto(s,host){
   const inc=!s.cand;
   const SV=inc?(s.chamber==='S'?DATA.votes:[]):(s.senateVotes?DATA.votes.filter(v=>s.id in v.pos):[]);
   const HV=inc?(s.chamber==='H'?DATA.hvotes:[]):(s.ideoKind==='house'?DATA.hvotes.filter(v=>s.id in v.pos):[]);
   const ev=evidenceOf(s);
-  const jump=[['rec-ideo','Ideology'],SV.length&&['rec-sv','Senate votes'],HV.length&&['rec-hv','House votes'],inc&&['rec-bills','Sponsored bills'],!inc&&['rec-other',recordHeading(s)],committeesOf(s).length&&['rec-cmte','Committees'],s.stateRecord&&['rec-state','State legislative record'],['live-records','Latest official records']].filter(Boolean);
+  const jump=[['rec-ideo','Ideology'],['rec-pos','Position by issue'],SV.length&&['rec-sv','Senate votes'],HV.length&&['rec-hv','House votes'],inc&&['rec-bills','Sponsored bills'],!inc&&['rec-other',recordHeading(s)],committeesOf(s).length&&['rec-cmte','Committees'],s.stateRecord&&['rec-state','State legislative record'],['live-records','Latest official records']].filter(Boolean);
   host.innerHTML=`
   <h2 id="m-record" style="margin-top:34px">The record behind the match</h2>
   <p class="intro">${inc?`${esc(s.short)}'s positions on consequential ${CH[s.chamber].name} roll calls, sponsored bills`:esc(REC_LABEL[s.recordType]||'')+'. '+esc({member_of_congress:'Positions on key House roll calls and notable sponsored bills',senator:'Positions on key Senate roll calls and notable sponsored bills',former_member_of_congress:'Votes and bills from '+s.short+"'s time in Congress",state_legislator:'Recorded votes and bills from '+s.short+"'s time in a state legislature",executive:'No legislative votes in executive office; major official actions are listed instead',none:'No legislative voting record; documented public actions and commitments are listed instead'}[s.recordType]||'')}${hasStateLeg(s)&&s.recordType!=='state_legislator'?', a separate state legislative record':''}. Your picks are compared with these. Each item links to its source.</p>
   <div class="note" style="margin-bottom:12px"><b>Evidence available:</b> ${esc(ev.label)}.</div>
   <nav class="jump small">${jump.map(([k,l])=>`<a href="#${k}">${esc(l)}</a>`).join('')}</nav>
   <div id="rec-ideo">${ideoBlock(s,'ideo2')}<div class="chart">${kvBlock(s,'kv2',true)}</div></div>
+  ${positionBlock(s)}
   ${keyVotesBlock(s,SV,'Key U.S. Senate votes','rec-sv')}
   ${keyVotesBlock(s,HV,'Key U.S. House votes','rec-hv')}
   ${inc?`<section class="recsec" id="rec-bills"><div class="kicker">Congressional record</div><h3 style="margin-top:4px">Sponsored legislation</h3><p class="small" style="margin:6px 0 10px">${s.sponsoredCount?`<b class="num">${s.sponsoredCount.toLocaleString()}</b> bills, resolutions and amendments sponsored. ${esc(s.sponsoredNote)}`:esc(s.sponsoredNote)} <a href="${cgUrl(s)}" target="_blank" rel="noopener">Full list on Congress.gov ↗</a></p>
@@ -2069,6 +2092,14 @@ function renderMethod(sub){
       <li><b>Minimum:</b> a position shows only with at least ${KV_MIN} such votes. The chart places the person by the share of those votes on the conservative side.</li>
       <li><b>Not an ideology score:</b> this counts a small, selected set of important votes. It can be compared only within a chamber, because the House and Senate sets differ. Don't confuse it with the DW-NOMINATE career score, which uses every roll call.</li>
       <li><b>Vote text:</b> always plain black. The "Side taken" column says whether each vote was on the liberal or conservative side.</li>
+    </ul>
+    <h2>Position by issue</h2>
+    <ul class="list">
+      <li><b>What it shows:</b> on the Your match tab, a bar for each issue category, toward the liberal or the conservative side, by how much of the person's record on it is on each side. Context only, never part of a grade.</li>
+      <li><b>Evidence:</b> the same as Your match: votes, sponsored bills and official acts, one credit per bill. Statements count at half, and only for an issue with no recorded action.</li>
+      <li><b>Sides:</b> each issue's liberal side, listed above. Issues that aren't marked (trade, foreign policy, Jan. 6, infrastructure) aren't placed.</li>
+      <li><b>Categories:</b> immigration, taxes and spending, civil liberties, environment, health care, abortion, guns, workers, trade, foreign policy, voting, education, criminal justice, LGBTQ rights, housing, and Social Security and Medicare. Civil liberties, criminal justice, housing, and Social Security and Medicare have no tracked issue yet.</li>
+      <li><b>Minimum:</b> one action or statement for now. A thin record shows its count beside the bar.</li>
     </ul>
     <h2>Portraits</h2>
     <ul class="list">
