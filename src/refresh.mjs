@@ -26,6 +26,8 @@ export const seedScope=c=>({cycle:c.cycle,congress:c.congress,session:c.session,
 async function applySeed(db,seed) {
   const scope=JSON.stringify(seedScope(config));
   if(seed?.version!==1||JSON.stringify(seed.scope)!==scope||!Array.isArray(seed.jobs))return 0;
+  // Roll calls in the seed hold the positions of the people configured when it was exported.
+  for(const [chamber,value] of Object.entries(seed.voters||{}))await statement(db,'INSERT OR REPLACE INTO metadata(key,value) VALUES(?,?)',`voters-${chamber}`,value).run();
   for(const j of seed.jobs) {
     await addJob(db,j.id,j.kind,j.subject,j.args);
     // Seeded data keeps its original check date, so an old seed is refreshed promptly once keys are present.
@@ -39,9 +41,12 @@ async function applySeed(db,seed) {
 // The jobs the configured sources call for, and a signature of them: when a source, a person or a key bill is added,
 // the signature changes and the missing jobs are added, without touching existing ones.
 const feedJobs=()=>FEED_KINDS.flatMap(kind=>FEEDS[kind].jobs(config).map(j=>({...j,kind})));
+const hash=text=>{let h=0;for(const c of text)h=(Math.imul(h,31)+c.charCodeAt(0))|0;return (h>>>0).toString(36);};
+// Whose positions each chamber's roll calls record: Senate votes match people by LIS ID, House votes by Bioguide ID.
+const voters=chamber=>hash(config.people.filter(p=>chamber==='S'?p.lis:p.bioguide&&p.chamber==='H').map(p=>p.id).sort().join('|'));
+export const voterHashes=()=>({S:voters('S'),H:voters('H')});
 export function feedSignature(){
-  let h=0;for(const c of FEEDS_VERSION+feedJobs().map(j=>j.id).join('|'))h=(Math.imul(h,31)+c.charCodeAt(0))|0;
-  return `${FEEDS_VERSION}:${(h>>>0).toString(36)}`;
+  return `${FEEDS_VERSION}:${hash(FEEDS_VERSION+feedJobs().map(j=>j.id).join('|')+'#'+voters('S')+voters('H'))}`;
 }
 // Each person's campaign, PAC, outside-spending and sponsored-bill jobs. Added again with the feed jobs, so a person
 // added to the config later gets them in an existing database too.
@@ -56,6 +61,14 @@ async function ensureFeeds(db){
   if(v?.value===sig)return;
   for(const p of config.people)await addPerson(db,p,config);
   for(const j of feedJobs())await addJob(db,j.id,j.kind,j.subject,j.args);
+  // A roll call is read once, with the positions of the people configured then. When someone who votes in that chamber
+  // is added (every senator, say), the roll calls already read are read again once, so their positions are filled in.
+  for(const chamber of ['S','H']){
+    const key=`voters-${chamber}`,now=voters(chamber),known=await statement(db,'SELECT value FROM metadata WHERE key=?',key).first();
+    if(known?.value===now)continue;
+    await statement(db,"UPDATE jobs SET next_due=0,status='pending' WHERE kind='vote' AND id LIKE ? AND last_success IS NOT NULL AND status!='running'",`vote:${chamber}:%`).run();
+    await statement(db,'INSERT OR REPLACE INTO metadata(key,value) VALUES(?,?)',key,now).run();
+  }
   await statement(db,"INSERT OR REPLACE INTO metadata(key,value) VALUES('feeds',?)",sig).run();
 }
 export async function initialize(db,seed=null) {

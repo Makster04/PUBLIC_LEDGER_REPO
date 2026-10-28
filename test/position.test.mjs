@@ -34,3 +34,13 @@ test('statements count at half, and only for an issue with no recorded action',(
   const only=cat(positionByCategory(issues,{guns:[{type:'stated',side:'A'}]}),'Guns');
   assert.deepEqual([only.lean,only.record,only.stated],[100,0,1]);
 });
+
+test('a place in the chamber from the Voteview pool matches the reviewed profiles',async()=>{
+  const {poolIdeo}=await import('../public/lean.js');
+  const {default:d}=await import('../public/research.json',{with:{type:'json'}});
+  for(const s of d.members.filter(m=>m.chamber==='S')){
+    const i=poolIdeo(d.pools.S,s.bioguide,s.party);
+    assert.deepEqual([i.dim1,i.lo,i.plo,i.n,i.np],[s.ideo.dim1,s.ideo.lo,s.ideo.plo,s.ideo.n,s.ideo.np],s.id);
+  }
+  assert.equal(poolIdeo(d.pools.S,'NOPE','D'),null);
+});

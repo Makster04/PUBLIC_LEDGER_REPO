@@ -1,4 +1,4 @@
-import {KV_MIN,leanOfVote,whyNotMarked,sideTaken,keyVoteRows,keyVoteScore,positionByCategory} from './lean.js';
+import {KV_MIN,leanOfVote,whyNotMarked,sideTaken,keyVoteRows,keyVoteScore,positionByCategory,poolIdeo} from './lean.js';
 import {MIN_CHECKS,MIN_PVP_ACTIONS,ETHICS_COST,CASE_KIND,CASE_AGE,INDEX_COST,LATE_DAYS,WEIGHT,ACTION_TYPES,letter,billKey,matchScore,promiseScore,moneyRatio} from './grades.js';
 import {makeScorer,voteBill} from './scoring.js';
 import {hoverTips,tableView,legend,rankBars,stackRows,divergingRows,leanRows,categoryBars,drawScatter,drawDelay,drawTradeTimeline,drawCaseTimeline,drawTreemap,drawMonthly,sectorSpendBars} from './charts.js';
@@ -12,6 +12,10 @@ const MEM=DATA.members, CANDS=DATA.cands||[], ALL=MEM.concat(CANDS);
 // filters, races, comparisons and score pages, which cover the 2026 ballot.
 const FEATURED=DATA.featured||[];
 const byId=Object.fromEntries(ALL.concat(FEATURED).map(s=>[s.id,s]));
+// Every sitting senator (public/senate.json, from scripts/build-senate.mjs). Those without a reviewed profile get a basic
+// one: their place in the Senate, their committees and the records the daily refresh collects, without grades.
+const SENATE=(window.SENATE||[]).map(x=>({...x,chamber:'S',ideo:poolIdeo(DATA.pools?.S,x.bioguide,x.party)}));
+const BASIC=Object.fromEntries(SENATE.filter(x=>!byId[x.id]).map(x=>[x.id,x]));
 // One ID per bill ("117-hr-1319"), so a vote and a sponsorship on the same bill count once.
 const VOTE_BY_ID=new Map(DATA.votes.concat(DATA.hvotes).map(v=>[v.id,v]));
 for(const s of ALL.concat(FEATURED))for(const ev of Object.values(s.evidence||{}))for(const e of ev){
@@ -86,7 +90,7 @@ function ideoBlock(s,id){
   return `<div class="chart">
     <div class="ideo-head"><div><div class="kicker">Voting ideology · DW-NOMINATE</div><div class="big" style="margin-top:4px">${esc(t.head)}</div></div>
     <div class="mono muted">Score ${i.dim1>0?'+':''}${i.dim1.toFixed(3)} on a −1 (liberal) to +1 (conservative) scale</div></div>
-    <p class="small" style="margin:8px 0 0;color:var(--ink-2)">Within the party: ${esc(t.within)}. Party unity: votes with the ${s.party==='R'?'Republican':'Democratic'} majority on <b class="num">${i.unity}%</b> of party-line votes${i.partyVotes?` (${i.withParty} of ${i.partyVotes} in the 119th Congress)`:''}.</p>
+    <p class="small" style="margin:8px 0 0;color:var(--ink-2)">Within the party: ${esc(t.within)}.${i.unity!=null?` Party unity: votes with the ${s.party==='R'?'Republican':'Democratic'} majority on <b class="num">${i.unity}%</b> of party-line votes${i.partyVotes?` (${i.withParty} of ${i.partyVotes} in the 119th Congress)`:''}.`:''}</p>
     <div class="ideo" id="${id}" style="margin-top:10px"></div>
     <div class="legend"><span><i style="background:var(--dem)"></i>Democrats</span><span><i style="background:var(--rep)"></i>Republicans</span>${C==='S'?'<span><i style="background:var(--muted)"></i>Independents</span>':''}<span><i style="background:var(--ink);border-radius:50%"></i>${esc(s.short)}</span></div>
     <div class="sub" style="margin:8px 0 0">${s.ideoKind==='house'?esc(s.short)+' is a sitting House member, so the comparison is with the current House. ':''}Each dot is one current ${CH[C].noun} with at least 100 scored votes (${i.n+1} in all). Hover a dot for the name. Source: Voteview DW-NOMINATE first dimension, which scores a member's whole career of roll-call votes. <a href="https://voteview.com/person/${esc(i.icpsr)}" target="_blank" rel="noopener">Voteview record ↗</a></div>
@@ -343,16 +347,18 @@ function route(){
   resizers=[];tip.classList.remove('show');
   const h=(location.hash||'#home').slice(1);
   const m=h.match(/^([a-zA-Z0-9]+)(?:-([a-z]+))?$/)||[];
-  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active',a.dataset.route===m[1]||(a.dataset.route==='home'&&!!byId[m[1]])));
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active',a.dataset.route===m[1]||(a.dataset.route==='home'&&!!byId[m[1]])||(a.dataset.route==='senate'&&!!BASIC[m[1]])));
   if(!h||m[1]==='home'){homeCh=m[2]==='senate'?'S':m[2]==='house'?'H':m[2]==='candidates'?'C':homeCh;renderHome();}
   else if(m[1]==='updates'){window.RecordLive.dashboard(app);}
   else if(m[1]==='websites'){window.RecordLive.sites(app);}
   else if(m[1]==='races'){renderRaces();}
+  else if(m[1]==='senate'){renderSenate();}
   else if(m[1]==='compare'){if(m[2])cmpCh=m[2]==='house'?'H':'S';renderCompare();}
   else if(m[1]==='method'){renderMethod();if(m[2]){const t=document.getElementById('method-'+m[2]);if(t)setTimeout(()=>t.scrollIntoView({block:'start'}),0);}}
   else if(m[1]==='scores'){renderScores(m[2]||'match');}
   else if(m[1]==='align'){renderAlign();}
   else if(byId[m[1]]){const [tb,foc]=TAB_ALIAS[m[2]]||[m[2]||'overview'];renderProfile(byId[m[1]],tb,foc||null);}
+  else if(BASIC[m[1]]){renderBasic(BASIC[m[1]],m[2]||'overview');}
   else if(m[2]==='latest'){window.RecordLive.standalone(app,m[1]);}
   else renderHome();
   window.scrollTo({top:0});
@@ -545,7 +551,8 @@ function renderHome(){
       ['Who is covered',`${nS} senators and ${nH} House members on the November 3, 2026 ballot, their ${CANDS.filter(c=>!c.openSeat&&!c.senInc).length} opponents, and ${CANDS.filter(c=>c.openSeat).length} nominees for ${DATA.races.filter(r=>r.open).length} open Senate seats. That includes all ${nComp} Senate races rated competitive by Cook, Inside Elections or Sabato.`],
       ['Where it comes from','FEC filings, roll-call votes, state legislative records, ethics findings and court records. Every entry links to its source.'],
       ['What each profile shows',"Their record, the money their campaign raised, outside groups' spending for and against them (kept separate), and their statements checked against their actions."],
-      ['Grades','Four grades from A to F. "Not graded" means there is not enough evidence yet, never a zero.']],'lede-pts')}
+      ['Grades','Four grades from A to F. "Not graded" means there is not enough evidence yet, never a zero.'],
+      SENATE.length&&['Every senator',`<a href="#senate">All ${SENATE.length} sitting senators</a>, with a basic profile for each one not in these races.`]],'lede-pts')}
     </div>
     ${FEATURED.length?`<aside class="hero-side" aria-label="Featured profile">${FEATURED.map(featuredCard).join('')}</aside>`:''}
     <div class="toolbar">
@@ -615,6 +622,95 @@ function renderProfile(s,tab,focus){
   const pane=$('#pane');
   PANES[tab](s,pane,focus);
   if(focus){const t=document.getElementById(focus);if(t)setTimeout(()=>t.scrollIntoView({block:'start'}),50);}
+  const act=$('#tabs .active');if(act)act.scrollIntoView({block:'nearest',inline:'center'});
+}
+// ---------- The Senate: every sitting senator, with a full profile (reviewed research) or a basic one ----------
+const monthYear=d=>{const m=/^(\d{4})-(\d{2})/.exec(d||'');return m?new Date(+m[1],+m[2]-1,1).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'—';};
+const fecCycleUrl=(id,cycle)=>`https://www.fec.gov/data/candidate/${id}/?cycle=${cycle}&election_full=true`;
+let senQ='',senParty='',senYear='',senSort='state';
+function renderSenate(){
+  const full=SENATE.filter(x=>byId[x.id]).length,info=window.SENATE_INFO||{};
+  const years=[...new Set(SENATE.map(x=>x.nextElection))].sort();
+  app.innerHTML=`<section class="section">
+    <div class="kicker">${info.congress?info.congress+'th Congress':'U.S. Senate'}</div><h1>The Senate</h1>
+    <p class="intro">All ${SENATE.length} sitting senators.</p>
+    ${points([['Full profiles',`${full} senators on the 2026 ballot in the races this site covers: grades, campaign money, outside spending and statement checks.`],
+      ['Basic profiles',`The other ${SENATE.length-full}: their place in the Senate, their committees, and the records the daily refresh collects (votes, bills, statements, stock trades and campaign money). No grades until their research is reviewed.`],
+      ['Ideology','Voteview DW-NOMINATE, from every roll call they have cast, the same as on the full profiles.'],
+      info.source&&['Source',`<a href="${esc(info.source)}" target="_blank" rel="noopener">congress-legislators</a>, checked ${fmtDate(info.checked)}.`]])}
+    <div class="toolbar">
+      <div class="seg" id="sen-party" role="group" aria-label="Party">${[['','All'],['D','Democrats'],['R','Republicans'],['I','Independents']].map(([k,l])=>`<button data-p="${k}" class="${senParty===k?'active':''}">${l}</button>`).join('')}</div>
+      <div class="search"><input id="sen-q" type="search" placeholder="Search by name or state" aria-label="Search senators" value="${esc(senQ)}"></div>
+      <label class="small muted">Next election <select id="sen-year" aria-label="Next election"><option value="">Any</option>${years.map(y=>`<option value="${y}" ${String(y)===senYear?'selected':''}>${y}</option>`).join('')}</select></label>
+      <label class="small muted">Sort <select id="sen-sort" aria-label="Sort senators">${[['state','State'],['name','Name'],['lib','Most liberal first'],['con','Most conservative first']].map(([k,l])=>`<option value="${k}" ${senSort===k?'selected':''}>${l}</option>`).join('')}</select></label>
+    </div>
+    <p class="small" id="sen-n" style="margin:10px 0 8px"></p>
+    <div class="tablewrap"><table><thead><tr><th>Senator</th><th>State</th><th>Party</th><th>Next election</th><th>Ideology</th><th>Profile</th></tr></thead><tbody id="sen-rows"></tbody></table></div>
+  </section>`;
+  const score=x=>x.ideo?x.ideo.dim1:null;
+  const draw=()=>{
+    const q=senQ.toLowerCase();
+    const L=SENATE.filter(x=>(!senParty||x.party===senParty)&&(!senYear||String(x.nextElection)===senYear)&&(!q||`${x.name} ${x.stateName} ${x.state}`.toLowerCase().includes(q)));
+    const by={state:(a,b)=>a.stateName.localeCompare(b.stateName)||a.short.localeCompare(b.short),name:(a,b)=>a.short.localeCompare(b.short)||a.name.localeCompare(b.name),
+      lib:(a,b)=>(score(a)??9)-(score(b)??9),con:(a,b)=>(score(b)??-9)-(score(a)??-9)}[senSort];
+    L.sort(by);
+    $('#sen-n').innerHTML=`<b class="num">${L.length}</b> of ${SENATE.length} senators`;
+    $('#sen-rows').innerHTML=L.map(x=>`<tr><td><a href="#${esc(x.id)}">${esc(x.name)}</a></td><td>${esc(x.stateName)}</td><td><span class="chip ${esc(x.party)}">${partyName(x.party)}</span></td>
+      <td>${x.nextElection}${x.nextElection===2026?' <span class="chip warn">On the 2026 ballot</span>':''}</td>
+      <td>${x.ideo?`<span class="mono">${x.ideo.dim1>0?'+':''}${x.ideo.dim1.toFixed(2)}</span><div class="small muted">${esc(ideoText(x).short)}</div>`:'<span class="small muted">No score yet</span>'}</td>
+      <td>${byId[x.id]?'<span class="chip good">Full</span>':'<span class="chip ghost">Basic</span>'}</td></tr>`).join('')||'<tr><td colspan="6">No senators match.</td></tr>';
+  };
+  $('#sen-party').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;senParty=b.dataset.p;$('#sen-party .active').classList.remove('active');b.classList.add('active');draw();});
+  $('#sen-q').addEventListener('input',e=>{senQ=e.target.value;draw();});
+  $('#sen-year').addEventListener('change',e=>{senYear=e.target.value;draw();});
+  $('#sen-sort').addEventListener('change',e=>{senSort=e.target.value;draw();});
+  draw();
+}
+// A basic profile: no reviewed research, so no grades. The Overview has their place in the Senate and their committees;
+// the other tabs show the records the daily refresh collects (public/live.js), grouped like the full profiles' tabs.
+const BASIC_TABS=[['overview','Overview'],['record','Votes & bills'],['statements','Statements'],['ethics','Ethics leads'],['money','Money']];
+const BASIC_PARTS={record:['legislation','cosponsored','crs','committees','votes'],statements:['crec-day','hearing','meeting','press','bluesky','threads','youtube','factcheck','news'],
+  ethics:['trades','courts','fec-legal','doj'],money:['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']};
+const BASIC_INTRO={record:'Sponsored and cosponsored bills, CRS reports, the official committee lists and roll-call votes, from the daily refresh.',
+  statements:'Floor speeches, hearings, committee meetings, press releases, posts, videos, fact-checks and news, from the daily refresh.',
+  ethics:'Stock trades from their own reports, court records, FEC enforcement records and DOJ press releases. Leads only: nothing here is scored.',
+  money:'Campaign totals, PAC contributions, outside spending, donors grouped by employer, and their lobbying, contracts and rule comments, from the FEC and other official sources.'};
+function renderBasic(s,tab){
+  if(!BASIC_TABS.some(([k])=>k===tab))tab='overview';
+  const cmte=[...new Set(committeesOf(s).map(c=>fullCommittee(c.id)))].map(id=>(COMMITTEES.committees[id]||{}).name).filter(Boolean);
+  app.innerHTML=`
+  <header class="phead">
+    <div class="top"><div>
+      <div class="row"><span class="chip ch">Senate</span><span class="chip ${esc(s.party)}">${partyName(s.party)} · ${esc(s.stateName)}</span><span class="chip ghost">Next election ${s.nextElection}</span><span class="chip ghost">Basic profile</span></div>
+      <h1 style="margin-top:8px">${esc(s.name)}</h1>
+    </div></div>
+    <div class="meta">
+      <div><span>In the Senate since</span>${esc(monthYear(s.since))}</div>
+      <div><span>Current term</span>Ends ${fmtDate(s.termEnd)}${s.class?` · Class ${s.class}`:''}</div>
+      <div class="roles"><span>Committees</span>${esc(cmte.join('; ')||'None listed')}</div>
+      <div><span>Identifiers</span><span class="mono" style="display:inline;color:var(--ink-2);text-transform:none;letter-spacing:0;font-size:.82rem">${s.fecCand?'FEC '+esc(s.fecCand)+' · ':''}Bioguide ${esc(s.bioguide)}${s.lis?' · LIS '+esc(s.lis):''}</span></div>
+    </div>
+    <div class="links row">
+      ${s.fecCand?`<a href="${fecCycleUrl(s.fecCand,s.nextElection)}" target="_blank" rel="noopener">FEC candidate summary ↗</a>`:''}
+      <a href="${cgUrl(s)}" target="_blank" rel="noopener">Congress.gov member page ↗</a>
+      ${s.site?`<a href="${esc(s.site)}" target="_blank" rel="noopener">Official site ↗</a>`:''}
+      <a href="#senate">All senators →</a>
+    </div>
+  </header>
+  <div class="tabs"><div class="wrap" style="padding-inline:0" id="tabs">${BASIC_TABS.map(([k,l])=>`<button data-tab="${k}" class="${k===tab?'active':''}">${l}</button>`).join('')}</div></div>
+  <section class="section" id="pane" data-basic="1"></section>`;
+  $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)location.hash=`${s.id}-${b.dataset.tab}`;});
+  const pane=$('#pane'),person={id:s.id,name:s.name,chamber:'S',bioguide:s.bioguide};
+  if(tab==='overview'){
+    pane.innerHTML=`<div class="note" style="margin-bottom:14px">${points([['Basic profile',`${esc(s.short)} isn't in the 2026 races this site covers in depth, so there's no reviewed research yet and no grades.`],['What is here',"Their place in the Senate and their committees below, and their official records from the daily refresh on the other tabs."],['Grades','Added once their votes, statements and ethics records are reviewed, using the same rules as every other profile.']])}</div>
+      ${s.ideo?ideoBlock(s,'ideo-b'):`<div class="chart"><div class="kicker">Voting ideology</div><p style="margin:8px 0 0">No DW-NOMINATE score yet. Voteview scores a senator once they have cast enough roll-call votes.</p></div>`}
+      ${committeeBlock(s)}`;
+    if(s.ideo)mountIdeo('ideo-b',s);
+    bindTips(pane);
+  }else{
+    pane.innerHTML='<section id="live-records"></section>';
+    window.RecordLive.profile(person,pane.querySelector('#live-records'),BASIC_PARTS[tab],{intro:BASIC_INTRO[tab]});
+  }
   const act=$('#tabs .active');if(act)act.scrollIntoView({block:'nearest',inline:'center'});
 }
 function tiles(items){return `<div class="tiles">${items.map(t=>`<div class="tile"><div class="l">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]||''}</div></div>`).join('')}</div>`}
@@ -2114,6 +2210,7 @@ function renderMethod(sub){
       <li><b>Senate incumbents:</b> six senators on the November 3, 2026 ballot, three Republicans and three Democrats, as a bipartisan mix of competitive and safe seats. Two senators first picked were replaced because they won't be on the ballot: Sen. Lindsey Graham (R-SC) died in July 2026, and Sen. Markwayne Mullin (R-OK) left the Senate for an administration post.</li>
       <li><b>House:</b> the Cook Political Report rates 22 House races Toss-up (Sept. 25, 2026). Eight have full profiles of both nominees, four seats held by each party. The other 14 are on the Races page with funding only: their nominees (verified from results or news reports), campaign funds and outside spending. Their records, statements and ethics are not researched yet.</li>
       <li><b>Challengers and open seats:</b> every opponent of those incumbents, and both major-party nominees in each open Senate race (plus independent Seth Bodnar in Montana). Nominees were confirmed from primary and runoff results.</li>
+      <li><b>Every other senator:</b> a basic profile for each sitting senator not in these races (see the <a href="#senate">Senate</a> page): their place in the Senate, their committees, and the records the daily refresh collects. No grades until their research is reviewed. The list comes from the congress-legislators project.</li>
       <li><b>Ohio and Nebraska:</b> Sen. Jon Husted (appointed in January 2025) and Sen. Pete Ricketts are profiled with their opponents, Sherrod Brown and independent Dan Osborn. No Democrat is on the Nebraska ballot: the nominee withdrew in July 2026 and the state party named no replacement.</li>
     </ul>
     <h2>Competitive races</h2>
