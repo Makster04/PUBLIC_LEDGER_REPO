@@ -216,11 +216,15 @@ export const FEEDS={
       return {rows,next:c.page<Math.min(5,d.pagination.max_page||1)?JSON.stringify({person:c.person,page:c.page+1}):null};
     },
     summarize:rows=>recent(rows,100)},
+  // The person's LegiScan ID is looked up once and kept in the published snapshot, so each later weekly check spends one
+  // query (their sponsored bills) instead of repeating the session and people lookups, which LegiScan asks users to avoid.
   'state-legiscan':{host:'api.legiscan.com',label:'State bills (LegiScan)',tab:'match',every:WEEK,
     jobs:c=>profiled(c).filter(p=>p.stateLeg).map(p=>({id:`state-legiscan:${p.id}`,subject:p.id,args:{state:p.stateLeg.toUpperCase(),first:firstName(p),last:surname(p),legiscan:p.legiscan||null}})),
     async page(job,a,env){
-      const api=(op,extra)=>requestSource(`https://api.legiscan.com/?op=${op}&${extra}`,env).then(d=>{need(d&&d.status==='OK','LegiScan returned an error');return d;});
-      let c=state(job.cursor)||{person:a.legiscan,sessions:null,i:0};
+      const ask=(op,extra)=>requestSource(`https://api.legiscan.com/?op=${op}&${extra}`,env);
+      const api=(op,extra)=>ask(op,extra).then(d=>{need(d&&d.status==='OK','LegiScan returned an error');return d;});
+      let c=state(job.cursor);
+      if(!c){const saved=a.legiscan?null:await savedLegiscanPerson(env,job.id);c={person:a.legiscan||saved,saved:!!saved,sessions:null,i:0};}
       if(!c.person&&!c.sessions){
         const d=await api('getSessionList',`state=${a.state}`);
         const sessions=list(d.sessions).filter(s=>!Number(s.special)).sort((x,y)=>y.year_start-x.year_start).map(s=>s.session_id).slice(0,8);
@@ -235,14 +239,18 @@ export const FEEDS={
         need(c.i+1<c.sessions.length,'No LegiScan person matches; set legiscan in data/config.json');
         return {rows:[],next:JSON.stringify({...c,i:c.i+1})};
       }
-      const d=await api('getSponsoredList',`id=${c.person}`),sb=d.sponsoredbills;need(sb&&Array.isArray(sb.bills),'LegiScan sponsored list missing');
+      const d=await ask('getSponsoredList',`id=${c.person}`);
+      // A saved ID that LegiScan no longer accepts is dropped, and the person is looked up again.
+      if(c.saved&&d?.status!=='OK')return {rows:[],next:JSON.stringify({person:null,sessions:null,i:0})};
+      need(d&&d.status==='OK','LegiScan returned an error');
+      const sb=d.sponsoredbills;need(sb&&Array.isArray(sb.bills),'LegiScan sponsored list missing');
       const sessions=Object.fromEntries(list(sb.sessions).map(s=>[s.session_id,s]));
       const rows=sb.bills.map(b=>{const s=sessions[b.session_id]||{};const year=String(s.year_start||'').slice(0,4);
         return {id:'ls-'+b.bill_id,state:a.state,session:s.session_name||String(b.session_id),year,identifier:b.number,title:cut(b.title||null,300),role:null,date:day(b.last_action_date)||null,
           url:year?`https://legiscan.com/${a.state}/bill/${encodeURIComponent(b.number)}/${year}`:null,source:'LegiScan'};});
-      return {rows,next:null};
+      return {rows:[...rows,{id:LEGISCAN_PERSON,person:c.person}],next:null};
     },
-    summarize:rows=>recent(rows,100)},
+    summarize:rows=>{const p=rows.find(r=>r.id===LEGISCAN_PERSON);return {...recent(rows.filter(r=>r!==p),100),person:p?.person??null};}},
 
   // ---------- Statements ----------
   // The Congressional Record: each new daily issue becomes its own job; its speeches are matched to members by Bioguide ID.
@@ -816,6 +824,13 @@ function officialRows(source,f,found,why){
 function officialSummary(rows){
   const trades=rows.filter(r=>!r.unread),unread=rows.filter(r=>r.unread).map(r=>r.unread);
   return {count:trades.length,rows:top(trades,2000,'traded'),rowLimit:2000,unread:top(unread,200,'filed'),reports:new Set(rows.map(r=>r.doc).filter(Boolean)).size};
+}
+// The LegiScan person ID saved in a job's last snapshot. It travels as one extra record, which summarize takes out.
+const LEGISCAN_PERSON='ls-person';
+async function savedLegiscanPerson(env,jobId){
+  if(!env.DB)return null;
+  const r=await env.DB.prepare('SELECT payload FROM snapshots WHERE job_id=?').bind(jobId).first();
+  return r?JSON.parse(r.payload).person||null:null;
 }
 // The last published snapshot of a job, or of every job of a kind.
 async function snapshotsOf(env,kind){return (await env.DB.prepare('SELECT s.payload FROM snapshots s JOIN jobs j ON j.id=s.job_id WHERE j.kind=?').bind(kind).all()).results.map(r=>JSON.parse(r.payload));}
