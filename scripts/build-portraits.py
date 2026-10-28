@@ -7,7 +7,8 @@
 # for use here, are kept in data/portraits/ and listed in scripts/portrait-extra.json, which takes precedence:
 #   {"<person id>": {"file": "data/portraits/<id>.jpg", "credit": "Photo: <who>, used with permission", "url": optional}}
 # For a photo whose cut-out keeps a halo of a light background, add "tighten": true (refit the edge to the photo's own
-# colors) and/or "choke": <px> (trim that many output pixels off the edge). For something wider than the frame on one
+# colors), "tighten": "left" or "right" (only that side of the photo, keeping the hair on top), and/or "choke": <px> (trim
+# that many output pixels off the edge). For something wider than the frame on one
 # side, such as a hat brim, "nudge": <px> moves the portrait sideways (positive is right) without changing its size;
 # if it is wider than the whole frame, "zoom": <factor below 1> shrinks that portrait to fit.
 # A supplied photo that already has a transparent background (a PNG cut-out) keeps its own outline.
@@ -164,7 +165,16 @@ def cutout(m, segmenter, opts):
     else:
         mask = segmenter.process(rgb).segmentation_mask.astype(np.float32)
         if opts.get('tighten'):
-            mask = tighten(bgr, mask, max(2, int(m['gap'] / 20)))
+            fit = tighten(bgr, mask, max(2, int(m['gap'] / 20)))
+            # "tighten": "left" or "right" refits only that side of the photo, as seen (past one eye gap from the face's
+            # center), so a bright background beside one ear is cleared without trimming the hair on top.
+            side = opts['tighten'] if opts['tighten'] in ('left', 'right') else None
+            if side:
+                (rx, _), (lx, _) = m['eyes']
+                cut = int((rx + lx) / 2 + (m['gap'] if side == 'right' else -m['gap']))
+                cols = np.arange(mask.shape[1])[None, :]
+                fit = np.where(cols >= cut if side == 'right' else cols < cut, fit, mask)
+            mask = fit
         # Snap the soft mask to the photo's own edges (hair, collar), then firm it up.
         mask = cv2.ximgproc.guidedFilter(guide=bgr, src=mask, radius=max(4, int(m['gap'] / 16)), eps=1e-4)
         alpha = np.clip((mask - 0.35) / 0.3, 0, 1)
