@@ -343,6 +343,7 @@ function route(){
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active',a.dataset.route===m[1]||(a.dataset.route==='home'&&!!byId[m[1]])));
   if(!h||m[1]==='home'){homeCh=m[2]==='senate'?'S':m[2]==='house'?'H':m[2]==='candidates'?'C':homeCh;renderHome();}
   else if(m[1]==='updates'){window.RecordLive.dashboard(app);}
+  else if(m[1]==='websites'){window.RecordLive.sites(app);}
   else if(m[1]==='races'){renderRaces();}
   else if(m[1]==='compare'){if(m[2])cmpCh=m[2]==='house'?'H':'S';renderCompare();}
   else if(m[1]==='method'){renderMethod();if(m[2]){const t=document.getElementById('method-'+m[2]);if(t)setTimeout(()=>t.scrollIntoView({block:'start'}),0);}}
@@ -2249,7 +2250,7 @@ function renderMethod(sub){
       <li><b>Before publishing:</b> the update service checks source IDs, required fields, amounts, page-by-page fetching, and vote identities.</li>
       <li><b>If an update fails:</b> the previous published records are kept.</li>
       <li><b>Reviewed research:</b> stays the imported snapshot. It is not fact-checked or reclassified automatically.</li>
-      <li><b>History and coverage:</b> on the Updates page.</li>
+      <li><b>History and coverage:</b> on the <a href="#updates">API updates</a> and <a href="#websites">Website updates</a> pages.</li>
     </ul>
     <h2>Known gaps</h2>
     <ul class="list">

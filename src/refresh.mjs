@@ -175,18 +175,21 @@ export async function runRefresh(env,{steps=8}={}) {
 }
 async function registerHouse(db,vote,year) {await addJob(db,`vote:H:${year}:${vote.number}`,'vote',vote.id,{chamber:'H',year,number:vote.number});}
 
+// Whether a job reads a website directly rather than an API. House roll calls from 2023 on come through Congress.gov's
+// API when its key is set (see fetchJob).
+const isSite=(j,env)=>j.kind==='vote'&&/^vote:H:/.test(j.id)&&Number(j.id.split(':')[2])>=2023&&env.CONGRESS_API_KEY?false:!!HOSTS[hostOf(j.kind)]?.site;
 export async function getStatus(env) {
   await initialize(env.DB);
   const jobs=(await statement(env.DB,'SELECT id,kind,subject,status,last_attempt,last_success,checked_through,error,failures,page FROM jobs ORDER BY kind,subject').all()).results;
   for(const j of jobs){const missing=needsKey(j.kind,env);if(missing){j.status='blocked';j.error=keyMessage(missing);}
     const every=FEEDS[j.kind]?.every??DAY;
     j.stale=j.kind==='vote'||every===NEVER?!j.last_success:!j.last_success||Date.now()-Date.parse(j.last_success)>every*1.5;
-    j.label=FEEDS[j.kind]?.label||null;j.tab=FEEDS[j.kind]?.tab||null;
+    j.label=FEEDS[j.kind]?.label||null;j.tab=FEEDS[j.kind]?.tab||null;j.site=isSite(j,env);
     const who=config.people.find(p=>p.id===j.subject);j.name=who?.name||j.subject;j.person=!!who;
   }
   const keyNames=[...new Set(Object.values(HOSTS).flatMap(h=>[...(h.keys||[]),...(h.agent?[h.agent]:[])]))];
   return {generatedAt:nowISO(),local:env.LOCAL_MODE===true,reviewedAt:config.reviewedAt,cycle:config.cycle,keys:{fec:!!env.FEC_API_KEY,congress:!!env.CONGRESS_API_KEY,...Object.fromEntries(keyNames.map(k=>[k,!!env[k]]))},jobs,
-    history:(await statement(env.DB,'SELECT job_id,status,at,message,row_count FROM refresh_history ORDER BY id DESC LIMIT 60').all()).results};
+    history:(await statement(env.DB,'SELECT job_id,status,at,message,row_count FROM refresh_history ORDER BY id DESC LIMIT 120').all()).results};
 }
 const GLOBAL_KINDS=FEED_KINDS.filter(k=>FEEDS[k].scope==='global');
 export async function getProfile(env,id) {

@@ -8,17 +8,19 @@ const sum = (rows, get) => Math.round(rows.reduce((n,r)=>n+Math.round((get(r)||0
 // Every approved host, and how its key is sent: `keys` are the .dev.vars names tried in order (GovInfo and
 // Regulations.gov also accept the Congress.gov key, since all three are api.data.gov keys); `query` or `header` says
 // where it goes. `optional` hosts also work without a key. `agent` hosts require a contact line as the User-Agent.
+// `site` hosts are websites read directly (pages, files and feeds posted for people) rather than APIs; the app lists
+// their jobs under Website updates.
 // perRun: the most requests to a source in one refresh run (the local server runs once a minute), kept under each
 // source's published or reported rate limit; sources without one get DEFAULT_PER_RUN.
 export const DEFAULT_PER_RUN=5;
 export const HOSTS = {
   'api.open.fec.gov':{name:'FEC',keys:['FEC_API_KEY'],query:'api_key',perRun:15},
   'api.congress.gov':{name:'Congress.gov',keys:['CONGRESS_API_KEY'],query:'api_key',perRun:40},
-  'www.senate.gov':{name:'Senate.gov',perRun:10},
-  'clerk.house.gov':{name:'House Clerk',perRun:10},
-  'disclosures-clerk.house.gov':{name:'House Clerk disclosures',perRun:10},
+  'www.senate.gov':{name:'Senate.gov',site:true,perRun:10},
+  'clerk.house.gov':{name:'House Clerk',site:true,perRun:10},
+  'disclosures-clerk.house.gov':{name:'House Clerk disclosures',site:true,perRun:10},
   // The Senate's financial disclosure site. It is a website, not an API: a session agrees to its terms first.
-  'efdsearch.senate.gov':{name:'Senate eFD',perRun:10,ua:'PublicLedger/1.0 (public-records research; non-commercial)'},
+  'efdsearch.senate.gov':{name:'Senate eFD',site:true,perRun:10,ua:'PublicLedger/1.0 (public-records research; non-commercial)'},
   'api.govinfo.gov':{name:'GovInfo',keys:['GOVINFO_API_KEY','CONGRESS_API_KEY'],query:'api_key',perRun:15},
   'api.votesmart.org':{name:'Vote Smart',keys:['VOTESMART_API_KEY'],query:'key'},
   'v3.openstates.org':{name:'Open States',keys:['OPENSTATES_API_KEY'],header:'X-API-KEY'},
@@ -43,7 +45,7 @@ export const HOSTS = {
   'graph.threads.net':{name:'Threads',keys:['THREADS_ACCESS_TOKEN'],query:'access_token',perRun:20},
   // Not a hostname: the shared entry for every member's official website (any *.senate.gov or *.house.gov host without
   // an entry of its own), used for their press-release feeds. The feed job counts against this one limit.
-  'official-sites':{name:'Official member websites',perRun:10},
+  'official-sites':{name:'Official member websites',site:true,perRun:10},
   'web.archive.org':{name:'Wayback Machine',perRun:3},
   'www.justice.gov':{name:'Justice Department'},
   'projects.propublica.org':{name:'ProPublica Nonprofit Explorer'},
