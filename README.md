@@ -276,7 +276,7 @@ Sources: [FEC API](https://api.open.fec.gov/developers/) and [bulk files](https:
 - **Senate votes use LIS IDs** from congress-legislators, replacing surname-and-state matching.
 - **Donor names stay hidden:** FEC rules restrict reusing individual contributors' information, so donors are grouped by employer and names are never kept.
 - **House votes from Congress.gov** for 2023 on when its key is set, since it now serves them officially; the House Clerk's files remain for older votes and as the fallback.
-- **Stock-trade history:** Bargo's free tier covers only 3 months, so older trades and senators' official filings come from `scripts/build-holdings.py`, checked by hand.
+- **Stock-trade history:** the refresh reads both chambers' official trade reports from the last two years. Older trades and yearly holdings come from `scripts/build-holdings.py`, checked by hand.
 - **Court records weekly, profiled people only:** CourtListener's free account allows about 125 requests a day.
 - **News from GDELT and the New York Times together,** merged by link.
 - **Grades are computed from the reviewed research and logged monthly.** The page always reflects the reviewed file, and marks any grade that differs from the last monthly recalculation, so nothing changes silently between runs.
