@@ -15,7 +15,8 @@ const byId=Object.fromEntries(ALL.concat(FEATURED).map(s=>[s.id,s]));
 // Every sitting senator (public/senate.json, from scripts/build-senate.mjs). Those without a reviewed profile get a basic
 // one: their place in the Senate, their committees and the records the daily refresh collects, without grades.
 const SENATE=(window.SENATE||[]).map(x=>({...x,chamber:'S',ideo:poolIdeo(DATA.pools?.S,x.bioguide,x.party)}));
-const BASIC=Object.fromEntries(SENATE.filter(x=>!byId[x.id]).map(x=>[x.id,x]));
+const BASIC=Object.fromEntries(SENATE.filter(x=>!byId[x.id]).map(x=>[x.id,Object.assign(x,{basic:true,evidence:{},statements:[],ethics:[],bills:[]})]));
+const BASIC_LIST=Object.values(BASIC);
 // One ID per bill ("117-hr-1319"), so a vote and a sponsorship on the same bill count once.
 const VOTE_BY_ID=new Map(DATA.votes.concat(DATA.hvotes).map(v=>[v.id,v]));
 for(const s of ALL.concat(FEATURED))for(const ev of Object.values(s.evidence||{}))for(const e of ev){
@@ -358,7 +359,7 @@ function route(){
   else if(m[1]==='scores'){renderScores(m[2]||'match');}
   else if(m[1]==='align'){renderAlign();}
   else if(byId[m[1]]){const [tb,foc]=TAB_ALIAS[m[2]]||[m[2]||'overview'];renderProfile(byId[m[1]],tb,foc||null);}
-  else if(BASIC[m[1]]){renderBasic(BASIC[m[1]],m[2]||'overview');}
+  else if(BASIC[m[1]]){const [tb,foc]=TAB_ALIAS[m[2]]||[m[2]||'overview'];renderBasic(BASIC[m[1]],tb,foc||null);}
   else if(m[2]==='latest'){window.RecordLive.standalone(app,m[1]);}
   else renderHome();
   window.scrollTo({top:0});
@@ -522,7 +523,7 @@ function featuredMoney(s,p){
   return `<div class="hc-money"><div class="hc-mt">${camp}</div><div class="hc-mt">${out}</div></div>${mini}`;
 }
 async function fillFeatured(){
-  for(const el of document.querySelectorAll('.hc-live')){
+  for(const el of document.querySelectorAll('.hc-live[data-live]')){
     const s=byId[el.dataset.live];let p=false;
     try{const r=await fetch('/api/profile?id='+encodeURIComponent(s.id),{cache:'no-store'});if(r.ok)p=await r.json();}catch{}
     if(el.isConnected)el.innerHTML=featuredMoney(s,p&&p.sections?p:false);
@@ -556,7 +557,7 @@ function renderHome(){
     </div>
     ${FEATURED.length?`<aside class="hero-side" aria-label="Featured profile">${FEATURED.map(featuredCard).join('')}</aside>`:''}
     <div class="toolbar">
-      <div class="seg" id="chs" role="group" aria-label="Chamber"><button data-c="" class="${homeCh===''?'active':''}">All ${ALL.length}</button><button data-c="S" class="${homeCh==='S'?'active':''}">Senators</button><button data-c="H" class="${homeCh==='H'?'active':''}">House</button><button data-c="C" class="${homeCh==='C'?'active':''}">Challengers & candidates</button></div>
+      <div class="seg" id="chs" role="group" aria-label="Chamber"><button data-c="" class="${homeCh===''?'active':''}">All ${ALL.length+BASIC_LIST.length}</button><button data-c="S" class="${homeCh==='S'?'active':''}">Senators</button><button data-c="H" class="${homeCh==='H'?'active':''}">House</button><button data-c="C" class="${homeCh==='C'?'active':''}">Challengers & candidates</button></div>
       <div class="search"><input id="q" type="search" placeholder="Search by name, state or district" aria-label="Search members"></div>
       <label class="small muted">Sort <select id="hsort" aria-label="Sort candidates"><option value="">Default</option><option value="out">Most outside money</option><option value="camp">Most campaign money</option><option value="name">Name</option></select></label>
     </div>
@@ -573,15 +574,16 @@ function renderHome(){
   const cards=$('#cards');
   const draw=q=>{
     q=(q||'').trim().toLowerCase();
-    const list=ALL.filter(s=>(!homeCh||(homeCh==='C'?(s.cand&&!s.senInc):((!s.cand||s.senInc)&&s.chamber===homeCh)))&&(!q||[s.name,s.state,s.stateName,s.district||'',s.cand?(s.openSeat?'senate candidate open seat':'challenger '+(s.chamber==='S'?'senate':'house')):s.chamber==='S'?'senate senator':'house representative',partyName(s.party)].join(' ').toLowerCase().includes(q)));
-    const key={out:s=>-(s.out.for.total+s.out.against.total),camp:s=>s.camp.missing?1:-s.camp.receipts,name:s=>s.name.split(' ').pop()+' '+s.name}[homeSort];
+    const list=ALL.concat(BASIC_LIST).filter(s=>(!homeCh||(homeCh==='C'?(s.cand&&!s.senInc):((!s.cand||s.senInc)&&s.chamber===homeCh)))&&(!q||[s.name,s.state,s.stateName,s.district||'',s.cand?(s.openSeat?'senate candidate open seat':'challenger '+(s.chamber==='S'?'senate':'house')):s.chamber==='S'?'senate senator':'house representative',partyName(s.party)].join(' ').toLowerCase().includes(q)));
+    // Basic profiles have no reviewed money, so they sort after everyone with it.
+    const key={out:s=>s.basic?1:-(s.out.for.total+s.out.against.total),camp:s=>s.basic||s.camp.missing?1:-s.camp.receipts,name:s=>s.short+' '+s.name}[homeSort];
     if(key)list.sort((x,y)=>{const a=key(x),b=key(y);return typeof a==='number'?a-b:String(a).localeCompare(String(b))});
-    cards.innerHTML=list.map(homeCard).join('')||`<p class="muted">No one matches that search. This release covers ${ALL.length} people in ${DATA.races.length} races; the methodology page explains how they were chosen.</p>`;
+    cards.innerHTML=list.map(s=>s.basic?basicCard(s):homeCard(s)).join('')||`<p class="muted">No one matches that search. This release covers ${ALL.length} people in ${DATA.races.length} races; the methodology page explains how they were chosen.</p>`;
   };
-  draw('');
-  $('#q').addEventListener('input',e=>draw(e.target.value));
-  const hs=$('#hsort');hs.value=homeSort;hs.addEventListener('change',e=>{homeSort=e.target.value;draw($('#q').value);});
-  $('#chs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;homeCh=b.dataset.c;$('#chs .active').classList.remove('active');b.classList.add('active');draw($('#q').value);});
+  draw('');fillBasic(cards);
+  $('#q').addEventListener('input',e=>{draw(e.target.value);fillBasic(cards);});
+  const hs=$('#hsort');hs.value=homeSort;hs.addEventListener('change',e=>{homeSort=e.target.value;draw($('#q').value);fillBasic(cards);});
+  $('#chs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;homeCh=b.dataset.c;$('#chs .active').classList.remove('active');b.classList.add('active');draw($('#q').value);fillBasic(cards);});
   fillFeatured();
   for(const host of [cards,$('.hero-side')].filter(Boolean)){
     host.addEventListener('click',e=>{const c=e.target.closest('.sen-card');if(c)location.hash=c.dataset.id;});
@@ -666,28 +668,66 @@ function renderSenate(){
   $('#sen-sort').addEventListener('change',e=>{senSort=e.target.value;draw();});
   draw();
 }
-// A basic profile: no reviewed research, so no grades. The Overview has their place in the Senate and their committees;
-// the other tabs show the records the daily refresh collects (public/live.js), grouped like the full profiles' tabs.
-const BASIC_TABS=[['overview','Overview'],['record','Votes & bills'],['statements','Statements'],['ethics','Ethics leads'],['money','Money']];
-const BASIC_PARTS={record:['legislation','cosponsored','crs','committees','votes'],statements:['crec-day','hearing','meeting','press','bluesky','threads','youtube','factcheck','news'],
-  ethics:['trades','courts','fec-legal','doj'],money:['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']};
-const BASIC_INTRO={record:'Sponsored and cosponsored bills, CRS reports, the official committee lists and roll-call votes, from the daily refresh.',
-  statements:'Floor speeches, hearings, committee meetings, press releases, posts, videos, fact-checks and news, from the daily refresh.',
-  ethics:'Stock trades from their own reports, court records, FEC enforcement records and DOJ press releases. Leads only: nothing here is scored.',
-  money:'Campaign totals, PAC contributions, outside spending, donors grouped by employer, and their lobbying, contracts and rule comments, from the FEC and other official sources.'};
-function renderBasic(s,tab){
-  if(!BASIC_TABS.some(([k])=>k===tab))tab='overview';
+// Basic profiles: senators without reviewed research. They use the same header, tabs and cards as the full profiles;
+// every grade stays "Not graded" until the research is reviewed, and each tab shows the records the daily refresh
+// collects. Election boxes say whether the seat is on the 2026 ballot.
+const offBallot=s=>s.nextElection!==2026;
+const ballotLine=s=>offBallot(s)?'Not running for election in 2026':'Seat up in 2026 · race not covered here';
+const BASIC_GRADE={match:'No reviewed record of their votes and statements on the site\'s issues yet.',prom:'No statements checked against the record yet.',
+  eth:'No cases reviewed yet. Leads from official records are on the Ethics tab.',pvp:'No scored votes or sponsorships reviewed yet.'};
+function basicReport(s,links){
+  const h=k=>links?`#${s.id}-${k}`:'',d='Research not reviewed yet';
+  return `<div class="hc-rc">${gradeTile('Your match',null,d,GRADE_TIP.match,'',h('match'))}${gradeTile('Promises delivered',null,d,GRADE_TIP.prom,'',h('promises'))}${gradeTile('Ethics',null,d,GRADE_TIP.eth,'',h('ethics'))}${gradeTile('Workers > Profit',null,d,GRADE_TIP.pvp,'',h('pvp'))}</div>`;
+}
+// Campaign and outside-money totals for everyone, loaded once (/api/cards) and reused by the cards and profiles.
+let cardsData=null,cardsTime=0;
+function loadCards(){if(!cardsData||Date.now()-cardsTime>60000){cardsTime=Date.now();cardsData=fetch('/api/cards',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>d?.people||null).catch(()=>null);}return cardsData;}
+// c: this person's totals, undefined while loading, or null when the refresh is unreachable.
+function basicMoney(s,c,{mini:withMini=true}={}){
+  const wait=c===undefined?'Loading…':c===null?'Refresh unavailable':'Waiting for the FEC refresh',k=c?.campaign,o=c?.outside;
+  const camp=k&&k.receipts!=null?`<b>${fmt$(k.receipts)}</b><span>Campaign funds raised</span><small>${shortPer(k.end)}</small>`:`<b class="hc-na">${wait}</b><span>Campaign funds raised</span><small>${s.fecCand?'from the daily FEC refresh':'no FEC candidate ID listed'}</small>`;
+  const out=offBallot(s)?`<b class="hc-na">Not running for election in 2026</b><span>Outside money</span><small>no 2026 race</small>`
+    :o?`<b class="hc-two"><i class="sw" style="background:var(--s3)"></i>${fmt$(o.support)} <em>for</em><br><i class="sw" style="background:var(--s2)"></i>${fmt$(o.oppose)} <em>against</em></b><span>Outside money</span><small>${shortPer(o.through)}</small>`
+    :`<b class="hc-na">${wait}</b><span>Outside money</span><small>from the daily FEC refresh</small>`;
+  const mini=!withMini?'':`<div class="hc-mini"><div class="hc-mh"><span>Outside money by month</span><span></span></div><p class="small muted" style="margin:4px 0 0">${offBallot(s)?`Not running for election in 2026. ${esc(s.short)}'s seat is next on the ballot in ${s.nextElection}.`:'Seat up in 2026, in a race this site doesn\'t cover in depth. Outside spending shows on the profile once refreshed.'}</p></div>`;
+  return `<div class="hc-money"><div class="hc-mt">${camp}</div><div class="hc-mt">${out}</div></div>${mini}`;
+}
+function basicCard(s){
+  return `<article class="card sen-card hc" tabindex="0" data-id="${s.id}" role="link" aria-label="Open profile of ${esc(s.name)}">
+    <div class="hc-top">${portrait(s)}<div class="hc-who">
+      <div class="row" style="gap:5px"><span class="chip ${s.party}">${s.party} · ${esc(s.state)}</span><span class="chip ch">Senate</span></div>
+      <div class="name">${esc(s.name)}</div><div class="hc-sub">${esc(`In the Senate since ${String(s.since).slice(0,4)} · Next election ${s.nextElection}`)}</div></div></div>
+    <div class="hc-ideo">${esc(s.ideo?ideoText(s).short:'No voting score yet')}</div>
+    ${hcHead('✓','rc','Report Card','Four A–F grades from the documented record and your own answers')}
+    ${basicReport(s)}
+    ${hcHead('$','mi','Money &amp; Influence Analysis','Campaign money from the daily FEC refresh, and outside spending for and against them')}
+    <div class="hc-live" data-basic="${s.id}">${basicMoney(s,undefined)}</div>
+    <div class="hc-ft"><span>${esc(ballotLine(s))}</span><span class="hc-vs">Basic profile →</span></div>
+  </article>`;
+}
+async function fillBasic(root=document){
+  const els=[...root.querySelectorAll('.hc-live[data-basic]')];if(!els.length)return;
+  const all=await loadCards();
+  for(const el of els)if(el.isConnected){const s=BASIC[el.dataset.basic];el.innerHTML=basicMoney(s,all?(all[s.id]||{}):null,{mini:el.dataset.mini!=='0'});}
+}
+// The records each tab adds from the daily refresh (public/live.js), the same groups the full profiles' tabs show.
+const BASIC_LIVE={match:['legislation','cosponsored','crs','committees','votes'],promises:['crec-day','hearing','meeting','press','bluesky','threads','youtube','factcheck','news'],
+  ethics:['trades','courts','fec-legal','doj'],pvp:['donors','lobbying'],finance:['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']};
+const BASIC_INTRO='These update on their own from official sources. Nothing here has been reviewed yet, so none of it counts toward a grade.';
+function renderBasic(s,tab,focus){
+  if(!PANES[tab]||tab==='sources')tab='overview';
   const cmte=[...new Set(committeesOf(s).map(c=>fullCommittee(c.id)))].map(id=>(COMMITTEES.committees[id]||{}).name).filter(Boolean);
   app.innerHTML=`
   <header class="phead">
     <div class="top"><div>
-      <div class="row"><span class="chip ch">Senate</span><span class="chip ${esc(s.party)}">${partyName(s.party)} · ${esc(s.stateName)}</span><span class="chip ghost">Next election ${s.nextElection}</span><span class="chip ghost">Basic profile</span></div>
+      <div class="row"><span class="chip ch">Senate</span><span class="chip ${esc(s.party)}">${partyName(s.party)} · ${esc(s.stateName)}</span><span class="chip ghost">Term ends ${fmtDate(s.termEnd)}</span><span class="chip ghost">Basic profile</span></div>
       <h1 style="margin-top:8px">${esc(s.name)}</h1>
+      <p class="small" style="margin:8px 0 0;color:var(--ink-2);max-width:80ch">${esc(s.short)} isn't in the 2026 races this site covers in depth, so there's no reviewed research yet and every grade reads "Not graded". The tabs show their official records from the daily refresh.</p>
     </div></div>
     <div class="meta">
       <div><span>In the Senate since</span>${esc(monthYear(s.since))}</div>
-      <div><span>Current term</span>Ends ${fmtDate(s.termEnd)}${s.class?` · Class ${s.class}`:''}</div>
-      <div class="roles"><span>Committees</span>${esc(cmte.join('; ')||'None listed')}</div>
+      <div><span>2026 ballot</span>${esc(ballotLine(s))}${offBallot(s)?` · next election ${s.nextElection}`:''}</div>
+      <div class="roles"><span>Committees / roles</span>${esc(cmte.join('; ')||'None listed')}</div>
       <div><span>Identifiers</span><span class="mono" style="display:inline;color:var(--ink-2);text-transform:none;letter-spacing:0;font-size:.82rem">${s.fecCand?'FEC '+esc(s.fecCand)+' · ':''}Bioguide ${esc(s.bioguide)}${s.lis?' · LIS '+esc(s.lis):''}</span></div>
     </div>
     <div class="links row">
@@ -697,20 +737,50 @@ function renderBasic(s,tab){
       <a href="#senate">All senators →</a>
     </div>
   </header>
-  <div class="tabs"><div class="wrap" style="padding-inline:0" id="tabs">${BASIC_TABS.map(([k,l])=>`<button data-tab="${k}" class="${k===tab?'active':''}">${l}</button>`).join('')}</div></div>
+  <div class="tabs"><div class="wrap" style="padding-inline:0" id="tabs">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${k===tab?'active':''}">${l}</button>`).join('')}</div></div>
   <section class="section" id="pane" data-basic="1"></section>`;
   $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)location.hash=`${s.id}-${b.dataset.tab}`;});
   const pane=$('#pane'),person={id:s.id,name:s.name,chamber:'S',bioguide:s.bioguide};
+  const live=()=>{const host=pane.querySelector('#live-records');if(host)window.RecordLive.profile(person,host,BASIC_LIVE[tab],{intro:BASIC_INTRO});};
+  const head=(title,k)=>gradeHead(title,null,BASIC_GRADE[k],gradeRule(k));
   if(tab==='overview'){
-    pane.innerHTML=`<div class="note" style="margin-bottom:14px">${points([['Basic profile',`${esc(s.short)} isn't in the 2026 races this site covers in depth, so there's no reviewed research yet and no grades.`],['What is here',"Their place in the Senate and their committees below, and their official records from the daily refresh on the other tabs."],['Grades','Added once their votes, statements and ethics records are reviewed, using the same rules as every other profile.']])}</div>
-      ${s.ideo?ideoBlock(s,'ideo-b'):`<div class="chart"><div class="kicker">Voting ideology</div><p style="margin:8px 0 0">No DW-NOMINATE score yet. Voteview scores a senator once they have cast enough roll-call votes.</p></div>`}
-      ${committeeBlock(s)}`;
-    if(s.ideo)mountIdeo('ideo-b',s);
-    bindTips(pane);
-  }else{
-    pane.innerHTML='<section id="live-records"></section>';
-    window.RecordLive.profile(person,pane.querySelector('#live-records'),BASIC_PARTS[tab],{intro:BASIC_INTRO[tab]});
+    pane.innerHTML=`
+    <h2>At a glance</h2>
+    <p class="intro">Their four grades and the main facts at a glance. The grades stay "Not graded" until their research is reviewed.</p>
+    <div class="ov-grades">${basicReport(s,true)}</div>
+    <div class="ov-grid">
+      ${ovCard(offBallot(s)?'Not on the ballot':'2026 ballot',offBallot(s)?'Not running for election in 2026':'Seat up in 2026',`Class ${s.class} · term ends ${fmtDate(s.termEnd)}`,`<div class="big">${offBallot(s)?`Next election ${s.nextElection}`:'Race not covered here'}</div>${points([offBallot(s)?['No 2026 race','No opponent, race rating or 2026 outside spending to show.']:['Not covered in depth','This seat is on the 2026 ballot, but the race isn\'t one of the races this site profiles.'],['Still tracked','Their votes, bills, statements, stock trades and campaign money, from the daily refresh.']],'small')}`,'')}
+      ${ovCard('Campaign money','Campaign funds raised','From the daily FEC refresh',`<div class="hc-live" data-basic="${s.id}" data-mini="0">${basicMoney(s,undefined,{mini:false})}</div>`,`<a href="#${s.id}-finance">Money &amp; Influence →</a>`)}
+      ${ovIdeo(s)}
+      ${ovCard('Your issues','How they compare with your choices','Issue by issue, never a single score',`<div class="big">Not graded</div><p class="small" style="margin:6px 0 0;color:var(--ink-2)">${BASIC_GRADE.match}</p>`,`<a href="#${s.id}-match">Their votes and bills →</a>`)}
+      ${ovCard('Words and actions','Do their words match their actions?','Checked statements','<div class="big">No statements checked</div>',`<a href="#${s.id}-promises">Their statements →</a>`)}
+      ${ovCard('Ethics','Ethics record','Reviewed cases','<div class="big">Not reviewed yet</div><p class="small" style="margin:6px 0 0;color:var(--ink-2)">Court records, FEC enforcement records and DOJ press releases are listed as leads, not scored.</p>',`<a href="#${s.id}-ethics">Ethics leads →</a>`)}
+    </div>
+    <div class="cols" style="margin-top:14px">
+      <div class="card"><h3>Term in office</h3><p class="small" style="margin-top:8px">In the Senate since ${esc(monthYear(s.since))}.</p><p class="small" style="margin-top:6px">Class ${s.class}. Current term ends ${fmtDate(s.termEnd)}. ${esc(ballotLine(s))}.</p><p style="margin-top:10px"><a href="#senate">All senators →</a></p></div>
+      <div class="card"><h3>Votes &amp; bills</h3><p class="small" style="margin-top:8px">Their sponsored and cosponsored bills, committee seats and roll-call votes, from the daily refresh.</p><p style="margin-top:10px"><a href="#${s.id}-match">The record behind the match →</a></p></div>
+    </div>`;
+    mountStrip('ovstrip',s);mountKV('ovkv',s);fillBasic(pane);
+  }else if(tab==='match'){
+    pane.innerHTML=`${head('Your match','match')}
+    <h2 id="m-record" style="margin-top:34px">The record behind the match</h2>
+    <div id="rec-ideo">${s.ideo?ideoBlock(s,'ideo-b'):`<div class="chart"><div class="kicker">Voting ideology</div><p style="margin:8px 0 0">No DW-NOMINATE score yet. Voteview scores a senator once they have cast enough roll-call votes.</p></div>`}</div>
+    ${committeeBlock(s)}<section id="live-records" style="margin-top:28px"></section>`;
+    if(s.ideo)mountIdeo('ideo-b',s);live();
+  }else if(tab==='promises'){pane.innerHTML=`${head('Promises delivered','prom')}<section id="live-records" style="margin-top:28px"></section>`;live();}
+  else if(tab==='ethics'){pane.innerHTML=`${head('Ethics','eth')}<section id="live-records" style="margin-top:28px"></section>`;live();}
+  else if(tab==='pvp'){pane.innerHTML=`${head('Workers > Profit','pvp')}<section id="live-records" style="margin-top:28px"></section>`;live();}
+  else{
+    pane.innerHTML=`<h2>Money &amp; Influence</h2><p class="intro">Who pays for ${esc(s.short)}'s campaign, from the daily FEC refresh. Never part of a grade.</p>
+    <div class="cols" style="margin-bottom:14px">
+      <div class="card"><h3>Campaign money</h3><div class="hc-live" data-basic="${s.id}" data-mini="0">${basicMoney(s,undefined,{mini:false})}</div></div>
+      <div class="card"><h3>Outside spending</h3><p class="small" style="margin-top:8px"><b>${esc(ballotLine(s))}.</b> ${offBallot(s)?`Outside groups spend for and against candidates in a race, and ${esc(s.short)} has no 2026 race. The seat is next on the ballot in ${s.nextElection}.`:'Any outside spending for or against them is listed below once the FEC refresh reads it.'}</p></div>
+    </div>
+    <section id="live-records"></section>`;
+    fillBasic(pane);live();
   }
+  bindTips(pane);
+  if(focus){const t=document.getElementById(focus);if(t)setTimeout(()=>t.scrollIntoView({block:'start'}),50);}
   const act=$('#tabs .active');if(act)act.scrollIntoView({block:'nearest',inline:'center'});
 }
 function tiles(items){return `<div class="tiles">${items.map(t=>`<div class="tile"><div class="l">${t[0]}</div><div class="v">${t[1]}</div><div class="d">${t[2]||''}</div></div>`).join('')}</div>`}

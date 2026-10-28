@@ -191,6 +191,18 @@ async function registerHouse(db,vote,year) {await addJob(db,`vote:H:${year}:${vo
 // Whether a job reads a website directly rather than an API. House roll calls from 2023 on come through Congress.gov's
 // API when its key is set (see fetchJob).
 const isSite=(j,env)=>j.kind==='vote'&&/^vote:H:/.test(j.id)&&Number(j.id.split(':')[2])>=2023&&env.CONGRESS_API_KEY?false:!!HOSTS[hostOf(j.kind)]?.site;
+// Campaign and outside-money totals for everyone, in one request: the home cards of people without reviewed research
+// (the basic senator profiles) show these instead of loading each full profile.
+export async function getCards(env) {
+  await initialize(env.DB);
+  const rows=(await statement(env.DB,"SELECT j.subject,j.kind,s.payload FROM snapshots s JOIN jobs j ON j.id=s.job_id WHERE j.kind IN ('campaign','outside')").all()).results,people={};
+  for(const r of rows){
+    const d=JSON.parse(r.payload),o=people[r.subject]||={};
+    if(r.kind==='campaign')o.campaign={receipts:d.receipts??null,cash:d.cash??null,start:d.start||null,end:d.end||null};
+    else o.outside={support:d.support||0,oppose:d.oppose||0,through:d.through||null};
+  }
+  return {people};
+}
 export async function getStatus(env) {
   await initialize(env.DB);
   const jobs=(await statement(env.DB,'SELECT id,kind,subject,status,last_attempt,last_success,checked_through,error,failures,page FROM jobs ORDER BY kind,subject').all()).results;

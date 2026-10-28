@@ -1,4 +1,4 @@
-import {getStatus,getProfile,runRefresh,statement} from './refresh.mjs';
+import {getStatus,getProfile,getCards,runRefresh,statement} from './refresh.mjs';
 const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers});
 export default {
@@ -6,6 +6,7 @@ export default {
     const url=new URL(request.url);
     try{
       if(url.pathname==='/api/status'&&request.method==='GET')return json(await getStatus(env));
+      if(url.pathname==='/api/cards'&&request.method==='GET')return json(await getCards(env));
       if(url.pathname==='/api/profile'&&request.method==='GET') {const data=await getProfile(env,url.searchParams.get('id'));return data?json(data):json({error:'Profile not found'},404);}
       if(url.pathname==='/api/refresh'&&request.method==='POST'){
         if(env.LOCAL_MODE!==true)return json({error:'Manual refresh is available only in the local application. Hosted refreshes use the schedule.'},403);

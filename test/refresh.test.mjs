@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {XMLParser} from 'fast-xml-parser';
 import {fecNext,normalizeCampaign,normalizeTransaction,normalizeVote,requestSource,summarizeTransactions} from '../src/sources.mjs';
-import {addJob,initialize,runRefresh,seedScope,statement,getProfile,getStatus} from '../src/refresh.mjs';
+import {addJob,initialize,runRefresh,seedScope,statement,getProfile,getStatus,getCards} from '../src/refresh.mjs';
 import worker from '../src/worker.mjs';
 import {openDatabase} from '../scripts/sqlite.mjs';
 import {feedSignature,voterHashes} from '../src/refresh.mjs';
@@ -115,5 +115,17 @@ test('adding a senator reads the Senate roll calls already read once more, so th
     await statement(db,"UPDATE jobs SET status='ready' WHERE kind='vote'").run();await initialize(db);
     assert.equal((await statement(db,'SELECT status FROM jobs WHERE id=?',senateVote).first()).status,'ready','only once');
   }finally{config.people.pop();}
+  db.close();
+});
+
+test('the home cards get everyone\'s campaign and outside-money totals in one request',async()=>{
+  const db=database();
+  await addJob(db,'campaign:murkowski','campaign','murkowski',args);await addJob(db,'outside:murkowski','outside','murkowski',args);
+  const snap=(id,payload)=>statement(db,'INSERT INTO snapshots(job_id,run_id,payload,updated_at) VALUES(?,?,?,?)',id,'r',JSON.stringify(payload),'2026-10-01').run();
+  await snap('campaign:murkowski',{receipts:1234,cash:50,start:'2025-01-01',end:'2026-09-30',rows:[]});
+  await snap('outside:murkowski',{support:10,oppose:20,through:'2026-10-20',rows:[{amount:10}]});
+  const {people}=await getCards({DB:db});
+  assert.deepEqual(people.murkowski,{campaign:{receipts:1234,cash:50,start:'2025-01-01',end:'2026-09-30'},outside:{support:10,oppose:20,through:'2026-10-20'}});
+  const res=await worker.fetch(new Request('http://x/api/cards'),{DB:db},{});assert.equal(res.status,200);
   db.close();
 });
