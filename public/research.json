@@ -228,7 +228,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2026
         },
         {
           "title": "STOCK Act periodic transaction reports",
@@ -4732,7 +4734,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "technical",
+          "decided": 2022
         }
       ],
       "id": "sullivan",
@@ -12001,7 +12005,8 @@
             }
           ],
           "sev": "warn",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         }
       ],
       "id": "marshall",
@@ -17576,7 +17581,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "technical",
+          "decided": 2024
         },
         {
           "title": "STOCK Act periodic transaction reports",
@@ -22990,7 +22997,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "ethics",
+          "decided": 2020
         },
         {
           "title": "STOCK Act periodic transaction reports",
@@ -27018,7 +27027,8 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "open"
+          "stage": "open",
+          "kind": "criminal"
         },
         {
           "title": "Jan. 6 committee subpoena and Ethics Committee referral",
@@ -27038,7 +27048,8 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "open"
+          "stage": "open",
+          "kind": "ethics"
         }
       ],
       "ethicsSearched": "Searched news and official sources for STOCK Act late-filing reports, House Ethics Committee and OCE matters (including the Jan. 6 committee referral), and court proceedings over the FBI seizure of his phone; no STOCK Act late-disclosure reports were found.",
@@ -37375,7 +37386,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         },
         {
           "title": "Ethics request over voter-registration address",
@@ -37402,7 +37414,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         },
         {
           "title": "2020 election contest by Rita Hart",
@@ -37422,7 +37435,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2021
         }
       ],
       "ethicsSearched": "Searched news and official sources for STOCK Act late-filing reports, House Ethics Committee and OCE/Office of Congressional Conduct matters, financial-disclosure complaints, residency challenges and election contests involving Rep. Miller-Meeks; no STOCK Act late-trade reports were found.",
@@ -41850,7 +41865,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "technical",
+          "decided": 2023
         }
       ],
       "ethicsSearched": "Searched news and official sources for STOCK Act late-disclosure reports, House Ethics Committee and Office of Congressional Conduct (formerly OCE) matters, FEC complaints, and court cases involving Rep. Kaptur.",
@@ -47452,7 +47469,8 @@
             }
           ],
           "sev": "warn",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         }
       ],
       "ethicsSearched": "Searched for STOCK Act late-disclosure reports (Business Insider and other news coverage, stock-trade trackers), House Ethics Committee and Office of Congressional Ethics matters, and criminal or civil cases involving Rep. Gonzalez; only the 2022 late stock-sale disclosure was documented by a credible outlet.",
@@ -51028,7 +51046,8 @@
             }
           ],
           "sev": "warn",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         }
       ],
       "ethicsSearched": "Searched for STOCK Act late-disclosure reports (Business Insider and other news coverage, stock-trade trackers), House Ethics Committee and Office of Congressional Ethics matters, and criminal or civil cases involving Rep. Castor; only the Business Insider late-disclosure listing was documented by a credible outlet (partisan reports from the NRCC and Florida's Voice repeating the issue were not used as sources).",
@@ -60891,7 +60910,8 @@
           ],
           "sev": "warn",
           "status": "investigation",
-          "stage": "open"
+          "stage": "open",
+          "kind": "technical"
         }
       ],
       "fecMissing": false,
@@ -62631,7 +62651,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "criminal",
+          "decided": 2025
         },
         {
           "title": "2023 impeachment by the Texas House",
@@ -62651,7 +62673,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2023
         },
         {
           "title": "Whistleblower lawsuit by former top aides",
@@ -62670,7 +62694,9 @@
             }
           ],
           "sev": "neutral",
-          "status": "finding"
+          "status": "finding",
+          "kind": "ethics",
+          "decided": 2025
         },
         {
           "title": "Federal investigation of aides' bribery and abuse-of-office allegations",
@@ -62686,7 +62712,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "criminal",
+          "decided": 2025
         },
         {
           "title": "State Bar of Texas disciplinary lawsuit over 2020 election suit",
@@ -62706,7 +62734,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2025
         }
       ],
       "fecMissing": false,
@@ -64098,7 +64128,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2018
         },
         {
           "title": "Timing of 2026 personal financial disclosure",
@@ -64117,7 +64149,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         }
       ],
       "fecMissing": false,
@@ -67129,7 +67162,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2019
         },
         {
           "title": "Libel suit over 2000 attorney general campaign ad (Boyce & Isley v. Cooper)",
@@ -67145,7 +67180,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2014
         }
       ],
       "fecMissing": false,
@@ -71733,7 +71770,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "ethics",
+          "decided": 2020
         }
       ],
       "fecMissing": false,
@@ -77352,7 +77391,9 @@
           ],
           "sev": "warn",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2007
         }
       ],
       "fecMissing": false,
@@ -80977,7 +81018,9 @@
           ],
           "sev": "warn",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2025
         }
       ],
       "fecMissing": false,
@@ -81431,7 +81474,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -81947,7 +81991,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "criminal",
+          "decided": 1990
         }
       ],
       "fecMissing": false,
@@ -84487,7 +84533,9 @@
           ],
           "sev": "warn",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "criminal",
+          "decided": 2014
         }
       ],
       "fecMissing": false,
@@ -89071,7 +89119,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2024
         },
         {
           "title": "Complaints over petition signature gathering",
@@ -89091,7 +89141,8 @@
           ],
           "sev": "warn",
           "status": "investigation",
-          "stage": "open"
+          "stage": "open",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -90114,7 +90165,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -92455,7 +92507,8 @@
             }
           ],
           "sev": "warn",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         },
         {
           "title": "Late-disclosed stock trades reported by Insider",
@@ -92474,7 +92527,8 @@
             }
           ],
           "sev": "warn",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         }
       ],
       "fecMissing": false,
@@ -95748,7 +95802,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "technical",
+          "decided": 2026
         },
         {
           "title": "FEC complaint filed by Cassidy campaign",
@@ -95763,7 +95819,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -98773,7 +98830,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         },
         {
           "title": "Undisclosed JobsOhio gifts while lieutenant governor",
@@ -98788,7 +98846,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         },
         {
           "title": "Voting-residency dispute as state senator",
@@ -98808,7 +98867,9 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2009
         }
       ],
       "fecMissing": false,
@@ -103535,7 +103596,9 @@
             }
           ],
           "sev": "warn",
-          "status": "finding"
+          "status": "finding",
+          "kind": "technical",
+          "decided": 2023
         }
       ],
       "fecMissing": false,
@@ -105734,7 +105797,9 @@
           ],
           "sev": "warn",
           "status": "investigation",
-          "stage": "closed"
+          "stage": "closed",
+          "kind": "ethics",
+          "decided": 2019
         }
       ],
       "fecMissing": false,
@@ -108519,7 +108584,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -109355,7 +109421,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": true,
@@ -110209,7 +110276,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -112024,7 +112092,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -112516,7 +112585,8 @@
           ],
           "sev": "neutral",
           "status": "investigation",
-          "stage": "open"
+          "stage": "open",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -113884,7 +113954,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "technical"
         }
       ],
       "fecMissing": false,
@@ -117831,7 +117902,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -120578,7 +120650,8 @@
             }
           ],
           "sev": "neutral",
-          "status": "allegation"
+          "status": "allegation",
+          "kind": "ethics"
         }
       ],
       "fecMissing": false,
@@ -191595,6 +191668,8 @@
           "type": "Criminal case",
           "date": "2024-05-30",
           "status": "finding",
+          "kind": "criminal",
+          "decided": 2025,
           "summary": "A Manhattan jury convicted Trump on 34 felony counts of falsifying business records to conceal a hush-money payment before the 2016 election. On January 10, 2025, Trump was sentenced to an unconditional discharge, which leaves the conviction on the record without jail, probation or a fine. In August 2026 a federal judge again refused to move the case to federal court, and Trump's appeal of the conviction is set for argument in New York's Appellate Division on November 5, 2026.",
           "outcome": "Convicted; sentenced to an unconditional discharge. Appeal pending.",
           "sources": [
@@ -191613,6 +191688,8 @@
           "type": "Civil/legal",
           "date": "2023-05",
           "status": "finding",
+          "kind": "ethics",
+          "decided": 2023,
           "summary": "A federal jury found Trump liable for sexually abusing and defaming writer E. Jean Carroll and awarded her $5 million. The appeals court upheld the verdict; the Supreme Court declined to hear Trump's appeal in June 2026 and denied rehearing on August 17, 2026, and Carroll has been paid.",
           "outcome": "Liability final; judgment paid.",
           "sources": [
@@ -191631,6 +191708,8 @@
           "type": "Civil/legal",
           "date": "2024-01",
           "status": "finding",
+          "kind": "ethics",
+          "decided": 2024,
           "summary": "A second federal jury ordered Trump to pay Carroll $83.3 million for defaming her. The Second Circuit upheld the judgment; on July 28, 2026, Trump and the Justice Department asked the Supreme Court to overturn it, arguing presidential immunity. The Court has not yet said whether it will hear the case.",
           "outcome": "Liability upheld on appeal. Supreme Court petition pending.",
           "sources": [
@@ -191649,6 +191728,8 @@
           "type": "Civil/legal",
           "date": "2024-02",
           "status": "finding",
+          "kind": "ethics",
+          "decided": 2024,
           "summary": "A New York judge found that Trump and the Trump Organization fraudulently inflated the value of assets and ordered roughly $454 million in disgorgement. On August 21, 2025, the Appellate Division threw out the monetary penalty as excessive but left the fraud liability and some business restrictions in place; both sides have appealed to the New York Court of Appeals.",
           "outcome": "Fraud liability stands; the penalty was vacated. Appeal pending.",
           "sources": [
@@ -191667,6 +191748,8 @@
           "type": "Civil/legal",
           "date": "2019-11-07",
           "status": "finding",
+          "kind": "ethics",
+          "decided": 2019,
           "summary": "After the New York attorney general sued, Trump admitted to misusing funds of the Donald J. Trump Foundation, including for the 2016 Trump campaign, and a New York judge ordered Trump to pay $2 million to other charities. The foundation was dissolved.",
           "outcome": "Admitted misuse; ordered to pay $2 million; foundation dissolved.",
           "sources": [
@@ -191686,6 +191769,8 @@
           "date": "2025-11-26",
           "status": "investigation",
           "stage": "closed",
+          "kind": "criminal",
+          "decided": 2025,
           "summary": "A Fulton County grand jury indicted Trump and others in 2023 over efforts to overturn Georgia's 2020 election result. After District Attorney Fani Willis was removed from the case, the replacement prosecutor, Peter Skandalakis, asked to drop it, and Judge Scott McAfee dismissed it in its entirety on November 26, 2025.",
           "outcome": "Dismissed at the prosecutor's request; no trial.",
           "sources": [
@@ -191705,6 +191790,8 @@
           "date": "2024-11-25",
           "status": "investigation",
           "stage": "closed",
+          "kind": "criminal",
+          "decided": 2024,
           "summary": "Special counsel Jack Smith charged Trump in 2023 over efforts to overturn the 2020 election. After Trump won the 2024 election, Smith asked to dismiss the case under Justice Department policy against prosecuting a sitting president, saying the outcome \"is not based on the merits or strength of the case,\" and Judge Tanya Chutkan dismissed it without prejudice on November 25, 2024.",
           "outcome": "Dismissed without prejudice before trial.",
           "sources": [
@@ -191724,6 +191811,8 @@
           "date": "2024-11-25",
           "status": "investigation",
           "stage": "closed",
+          "kind": "criminal",
+          "decided": 2024,
           "summary": "Trump was charged in 2023 with retaining classified documents and obstructing their return. Judge Aileen Cannon dismissed the case in July 2024, ruling the special counsel's appointment unlawful; the special counsel dropped the appeal as to Trump on November 25, 2024.",
           "outcome": "Dismissed before trial; appeal as to Trump withdrawn.",
           "sources": [
@@ -191743,6 +191832,8 @@
           "date": "2021-02-13",
           "status": "investigation",
           "stage": "closed",
+          "kind": "ethics",
+          "decided": 2021,
           "summary": "The House impeached Trump on January 13, 2021, on a charge of incitement of insurrection over the January 6 attack. The Senate voted 57–43 to convict on February 13, 2021, short of the two-thirds required, so Trump was acquitted.",
           "outcome": "Acquitted by the Senate, 57–43 (67 votes were needed to convict).",
           "sources": [
@@ -191762,6 +191853,8 @@
           "date": "2020-02-05",
           "status": "investigation",
           "stage": "closed",
+          "kind": "ethics",
+          "decided": 2020,
           "summary": "The House impeached Trump in December 2019 over Trump's dealings with Ukraine. The Senate acquitted Trump on February 5, 2020: 52–48 on abuse of power and 53–47 on obstruction of Congress.",
           "outcome": "Acquitted by the Senate on both articles.",
           "sources": [
@@ -191781,6 +191874,8 @@
           "date": "2018-04",
           "status": "investigation",
           "stage": "closed",
+          "kind": "ethics",
+          "decided": 2018,
           "summary": "Former students' class actions and a New York attorney general suit alleged that Trump University misled students. Trump settled all three for $25 million without admitting wrongdoing; a federal judge gave final approval in April 2018.",
           "outcome": "Settled for $25 million without an admission of wrongdoing.",
           "sources": [
@@ -191800,6 +191895,8 @@
           "date": "2021-01-25",
           "status": "investigation",
           "stage": "closed",
+          "kind": "ethics",
+          "decided": 2021,
           "summary": "Maryland, the District of Columbia and hotel and restaurant businesses sued, alleging that payments from foreign and state governments to Trump's businesses violated the Constitution's emoluments clauses. After Trump left office, the Supreme Court vacated the lower-court rulings and ordered the suits dismissed as moot on January 25, 2021, without a ruling on the merits.",
           "outcome": "Dismissed as moot; no ruling on the merits.",
           "sources": [

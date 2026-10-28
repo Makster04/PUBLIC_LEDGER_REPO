@@ -17,6 +17,12 @@ test('each change in the monthly log says what moved and why',()=>{
   assert.deepEqual(c.filter(x=>x.id==='b').map(x=>x.grade),['ethics'],'a new person is logged only where graded');
   assert.equal(compare({x:was.a},{}).at(-1).why,'No longer profiled');
 });
+test('the Ethics indexes are logged; an older entry without them reads as a rule change, not a broken count',()=>{
+  const e=o=>({promises:{pct:null,kept:0,half:0,broken:0,counted:0},pvp:{pct:null,people:0,profit:0,actions:0},ethics:Object.assign({pct:80,finding:1,open:0,closed:0,allegation:0,late:0,conflict:0},o)});
+  assert.equal(compare({a:e({})},{a:e({pct:90,legal:10,insider:null,dodger:null})})[0].why,'Rule or weight change');
+  assert.equal(compare({a:e({pct:90,legal:10,insider:null,dodger:null})},{a:e({pct:80,legal:20,insider:null,dodger:null})})[0].why,'+10 Legal Trouble Index points');
+  assert.equal(compare({a:e({legal:20,insider:null,dodger:null})},{a:e({legal:20,insider:0,dodger:null})}).length,0,'no data and 0 are the same');
+});
 test('the monthly scores agree with the page, and the committed log is well formed',async()=>{
   const committees=await read('public/committees.json'),sectors=await read('public/committee-sectors.json'),config=await read('data/config.json');
   const scorer=makeScorer(research,committees,sectors.committees);
