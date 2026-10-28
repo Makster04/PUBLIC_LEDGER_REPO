@@ -234,12 +234,13 @@ Each action carries its Rule 1 weight and takes a side as Rule 1 describes. For 
 
 ## Other indicators (not graded)
 
-Two more indicators appear on each profile as plain numbers, without a letter grade.
+Three more indicators appear on each profile as plain numbers or bars, without a letter grade.
 
 | Indicator | How it appears | How it is calculated |
 | --- | --- | --- |
 | Ideological position | "More conservative than 48% of the Senate" | Taken from Voteview's DW-NOMINATE score, which uses every roll call in the member's career. The app only compares it with the rest of the chamber. |
 | Key-vote position | "Conservative side on 4 of 9 marked bills" | Counts how the person voted on 16 key bills marked liberal or conservative, with votes taking sides as in Rule 1. |
+| Position by issue | A bar per category, toward liberal or conservative, with "2 of 3 conservative" beside it | For each category (immigration, taxes, health care and so on), the share of the person's record on the liberal and conservative sides of its issues. Same evidence as Your match: actions one credit per bill, and statements at half only where there is no action. Issues without a liberal side, such as tariffs and Ukraine aid, aren't placed. |
 
 ## Money & Influence Analysis
 

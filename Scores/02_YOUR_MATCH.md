@@ -11,6 +11,9 @@ Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules 
 | [x] | Your match grade | Shown on each home card and profile. Compares your choices with their votes, bills and statements. |
 | [x] | Statements count at half importance | Rule 1: actions count more than words. |
 | [x] | Kept about positions only | Choice A: the "how they work" indexes are context, not part of the match. |
+| [x] | Position by issue | A bar per category, liberal to conservative, in "The record behind the match". Same evidence as Your match. Context only. |
+| [ ] | Issues for Civil liberties, Criminal justice, Housing, and Social Security and Medicare | Each needs an issue with liberal and conservative sides and marked bills. |
+| [ ] | Decide the minimum record for a position bar | One action or statement for now (`MIN_POSITION_ITEMS` in `public/lean.js`). |
 | [ ] | Show Party Rebel 🤠, Across the Aisle 🌉, Get It Done ✅ and No-Show 🪑 in the record section | Context only. They come from the [Get Things Done](06_GET_THINGS_DONE_SCORE.md) work. |
 | [ ] | Interest group ratings card | Heritage Action, AFL-CIO, LCV, ACLU and HRC, imported by hand once a year, always shown in opposing pairs and never counted in a grade. |
 | [ ] | Key votes from the interest groups | Suggestions for issue votes. Each vote is confirmed from the official roll call. |
