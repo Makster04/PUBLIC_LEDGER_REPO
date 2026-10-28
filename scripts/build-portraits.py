@@ -9,7 +9,8 @@
 # For a photo whose cut-out keeps a halo of a light background, add "tighten": true (refit the edge to the photo's own
 # colors), "tighten": "left" or "right" (only that side of the photo, keeping the hair on top), and/or "choke": <px> (trim
 # that many output pixels off the edge). Where the outline strays into a background of a similar color (blond hair against
-# a light wall), "model": 1 uses MediaPipe's other segmentation model. For something wider than the frame on one
+# a light wall), "model": 1 uses MediaPipe's other segmentation model; where a checked shirt steps the edge, "smooth": true
+# follows the outline more loosely. For something wider than the frame on one
 # side, such as a hat brim, "nudge": <px> moves the portrait sideways (positive is right) without changing its size;
 # if it is wider than the whole frame, "zoom": <factor below 1> shrinks that portrait to fit.
 # A supplied photo that already has a transparent background (a PNG cut-out) keeps its own outline.
@@ -176,8 +177,9 @@ def cutout(m, segmenter, opts):
                 cols = np.arange(mask.shape[1])[None, :]
                 fit = np.where(cols >= cut if side == 'right' else cols < cut, fit, mask)
             mask = fit
-        # Snap the soft mask to the photo's own edges (hair, collar), then firm it up.
-        mask = cv2.ximgproc.guidedFilter(guide=bgr, src=mask, radius=max(4, int(m['gap'] / 16)), eps=1e-4)
+        # Snap the soft mask to the photo's own edges (hair, collar), then firm it up. "smooth" snaps more loosely, for a
+        # checked or striped shirt whose pattern would otherwise step the edge.
+        mask = cv2.ximgproc.guidedFilter(guide=bgr, src=mask, radius=max(4, int(m['gap'] / 16)), eps=1e-2 if opts.get('smooth') else 1e-4)
         alpha = np.clip((mask - 0.35) / 0.3, 0, 1)
     # Keep only the person: drop loose specks of background the segmentation picked up.
     r = max(2, int(m['gap'] / 20))
