@@ -181,8 +181,7 @@
   "schumer": {
     "file": "data/portraits/schumer.jpg",
     "credit": "Photo supplied by the site's editor for use on this site",
-    "tighten": true,
-    "choke": 2
+    "tighten": "right"
   },
   "reed": {
     "file": "data/portraits/reed.jpg",
