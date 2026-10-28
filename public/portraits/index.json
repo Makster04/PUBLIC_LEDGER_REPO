@@ -569,8 +569,7 @@
     },
     "schumer": {
       "file": "portraits/schumer.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/S000148.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "moreno": {
       "file": "portraits/moreno.webp",
@@ -608,13 +607,11 @@
     },
     "reed": {
       "file": "portraits/reed.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/R000122.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "whitehouse": {
       "file": "portraits/whitehouse.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/W000802.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "grahamnordone": {
       "file": "portraits/grahamnordone.webp",
@@ -677,8 +674,7 @@
     },
     "sanders": {
       "file": "portraits/sanders.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/S000033.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "welch": {
       "file": "portraits/welch.webp",
@@ -707,8 +703,7 @@
     },
     "capito": {
       "file": "portraits/capito.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/C001047.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "justice": {
       "file": "portraits/justice.webp",
