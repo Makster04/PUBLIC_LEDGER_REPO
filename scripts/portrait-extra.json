@@ -232,5 +232,28 @@
   "kelly": {
     "file": "data/portraits/kelly.png",
     "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "schiff": {
+    "file": "data/portraits/schiff.png",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "bennet": {
+    "file": "data/portraits/bennet.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "smooth": true
+  },
+  "blumenthal": {
+    "file": "data/portraits/blumenthal.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "cmurphy": {
+    "file": "data/portraits/cmurphy.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true,
+    "choke": 2
+  },
+  "coons": {
+    "file": "data/portraits/coons.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
   }
 }
