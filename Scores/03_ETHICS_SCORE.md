@@ -2,7 +2,7 @@
 
 [x] **Done** · [ ] **Still in the works**. To check one off, change its [ ] to [x].
 
-Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules every index follows are in [How the math works](00_HOW_THE_MATH_WORKS.md).
+Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules every index follows are in [How the math works](01_HOW_THE_MATH_WORKS.md).
 
 ## Updates &/or changes
 
