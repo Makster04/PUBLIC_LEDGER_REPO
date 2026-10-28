@@ -2,6 +2,7 @@
 // committee lists and the committee sectors. The page and the monthly recalculation (scripts/scores-monthly.mjs) both
 // use this, so they always agree. Your match is not here: it depends on each visitor's own choices.
 import {billKey,billKeyFromText,promiseScore,tradeChecks,ethicsScore,pvpScore,pvpActions} from './grades.js';
+import {tradesInDonors} from './influence.js';
 
 export const voteBill=v=>billKeyFromText((v.bill||{}).measure);
 // A president's record entries on bills and orders ({bill: "119-hr-1" or "eo-14251", position: "Signed" or "Vetoed"}).
@@ -16,11 +17,19 @@ export function makeScorer(data,committees={committees:{},people:{}},sectors={})
   const committeesOf=s=>committees.people[s.id]||[];
   const fullCommittee=id=>(committees.committees[id]||{}).parent||id;
   const overseen=s=>[...new Set(committeesOf(s).flatMap(c=>(sectors[fullCommittee(c.id)]||{}).sectors||[]))];
-  const trading=s=>tradeChecks(s.trades,overseen(s));
+  // The disclosures cover members of Congress (Periodic Transaction Reports). A president files OGE Form 278-T, which is
+  // not imported yet, and anyone else has no trading data.
+  const coveredBy=s=>!!s.bioguide&&!s.office;
+  // Donors: the PACs that gave to the campaign and the groups whose positions are compared, matched to traded companies.
+  const donorsOf=s=>[...(s.pac?.rows||[]).map(r=>({org:(data.pacNames||[])[r[0]]})),...(s.funderPos||[]).map(g=>({org:g.org}))].filter(d=>d.org);
+  const trading=s=>{const t=tradeChecks(s.trades,overseen(s));
+    return Object.assign(t,{covered:coveredBy(s),annual:s.annualDisclosures||[],inDonors:new Set(tradesInDonors(t.rows,donorsOf(s)).map(x=>x.trade)).size});};
+  // Cases are aged against the date of the reviewed research ("asof"), so the page and the monthly log agree.
+  const asOfYear=Number(String(data.asof||'').match(/\b(19|20)\d{2}\b/)?.[0])||null;
   return {
-    marks,committeesOf,fullCommittee,overseen,trading,
+    marks,committeesOf,fullCommittee,overseen,trading,asOfYear,
     promises:s=>promiseScore(s.statements,s.promiseTrackers),
-    ethics:s=>ethicsScore(s.ethics,trading(s)),
+    ethics:s=>ethicsScore(s.ethics,trading(s),{asOfYear}),
     pvp(s){
       const v=votes.filter(v=>v.pos&&s.id in v.pos).map(v=>({bill:voteBill(v),pos:v.pos[s.id],ref:v.id}));
       const spons=(s.bills||[]).map((b,i)=>({bill:billKey(b.congress,b.num),kind:'sponsored',ref:`${s.id}:bill:${i}`}))

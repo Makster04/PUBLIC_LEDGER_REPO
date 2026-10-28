@@ -1,5 +1,5 @@
 import {KV_MIN,leanOfVote,whyNotMarked,sideTaken,keyVoteRows,keyVoteScore} from './lean.js';
-import {MIN_CHECKS,MIN_PVP_ACTIONS,ETHICS_COST,TRADE_COST,LATE_DAYS,WEIGHT,ACTION_TYPES,letter,billKey,matchScore,promiseScore,moneyRatio} from './grades.js';
+import {MIN_CHECKS,MIN_PVP_ACTIONS,ETHICS_COST,CASE_KIND,CASE_AGE,INDEX_COST,LATE_DAYS,WEIGHT,ACTION_TYPES,letter,billKey,matchScore,promiseScore,moneyRatio} from './grades.js';
 import {makeScorer,voteBill} from './scoring.js';
 import {hoverTips,tableView,legend,rankBars,stackRows,divergingRows,categoryBars,drawScatter,drawDelay,drawTradeTimeline,drawCaseTimeline,drawTreemap,drawMonthly,sectorSpendBars} from './charts.js';
 import {makeOrgs,SMALL_DOLLAR_ABOUT,EMPLOYER_ABOUT} from './orgs.js';
@@ -376,11 +376,9 @@ const GRADE={
     ['Not graded',`Until there are at least ${MIN_CHECKS} counted checks.`]]},
   eth:{q:'Have they gotten into legal or ethical trouble?',pts:[
     ['Starting score','Everyone starts at 100.'],
-    ['Confirmed wrongdoing',`−${ETHICS_COST.finding} each. A court, agency or ethics panel found a violation, or they admitted it.`],
-    ['Open investigation',`−${ETHICS_COST.open} each.`],
-    ['Closed investigation',`−${ETHICS_COST.closed} each. It ended without a finding against them.`],
-    ['Late stock reports',`−${TRADE_COST.late} each, up to −${TRADE_COST.lateCap}. A trade reported after the ${LATE_DAYS}-day deadline, or not at all.`],
-    ['Conflict trades',`−${TRADE_COST.conflict} each, up to −${TRADE_COST.conflictCap}. Stock traded in an industry their own committee oversees.`],
+    ['Legal Trouble Index 🚨',`Minus all of it. Each case: ${ETHICS_COST.finding} for a confirmed finding, ${ETHICS_COST.open} for an open investigation, ${ETHICS_COST.closed} for one closed without a finding. Criminal cases count × ${CASE_KIND.criminal}, technical ones × ${CASE_KIND.technical}, and a case decided over ${CASE_AGE.years} years ago × ${CASE_AGE.factor}.`],
+    ['Insider Trading Index 📈','Minus a tenth of it. Stock trades in industries their committees oversee, near related votes, or in donors\' companies.'],
+    ['Stock Disclosure Dodger Index 🙈',`Minus a tenth of it. Trade reports filed after the ${LATE_DAYS}-day deadline, or never.`],
     ['Not counted','Accusations no official body has acted on. They are listed, but cost nothing.']]},
   pvp:{q:'Does their record help working people or the wealthy?',pts:[
     ['High grade','Their record helped working and middle-class families more.'],
@@ -1311,20 +1309,37 @@ function moneyVotesBlock(s){
       </div></div></div>`}).join('');
   return head+body+'</section>';
 }
-const ethCost=e=>e.outcome==='None found'?null:e.status==='finding'?ETHICS_COST.finding:e.status==='investigation'?ETHICS_COST[e.stage==='open'?'open':'closed']:e.status==='allegation'?0:null;
-function ethTag(e){
+// Points with up to two decimals (a case can be worth 22.5 or 3.75), and an index or deduction to one decimal.
+const fmtPts=v=>String(Math.round(v*100)/100), fmt1=v=>String(Math.round(v*10)/10);
+const KIND_LABEL={criminal:'criminal',ethics:'ethics or civil',technical:'technical'};
+// r: the entry's row in the Legal Trouble Index (its status, kind, age and points).
+function ethTag(e,r){
   if(e.outcome==='None found')return '<span class="chip good">Nothing found</span>';
   const [lab,cls]=ETH_TAG[e.status]||[e.type,'ghost'], stage=e.status==='investigation'?(e.stage==='open'?' · open':' · closed, no finding'):'';
-  const c=ethCost(e);
-  return `<span class="chip ${cls}">${esc(lab+stage)}</span>${c==null?'':`<span class="eth-cost">${c?`−${c} points`:'no points'}</span>`}`;
+  const chip=`<span class="chip ${cls}">${esc(lab+stage)}</span>`;
+  if(!r)return chip;
+  if(r.covered)return chip+'<span class="eth-cost">Counted in the Stock Disclosure Dodger Index 🙈</span>';
+  if(!r.points)return chip+'<span class="eth-cost">no points</span>';
+  const how=[ETHICS_COST[r.status],r.kind!=='ethics'&&`× ${CASE_KIND[r.kind]} ${KIND_LABEL[r.kind]}`,r.old&&`× ${CASE_AGE.factor} over ${CASE_AGE.years} years old`].filter(Boolean);
+  return chip+`<span class="eth-cost">−${fmtPts(r.points)} points${how.length>1?` <span class="eth-how">(${how.join(' ')})</span>`:''}</span>`;
+}
+// The grade's three parts, each with what it costs.
+function ethIndexes(s,e){
+  const cost=(x,c,whole)=>x.index==null?`${esc(x.why)}: costs nothing`:!c?(x.why?`${esc(x.why)}: costs nothing`:'Costs nothing'):whole?`Costs all ${fmtPts(c)} points`:`Costs a tenth: ${fmt1(c)} points`;
+  const card=(icon,name,x,c,whole,about)=>`<div class="cx-stat"><span>${icon} ${name}</span><b>${x.index==null?'—':fmtPts(x.index)}</b><small>${cost(x,c,whole)}. ${about}</small></div>`;
+  const cases=e.legal.rows.filter(r=>r.points).length;
+  return `<section class="recsec" id="eth-indexes"><div class="kicker">The grade's three parts</div><h3 style="margin-top:4px">Ethics indexes</h3>
+  <div class="cx-stats">${card('🚨','Legal Trouble Index',e.legal,e.legal.index,true,cases?`${cases} case${cases===1?'':'s'} with points${e.legal.total>100?`, ${fmt1(e.legal.total)} in all, capped at 100`:''}.`:'No case with points.')}${card('📈','Insider Trading Index',e.insider,e.insiderCost,false,'Trades that overlap with their committees, votes or donors.')}${card('🙈','Stock Disclosure Dodger Index',e.dodger,e.dodgerCost,false,'Trade reports filed late or never.')}</div>
+  <div style="margin:8px 0 0">${points([['How a case counts',`Its status points × its kind × its age. Status: ${ETHICS_COST.finding} for a confirmed finding, ${ETHICS_COST.open} for an open investigation, ${ETHICS_COST.closed} for one closed without a finding, 0 for an allegation.`],['Kind',`Criminal × ${CASE_KIND.criminal}, ethics or civil × ${CASE_KIND.ethics}, technical × ${CASE_KIND.technical} (such as an FEC fine for a late report).`],['Age',`× ${CASE_AGE.factor} when it was decided more than ${CASE_AGE.years} years ago. Open cases always count in full.`],['Trading',`The two trading indexes cost a tenth of their value each, so trading can cost at most ${Math.round(2*100*INDEX_COST)} points.`]],'small')}</div></section>`;
 }
 function ethicsHTML(s){
+  const rowOf=new Map(personEthics(s).legal.rows.map(r=>[s.ethics[r.i],r]));
   const rank=e=>e.outcome==='None found'?9:e.status==='finding'?0:e.status==='investigation'?(e.stage==='open'?1:2):e.status==='allegation'?3:4;
   const list=s.ethics.map((e,i)=>[e,i]).sort((x,y)=>rank(x[0])-rank(y[0])||x[1]-y[1]).map(x=>x[0]);
   return `<section class="recsec" id="rec-ethics"><div class="kicker">Ethics & legal compliance</div><h3 style="margin-top:4px">Every entry, most serious first</h3>
   <p class="small muted" style="margin:4px 0 0">Findings, penalties, investigations and disclosure checks. Each is tied to an official record or a credible report.</p>
-  <div style="margin:0 0 10px">${points([['Allegation','A complaint or report with no official finding.'],['Investigation',`A formal inquiry, lawsuit or proceeding. It is still open, or it closed without a finding against ${esc(s.short)}.`],['Confirmed finding',`A court, agency or ethics body found a violation or set a penalty, or ${esc(s.short)} admitted it.`],['Nothing found','The sources checked turned up nothing. That does not mean nothing exists.']],'small')}</div>
-  ${list.map(e=>`<article class="eth"><div class="head">${ethTag(e)}<span class="chip ghost">${esc(e.type)}</span><span class="mono muted">${esc(e.date)}</span></div><h3>${esc(e.title)}</h3><p style="margin-top:8px">${esc(e.summary)}</p><div class="outcome"><b>Outcome:</b> ${esc(e.outcome)}</div><ul class="srcs">${e.sources.map(x=>`<li><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)} ↗</a></li>`).join('')}</ul></article>`).join('')}
+  <div style="margin:0 0 10px">${points([['Allegation','A complaint or report with no official finding.'],['Investigation',`A formal inquiry, lawsuit or proceeding. It is still open, or it closed without a finding against ${esc(s.short)}.`],['Confirmed finding',`A court, agency or ethics body found a violation or set a penalty, or ${esc(s.short)} admitted it.`],['Nothing found','The sources checked turned up nothing. That does not mean nothing exists.'],['Points','What each entry costs in the Legal Trouble Index 🚨.']],'small')}</div>
+  ${list.map(e=>`<article class="eth"><div class="head">${ethTag(e,rowOf.get(e))}<span class="chip ghost">${esc(e.type)}</span><span class="mono muted">${esc(e.date)}</span></div><h3>${esc(e.title)}</h3><p style="margin-top:8px">${esc(e.summary)}</p><div class="outcome"><b>Outcome:</b> ${esc(e.outcome)}</div><ul class="srcs">${e.sources.map(x=>`<li><a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)} ↗</a></li>`).join('')}</ul></article>`).join('')}
   ${s.ethicsSearched&&s.ethics.some(e=>e.outcome!=='None found')?`<p class="small muted" style="margin-top:12px"><b>Also checked:</b> ${esc(s.ethicsSearched)}</p>`:''}</section>`;
 }
 // Stock trading: reviewed trades, each checked for a late or missing disclosure and for a committee conflict.
@@ -1334,18 +1349,20 @@ function tradingHTML(s){
   const head=`<section class="recsec" id="eth-trades"><div class="kicker">Stock trading</div><h3 style="margin-top:4px">Stock trades</h3>`;
   if(!s.bioguide)return head+`<p class="small muted" style="margin:4px 0 0"><b>No trading data:</b> these reports cover members of Congress only. State rules vary.</p></section>`;
   if(!t.rows.length)return head+`<p class="small muted" style="margin:4px 0 0">No reviewed stock trades for ${esc(s.short)} yet. New trades from official reports show under Latest official records below. They count toward the grade only after review.</p></section>`;
-  return head+`<div style="margin:0 0 8px">${points([['Filing deadline',`Trade reports are due within ${LATE_DAYS} days of a trade.`],['Their committees oversee',sec.length?esc(sec.join(', ')):'Not recorded yet, so no trade counts as a conflict.'],['Family trades','Spouse and dependent-child trades are included and labeled.'],['Returns','Not scored.']],'small')}</div>
+  const e=personEthics(s),ip=e.insider.parts,dp=e.dodger.parts,n=v=>`${Math.round(v)}%`;
+  return head+`<div style="margin:0 0 8px">${points([['Insider Trading Index 📈',`${e.insider.index??'—'}${e.insider.why?` (${esc(e.insider.why)})`:''}. Committee conflicts ${n(ip.conflicts)} of the dollars in single stocks, near related votes ${n(ip.nearVotes)}, in donors' companies ${n(ip.donors)}, single-stock activity ${Math.round(ip.activity)}.`],['Stock Disclosure Dodger Index 🙈',`${e.dodger.index??'—'}${e.dodger.why?` (${esc(e.dodger.why)})`:''}. Trade reports late or missing: ${n(dp.trades)}${dp.annual!=null?`; annual disclosures late: ${n(dp.annual)}`:'; annual disclosures are not on file yet'}.`],['Filing deadline',`Trade reports are due within ${LATE_DAYS} days of a trade.`],['Their committees oversee',sec.length?esc(sec.join(', ')):'Not recorded yet, so no trade counts as a conflict.'],['Family trades','Spouse and dependent-child trades are included and labeled.'],['Returns','Not scored.']],'small')}</div>
   ${tradeChartsBlock(t.rows,sec,'eth-tr')}
-  <div class="tablewrap"><table><thead><tr><th>Traded</th><th>Filed</th><th>Company</th><th>Type</th><th class="r">Amount</th><th>Owner</th><th>Checks</th></tr></thead><tbody>${t.rows.map(r=>`<tr><td class="mono">${esc(r.traded||'')}</td><td class="mono">${r.missing?'<b style="color:var(--crit)">not filed</b>':esc(r.filed||'')}${r.days!=null?`<div class="small muted">${r.days} days</div>`:''}</td><td>${esc(r.company||'')}${r.ticker?` <span class="mono muted">${esc(r.ticker)}</span>`:''}${r.sector?`<div class="small muted">${esc(r.sector)}</div>`:''}</td><td>${esc(r.type||'')}</td><td class="r">${esc(r.amount||'')}</td><td>${esc(TRADE_OWNER[r.owner]||r.owner||'')}</td><td>${r.late?`<span class="chip crit">Late −${TRADE_COST.late}</span> `:''}${r.conflict?`<span class="chip warn">Committee conflict −${TRADE_COST.conflict}</span>`:''}${r.flag?` <span class="chip ghost" title="${esc(r.flag)}">Flagged, not scored</span>`:''}${r.src?` <a class="small" href="${esc(r.src.u)}" target="_blank" rel="noopener">filing ↗</a>`:''}</td></tr>`).join('')}</tbody></table></div></section>`;
+  <div class="tablewrap"><table><thead><tr><th>Traded</th><th>Filed</th><th>Company</th><th>Type</th><th class="r">Amount</th><th>Owner</th><th>Checks</th></tr></thead><tbody>${t.rows.map(r=>`<tr><td class="mono">${esc(r.traded||'')}</td><td class="mono">${r.missing?'<b style="color:var(--crit)">not filed</b>':esc(r.filed||'')}${r.days!=null?`<div class="small muted">${r.days} days</div>`:''}</td><td>${esc(r.company||'')}${r.ticker?` <span class="mono muted">${esc(r.ticker)}</span>`:''}${r.sector?`<div class="small muted">${esc(r.sector)}</div>`:''}</td><td>${esc(r.type||'')}</td><td class="r">${esc(r.amount||'')}</td><td>${esc(TRADE_OWNER[r.owner]||r.owner||'')}</td><td>${r.late?'<span class="chip crit">Late</span> ':''}${r.conflict?'<span class="chip warn">Committee conflict</span>':''}${r.flag||r.nearVote?` <span class="chip ghost" title="${esc(r.flag||'')}">Near a related vote</span>`:''}${r.src?` <a class="small" href="${esc(r.src.u)}" target="_blank" rel="noopener">filing ↗</a>`:''}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 function paneEthics(s,pane){
   const e=personEthics(s);
-  const terms=[[e.finding,ETHICS_COST.finding,'confirmed finding','confirmed findings'],[e.open,ETHICS_COST.open,'open investigation','open investigations'],[e.closed,ETHICS_COST.closed,'investigation closed without a finding','investigations closed without a finding']].filter(t=>t[0]);
+  const terms=[[e.finding,'confirmed finding','confirmed findings'],[e.open,'open investigation','open investigations'],[e.closed,'investigation closed without a finding','investigations closed without a finding']].filter(t=>t[0]);
   const trade=[e.late&&`${e.late} late or missing disclosure${e.late>1?'s':''}`,e.conflict&&`${e.conflict} committee-conflict trade${e.conflict>1?'s':''}`].filter(Boolean);
-  const detail=(terms.length||trade.length)?terms.map(([n,,one,many])=>`${n} ${n>1?many:one}`).concat(trade).join(' · ')+(e.allegation?` · ${e.allegation} allegation${e.allegation>1?'s':''} (not scored)`:''):`No confirmed findings, investigations or trading problems in the sources checked${e.allegation?`; ${e.allegation} allegation${e.allegation>1?'s are':' is'} listed but not scored`:''}.`;
-  const parts=terms.map(([n,c])=>`${c} × ${n}`).concat(e.late?[`${e.lateCost} for late disclosures${e.late*TRADE_COST.late>e.lateCost?` (capped at ${TRADE_COST.lateCap})`:''}`]:[]).concat(e.conflict?[`${e.conflictCost} for conflict trades${e.conflict*TRADE_COST.conflict>e.conflictCost?` (capped at ${TRADE_COST.conflictCap})`:''}`]:[]);
-  const math=parts.length?`<p class="small gh-m"><b>How it was calculated:</b> 100 − ${parts.join(' − ')} = ${e.raw<0?`${e.raw}, shown as <b>0%</b>`:`<b>${e.pct}%</b>`}.</p>`:'';
-  pane.innerHTML=`${gradeHead('Ethics',e.pct,detail,gradeRule('eth'),math+monthlyNote(s,'ethics',e.pct))}${ethicsHTML(s)}${caseTimelineBlock(s)}${tradingHTML(s)}<section id="live-records" style="margin-top:28px"></section>`;
+  const detail=(terms.length||trade.length)?terms.map(([n,one,many])=>`${n} ${n>1?many:one}`).concat(trade).join(' · ')+(e.allegation?` · ${e.allegation} allegation${e.allegation>1?'s':''} (not scored)`:''):`No confirmed findings, investigations or trading problems in the sources checked${e.allegation?`; ${e.allegation} allegation${e.allegation>1?'s are':' is'} listed but not scored`:''}.`;
+  const parts=[e.legal.index&&`${fmtPts(e.legal.index)} (Legal Trouble 🚨${e.legal.total>100?', capped at 100':''})`,e.insiderCost&&`${fmt1(e.insiderCost)} (a tenth of Insider Trading 📈 ${e.insider.index})`,e.dodgerCost&&`${fmt1(e.dodgerCost)} (a tenth of Stock Disclosure Dodger 🙈 ${e.dodger.index})`].filter(Boolean);
+  const total=fmtPts(e.raw);
+  const math=parts.length?`<p class="small gh-m"><b>How it was calculated:</b> 100 − ${parts.join(' − ')} = ${e.raw<0?`${total}, shown as <b>0%</b>`:+total===e.pct?`<b>${e.pct}%</b>`:`${total}, rounded to <b>${e.pct}%</b>`}.</p>`:'';
+  pane.innerHTML=`${gradeHead('Ethics',e.pct,detail,gradeRule('eth'),math+monthlyNote(s,'ethics',e.pct))}${ethIndexes(s,e)}${ethicsHTML(s)}${caseTimelineBlock(s)}${tradingHTML(s)}<section id="live-records" style="margin-top:28px"></section>`;
   mountCaseTimeline(s);mountTradeCharts(s,personTrading(s).rows,'eth-tr');hoverTips(pane);
   window.RecordLive.profile(s,pane.querySelector('#live-records'),['trades','courts','fec-legal','doj']);
 }
@@ -1609,7 +1626,7 @@ function tradeChartsBlock(rows,sectors,id){
   const cats=Object.entries(by).map(([label,value])=>({label,value,hi:sectors.includes(label)})).sort((a,b)=>b.value-a.value);
   return `<div class="chart"><h3>Days from trade to disclosure</h3><div class="sub">One dot per trade. Reports are due within ${LATE_DAYS} days. Dots past the line were late.</div><div class="cx-plot" id="${id}-delay"></div>${legend([['var(--crit)','Late or never disclosed'],['var(--cx-other)','On time']])}</div>
     ${cats.length?`<div class="chart"><h3>Trades by sector</h3><div class="sub">Sectors their committees oversee are highlighted. A trade in a single company's stock in one of them counts as a committee conflict.</div>${categoryBars(cats,{highlightLabel:'Overseen by their committees',otherLabel:'Other sectors'})}</div>`:''}
-    <div class="chart"><h3>Trades and votes</h3><div class="sub"><b>Above the line:</b> buys. <b>Below:</b> sells. <b>Ticks on the line:</b> their key votes. <b>Ringed dot:</b> a trade flagged for review, such as one near a related vote. Flags are not scored.</div><div class="cx-plot" id="${id}-tl"></div>${legend([['var(--s3)','Buy'],['var(--s2)','Sell'],['var(--ink-2)','Recorded vote']])}</div>`;
+    <div class="chart"><h3>Trades and votes</h3><div class="sub"><b>Above the line:</b> buys. <b>Below:</b> sells. <b>Ticks on the line:</b> their key votes. <b>Ringed dot:</b> a trade near a related vote. Once reviewed, it counts in the Insider Trading Index 📈.</div><div class="cx-plot" id="${id}-tl"></div>${legend([['var(--s3)','Buy'],['var(--s2)','Sell'],['var(--ink-2)','Recorded vote']])}</div>`;
 }
 function personVotes(s){return DATA.votes.concat(DATA.hvotes).filter(v=>v.pos&&/^(Yea|Nay|Aye|No)$/i.test(v.pos[s.id]||'')).map(v=>({date:v.date,label:`${v.short}: voted ${v.pos[s.id]}`}));}
 function mountTradeCharts(s,rows,id){
@@ -1672,7 +1689,7 @@ function stockBlock(s,d){
     :d.inDonors.length?`<div class="tablewrap"><table><thead><tr><th>Traded</th><th>Company</th><th>Type</th><th>Owner</th><th>Donor</th><th>Flag</th></tr></thead><tbody>${d.inDonors.map(({org,trade:t})=>`<tr><td class="mono" style="white-space:nowrap">${esc(t.traded||'')}</td><td>${esc(t.company||t.asset||'')}</td><td>${esc(t.type||'')}</td><td>${esc(t.owner||'Self')}</td><td>${esc(org)}</td><td>${d.stock.some(f=>f.trade===t)?`<b>${FLAG_TEXT.stock}</b>`:'<span class="muted">Donor took no position on a vote compared here</span>'}</td></tr>`).join('')}</tbody></table></div>`
     :`<p class="small muted" style="margin:0">None of ${esc(s.short)}'s ${tr.length} reviewed trade${tr.length===1?'':'s'} was in a donor's company.</p>`;
   if(!cov.ok)return `<div class="chart" id="f-stock"><h3>Stock holdings and trades</h3>${body}</div>`;
-  return `<div class="chart" id="f-stock"><h3>Stock holdings and trades</h3><div class="sub">${points([['What is checked','Trades from official reports, including spouse and dependent-child accounts, against the donors.'],['Timing flag',`A trade in a donor that had a stake in ${esc(s.short)}'s decisions, such as a public position on a vote or lobbying on a bill ${esc(s.short)} acted on.`],['Not scored here',`Late filings and committee-conflict trades count in <a href="#${s.id}-ethics">Ethics</a>.`]],'small')}</div>
+  return `<div class="chart" id="f-stock"><h3>Stock holdings and trades</h3><div class="sub">${points([['What is checked','Trades from official reports, including spouse and dependent-child accounts, against the donors.'],['Timing flag',`A trade in a donor that had a stake in ${esc(s.short)}'s decisions, such as a public position on a vote or lobbying on a bill ${esc(s.short)} acted on.`],['Insider Trading Index 📈',`${(e=>e.index==null?esc(e.why):e.index)(personEthics(s).insider)}. The same number as on the <a href="#${s.id}-ethics">Ethics tab</a>, which shows how it's figured.`],['Graded on Ethics',`Trades count in <a href="#${s.id}-ethics">Ethics</a> through the Insider Trading 📈 and Stock Disclosure Dodger 🙈 indexes, not here.`]],'small')}</div>
     ${body}<div id="f-live-stock"></div></div>`;
 }
 const H0=()=>window.FUNDHIST?monLabel(window.FUNDHIST.start.slice(0,7)):'2019';
@@ -1761,9 +1778,11 @@ const GRADE_FILL={A:'var(--good)',B:'var(--grade-b)',C:'var(--warn)',D:'var(--se
 const gradeFill=p=>GRADE_FILL[letter(p)];
 const whoSub=s=>`${partyName(s.party)} · ${chipCh(s)} · ${seatLabel(s)}`;
 // Points lost on the Ethics grade, by kind, in the palette's fixed order.
-const ETH_SEGS=[{key:'finding',label:'Confirmed findings',color:'var(--s1)'},{key:'open',label:'Open investigations',color:'var(--s2)'},{key:'closed',label:'Investigations closed without a finding',color:'var(--s3)'},{key:'late',label:'Late or missing disclosures',color:'var(--s4)'},{key:'conflict',label:'Committee-conflict trades',color:'var(--s5)'}];
+const ETH_SEGS=[{key:'finding',label:'Legal Trouble: confirmed findings',color:'var(--s1)'},{key:'open',label:'Legal Trouble: open investigations',color:'var(--s2)'},{key:'closed',label:'Legal Trouble: closed without a finding',color:'var(--s3)'},{key:'insider',label:'Insider Trading (a tenth)',color:'var(--s4)'},{key:'dodger',label:'Stock Disclosure Dodger (a tenth)',color:'var(--s5)'}];
 const PROM_SEGS=[{key:'consistent',label:'Supported',color:'var(--good)'},{key:'partial',label:'Partly supported',color:'var(--warn)'},{key:'changed',label:'Changed position',color:'var(--warn)',cls:'cx-hatch'},{key:'contradiction',label:'Contradicted',color:'var(--crit)'}];
-function ethicsPoints(s){const e=personEthics(s);return {e,parts:{finding:e.finding*ETHICS_COST.finding,open:e.open*ETHICS_COST.open,closed:e.closed*ETHICS_COST.closed,late:e.lateCost,conflict:e.conflictCost}};}
+// The points each part took off. Legal Trouble is split by status, scaled down when its total is capped at 100.
+function ethicsPoints(s){const e=personEthics(s),L=e.legal,k=L.total?L.index/L.total:0,by=st=>Math.round(L.rows.filter(r=>r.status===st).reduce((t,r)=>t+r.points,0)*k*10)/10;
+  return {e,parts:{finding:by('finding'),open:by('open'),closed:by('closed'),insider:Math.round(e.insiderCost*10)/10,dodger:Math.round(e.dodgerCost*10)/10}};}
 function promiseCounts(s){const c={consistent:0,partial:0,changed:0,contradiction:0};for(const x of s.statements||[])if(!x.vague&&x.assessment in c)c[x.assessment]++;return c;}
 function renderScores(sub){
   if(!SCORE_PAGES.some(([k])=>k===sub))sub='match';
@@ -1807,10 +1826,10 @@ function scoresEthics(host){
   const noCases=rows.filter(({e})=>!e.finding&&!e.open&&!e.closed&&!e.allegation).length;
   const ded=rows.filter(({e})=>e.raw<100).sort((a,b)=>a.e.pct-b.e.pct||a.s.name.localeCompare(b.s.name));
   host.innerHTML=`<div class="cx-stats"><div class="cx-stat"><span>No recorded cases</span><b>${noCases} of ${ALL.length}</b><small>No finding, investigation or allegation in the sources checked</small></div><div class="cx-stat"><span>Lost points</span><b>${ded.length} of ${ALL.length}</b><small>Have at least one deduction</small></div></div>
-    <div class="chart"><h3>Points lost, by kind</h3><div class="sub">${points([['Shown','Only people with deductions. Everyone else scores 100%.'],['Cases',`Each counts once, at its current status: −${ETHICS_COST.finding} for a confirmed finding, −${ETHICS_COST.open} for an open investigation, −${ETHICS_COST.closed} for one closed without a finding.`],['Stock trading',`−${TRADE_COST.late} per late disclosure and −${TRADE_COST.conflict} per committee-conflict trade. Each is capped at ${TRADE_COST.lateCap}.`]],'small')}</div>
+    <div class="chart"><h3>Points lost, by kind</h3><div class="sub">${points([['Shown','Only people with deductions. Everyone else scores 100%.'],['Legal Trouble Index 🚨',`Costs all of its value, split here by each case's status. A case: ${ETHICS_COST.finding} for a confirmed finding, ${ETHICS_COST.open} open, ${ETHICS_COST.closed} closed without a finding; criminal × ${CASE_KIND.criminal}, technical × ${CASE_KIND.technical}; × ${CASE_AGE.factor} after ${CASE_AGE.years} years.`],['Trading indexes','The Insider Trading 📈 and Stock Disclosure Dodger 🙈 indexes cost a tenth of their value each.']],'small')}</div>
     ${legend(ETH_SEGS.map(x=>[x.color,x.label]))}
-    ${ded.length?stackRows(ded.map(({s,e,parts})=>({label:s.name,sub:whoSub(s),href:`#${s.id}-ethics`,parts,value:`${letter(e.pct)} ${e.pct}%`,cls:'gr-'+letter(e.pct),note:`−${100-Math.max(0,e.raw)} points`})),ETH_SEGS,{unit:' points'}):'<p class="small muted">No one has a deduction.</p>'}
-    ${tableView(['Name','Score','Points lost','Findings','Open','Closed','Late disclosures','Conflict trades','Allegations (not scored)'],rows.sort((a,b)=>a.e.pct-b.e.pct||a.s.name.localeCompare(b.s.name)).map(({s,e})=>[`<a href="#${s.id}-ethics">${esc(s.name)}</a>`,`${letter(e.pct)} ${e.pct}%`,100-e.pct,e.finding,e.open,e.closed,e.late,e.conflict,e.allegation]))}</div>`;
+    ${ded.length?stackRows(ded.map(({s,e,parts})=>({label:s.name,sub:whoSub(s),href:`#${s.id}-ethics`,parts,value:`${letter(e.pct)} ${e.pct}%`,cls:'gr-'+letter(e.pct),note:`−${100-e.pct} points`})),ETH_SEGS,{unit:' points'}):'<p class="small muted">No one has a deduction.</p>'}
+    ${tableView(['Name','Score','Points lost','Legal Trouble','Insider Trading','Stock Disclosure Dodger','Findings','Open','Closed','Allegations (not scored)'],rows.sort((a,b)=>a.e.pct-b.e.pct||a.s.name.localeCompare(b.s.name)).map(({s,e})=>[`<a href="#${s.id}-ethics">${esc(s.name)}</a>`,`${letter(e.pct)} ${e.pct}%`,100-e.pct,e.legal.index,e.insider.index??'—',e.dodger.index??'—',e.finding,e.open,e.closed,e.allegation]))}</div>`;
 }
 function scoresPvp(host){
   const rows=ALL.map(s=>({s,v:personPvp(s)})).sort((a,b)=>(b.v.pct??-1)-(a.v.pct??-1)||b.v.n-a.v.n||a.s.name.localeCompare(b.s.name));
@@ -1845,7 +1864,11 @@ function renderMethod(sub){
   app.innerHTML=`
   <section class="hero" style="padding-bottom:10px"><div class="asof">How this works</div><h1 style="margin-top:8px">Methodology</h1><p class="lede">What is covered, where every number comes from, how figures are calculated, and what is missing.</p></section>
   <section class="section prose">
-    <h2>What changed in this version (October 24, 2026)</h2>
+    <h2>What changed in this version (October 28, 2026)</h2>
+    <ul class="list">
+      <li><b>Ethics indexes:</b> the Ethics grade is now 100 − the Legal Trouble Index 🚨 − a tenth of the Insider Trading Index 📈 − a tenth of the Stock Disclosure Dodger Index 🙈. A case now counts by its kind (criminal cases more, technical ones less) and its age (half after 10 years). Thirteen grades changed. Each changed grade says so on its Ethics tab, and the next monthly recalculation logs why.</li>
+    </ul>
+    <details class="tv"><summary>Earlier changes (October 24, 2026)</summary>
     <ul class="list">
       <li><b>New scoring rules (Rule 1):</b> votes, sponsorships, cosponsorships and official acts count fully. Statements count half, and only where no action exists. A vote and a sponsorship on the same bill count once. Promises left unacted at the end of a term count as contradicted. Vague goals and promises with no related bill yet are left out. Workers > Profit also counts sponsorships, from a list of marked bills. Ethics adds stock-trading deductions.</li>
       <li><b>Score pages:</b> a Scores menu ranks everyone on each grade. "Not graded" people show as grey rows, with the data behind each grade.</li>
@@ -1855,7 +1878,7 @@ function renderMethod(sub){
       <li><b>Committees and IDs:</b> committee seats and each member's IDs come from congress-legislators. Senate votes now match senators by their official LIS ID, not surname and state.</li>
       <li><b>Monthly recalculation:</b> Promises, Ethics and Workers > Profit are recalculated each month after review, with a change log (below).</li>
       <li><b>Press releases, Bluesky and Threads:</b> members' press releases now come from their official websites, Bluesky accounts are checked at each person's official and campaign website domains, and Threads posts that mention an issue can be collected once Meta approves access. See "What refreshes" below.</li>
-    </ul>
+    </ul></details>
     <details class="tv"><summary>Earlier changes (October 3, 2026)</summary>
     <ul class="list">
       <li><b>Voter alignment:</b> choose a side and an importance on ${ISS.length} issues ("My alignment" in the top menu, or the Voter alignment tab on any profile). See how each candidate's record compares, issue by issue, with every piece of evidence, its date, its type and the math. Candidates without enough evidence show "Insufficient data".</li>
@@ -1938,15 +1961,15 @@ function renderMethod(sub){
           <li><b>Needed:</b> ${MIN_CHECKS} counted checks. True campaign promises are labeled "Promise".</li>
           <li><b>For a president:</b> PolitiFact's promise trackers are used instead (the Trump-O-Meter and MAGA-Meter for Donald Trump). Promise Kept counts 1, Compromise ½ and Promise Broken 0. Stalled and In the Works wait for a final rating.</li>
         </ul></li>
-      <li><b>Ethics:</b> starts at 100 and never goes below 0.
+      <li><b>Ethics:</b> 100 − Legal Trouble Index − a tenth of the Insider Trading Index − a tenth of the Stock Disclosure Dodger Index, rounded. It never goes below 0, and an index without enough data costs nothing.
         <ul class="list">
-          <li><b>Cases:</b> each counts once, at its current status. A confirmed finding costs ${ETHICS_COST.finding} points. An open investigation, including one with no public resolution, costs ${ETHICS_COST.open}.</li>
-          <li><b>Closed without a finding:</b> costs ${ETHICS_COST.closed}. This includes an acquittal, dismissal, decision not to charge, ruling in the person's favor, or settlement without admission.</li>
-          <li><b>Allegations:</b> complaints no official body acted on. Listed, but they cost nothing.</li>
-          <li><b>Late or missing trade reports:</b> ${TRADE_COST.late} points each, capped at ${TRADE_COST.lateCap}. Periodic Transaction Reports are due within ${LATE_DAYS} days of a trade.</li>
-          <li><b>Committee conflicts:</b> ${TRADE_COST.conflict} point per trade in a single company's stock in a sector their committees oversee, capped at ${TRADE_COST.conflictCap}.</li>
-          <li><b>Flagged, not scored:</b> a trade near a related vote. Returns are never scored.</li>
-          <li><b>Who counts:</b> spouse and dependent-child trades count and are labeled. State-only officials show "No trading data". Only reviewed trades count; new reports are listed for review first.</li>
+          <li><b>Legal Trouble Index 🚨:</b> each case's status points × its kind × its age, totaled, with a ceiling of 100. Each case counts once, at its current status, and one matter is one case.</li>
+          <li><b>Status points:</b> ${ETHICS_COST.finding} for a confirmed finding, ${ETHICS_COST.open} for an open investigation (including one with no public resolution), ${ETHICS_COST.closed} for one closed without a finding (an acquittal, dismissal, decision not to charge, ruling in the person's favor, or settlement without admission). Allegations, which no official body acted on, cost nothing.</li>
+          <li><b>Kind:</b> criminal × ${CASE_KIND.criminal} (indictments, convictions, guilty pleas), ethics or civil × ${CASE_KIND.ethics}, technical × ${CASE_KIND.technical} (such as an FEC fine for a late report, or a late stock disclosure).</li>
+          <li><b>Age:</b> × ${CASE_AGE.factor} when the case was decided more than ${CASE_AGE.years} years before the reviewed research. Open cases always count in full.</li>
+          <li><b>Insider Trading Index 📈:</b> committee conflicts 40% (the dollar share of single-stock trades in sectors their committees oversee, using the middle of each disclosed range), trades near related votes 25%, trades in donors' companies 20%, and single-stock activity 15% (trades a year, with 50 counting as 100). It needs 5 reviewed trades; no trades scores 0.</li>
+          <li><b>Stock Disclosure Dodger Index 🙈:</b> trade reports filed after the ${LATE_DAYS}-day deadline or never 70%, and annual financial disclosures filed late 30%. It needs 3 required filings. A STOCK Act late-disclosure case moves here from the Legal Trouble Index once the person's trades are reviewed, so a late report never costs twice.</li>
+          <li><b>Who counts:</b> spouse and dependent-child trades count and are labeled. People not in Congress show "No trading data". Only reviewed trades count; new reports are listed for review first. Returns are never scored.</li>
         </ul></li>
       <li><b>Workers > Profit:</b> whether the record did more for working people or for the wealthy and corporations.
         <ul class="list">

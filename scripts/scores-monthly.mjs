@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
-import {ETHICS_COST,TRADE_COST,LATE_DAYS,WEIGHT,MIN_CHECKS,MIN_PVP_ACTIONS} from '../public/grades.js';
+import {ETHICS_COST,CASE_KIND,CASE_AGE,INDEX_COST,INSIDER,DODGER,LATE_DAYS,WEIGHT,MIN_CHECKS,MIN_PVP_ACTIONS} from '../public/grades.js';
 import {makeScorer} from '../public/scoring.js';
 import {timingFlags,SWING,WINDOW_MONTHS,TOP_DONORS} from '../public/influence.js';
 
@@ -23,7 +23,7 @@ export function personScores(s,scorer,history){
       flags+=timingFlags(g.org,series,(g.compared||[]).map(c=>({date:c.date,match:c.match})),through).length;}}
   return {
     promises:{pct:p.pct,kept:p.kept,half:p.half,broken:p.broken,counted:p.clear},
-    ethics:{pct:e.pct,finding:e.finding,open:e.open,closed:e.closed,allegation:e.allegation,late:e.late,conflict:e.conflict},
+    ethics:{pct:e.pct,finding:e.finding,open:e.open,closed:e.closed,allegation:e.allegation,late:e.late,conflict:e.conflict,legal:e.legal.index,insider:e.insider.index,dodger:e.dodger.index},
     pvp:{pct:v.pct,people:v.people,profit:v.profit,actions:v.n},
     flags,
   };
@@ -32,7 +32,8 @@ const NAMES={promises:'Promises delivered',ethics:'Ethics',pvp:'Workers > Profit
 // The counts behind each grade, as [field, one, several], for the reason given with each change.
 const PARTS={
   promises:[['kept','kept promise','kept promises'],['half','partly kept or changed promise','partly kept or changed promises'],['broken','contradicted promise','contradicted promises'],['counted','counted check','counted checks']],
-  ethics:[['finding','confirmed finding','confirmed findings'],['open','open investigation','open investigations'],['closed','investigation closed without a finding','investigations closed without a finding'],['allegation','allegation (not scored)','allegations (not scored)'],['late','late disclosure','late disclosures'],['conflict','committee-conflict trade','committee-conflict trades']],
+  ethics:[['finding','confirmed finding','confirmed findings'],['open','open investigation','open investigations'],['closed','investigation closed without a finding','investigations closed without a finding'],['allegation','allegation (not scored)','allegations (not scored)'],['late','late disclosure','late disclosures'],['conflict','committee-conflict trade','committee-conflict trades'],
+    ['legal','Legal Trouble Index point','Legal Trouble Index points'],['insider','Insider Trading Index point','Insider Trading Index points'],['dodger','Stock Disclosure Dodger Index point','Stock Disclosure Dodger Index points']],
   pvp:[['people','action for working people','actions for working people'],['profit','action for the wealthy and corporations','actions for the wealthy and corporations']],
 };
 // What moved between two runs, with the reason drawn from the counts behind each grade.
@@ -42,8 +43,11 @@ export function compare(before,after){
     const was=before?.[id];
     for(const g of ['promises','ethics','pvp']){
       const a=was?.[g],b=now[g];
-      if(a&&a.pct===b.pct&&PARTS[g].every(([k])=>a[k]===b[k]))continue;
-      const why=a?PARTS[g].filter(([k])=>a[k]!==b[k]).map(([k,one,many])=>{const d=b[k]-a[k];return `${d>0?'+':'−'}${Math.abs(d)} ${Math.abs(d)===1?one:many}`;}):[];
+      // A count an older entry didn't record (the Ethics indexes, before they existed) is not compared; an index without
+      // enough data (null) counts as 0.
+      const diff=k=>a[k]===undefined?0:(b[k]??0)-(a[k]??0);
+      if(a&&a.pct===b.pct&&PARTS[g].every(([k])=>!diff(k)))continue;
+      const why=a?PARTS[g].filter(([k])=>diff(k)).map(([k,one,many])=>{const d=diff(k);return `${d>0?'+':'−'}${Math.abs(d)} ${Math.abs(d)===1?one:many}`;}):[];
       changes.push({id,grade:g,from:a?a.pct:undefined,to:b.pct,why:!a?'First recorded score':why.length?why.join(', '):'Rule or weight change'});
     }
   }
@@ -54,7 +58,7 @@ export function buildEntry(research,committees,sectors,history,config,date){
   const scorer=makeScorer(research,committees,sectors.committees||{});
   const scores=Object.fromEntries([...research.members,...research.cands,...(research.featured||[])].map(s=>[s.id,personScores(s,scorer,history)]));
   return {date,reviewedAt:config.reviewedAt,research:crypto.createHash('sha256').update(JSON.stringify(research)).digest('hex').slice(0,12),
-    rules:{ETHICS_COST,TRADE_COST,LATE_DAYS,WEIGHT,MIN_CHECKS,MIN_PVP_ACTIONS,SWING,WINDOW_MONTHS,TOP_DONORS},scores};
+    rules:{ETHICS_COST,CASE_KIND,CASE_AGE,INDEX_COST,INSIDER,DODGER,LATE_DAYS,WEIGHT,MIN_CHECKS,MIN_PVP_ACTIONS,SWING,WINDOW_MONTHS,TOP_DONORS},scores};
 }
 
 if(import.meta.url===pathToFileURL(process.argv[1]).href){

@@ -3,10 +3,18 @@
 // A grade is shown only with enough evidence; otherwise the card says "Not graded", never a zero.
 // Values the methodology still lists under "Open decisions" are marked (placeholder).
 export const MIN_CHECKS=3, MIN_MATCH_ISSUES=3, MIN_PVP_ACTIONS=3;
+// Ethics (placeholders): a case's status points (ETHICS_COST) times its kind (CASE_KIND), halved when its latest status
+// change is more than 10 years old (CASE_AGE); open cases always count in full. The trading indexes each cost a tenth of
+// their value (INDEX_COST), so trading can cost at most 20 points. Trade reports are due 45 days after a trade (STOCK Act).
 export const ETHICS_COST={finding:20,open:15,closed:5,allegation:0};
-// Stock trading (placeholder): a late or missing disclosure costs 2 and a trade in a sector the member's committees
-// oversee costs 1, each capped at 10. Reports are due no later than 45 days after the trade (STOCK Act).
-export const TRADE_COST={late:2,lateCap:10,conflict:1,conflictCap:10}, LATE_DAYS=45;
+export const CASE_KIND={criminal:1.5,ethics:1,technical:0.5};
+export const CASE_AGE={years:10,factor:0.5};
+export const INDEX_COST=0.1, LATE_DAYS=45;
+// Insider Trading Index parts and limits: the weights, the fewest reviewed trades for a score, the single-stock trades a
+// year that count as 100, and how close to a related vote a trade is flagged (days).
+export const INSIDER={weights:{conflicts:0.4,nearVotes:0.25,donors:0.2,activity:0.15},minTrades:5,activityCeiling:50,nearDays:30};
+// Stock Disclosure Dodger Index parts and the fewest required filings (trade reports and annual disclosures) for a score.
+export const DODGER={weights:{trades:0.7,annual:0.3},minFilings:3};
 // Rule 1: actions count more than words. A statement counts only on an issue with no recorded action.
 export const WEIGHT={action:1,statement:0.5};
 export const ACTION_TYPES=new Set(['senate_vote','house_vote','vote','state_vote','sponsored','cosponsored','official_act']);
@@ -88,22 +96,79 @@ export function tradeChecks(trades,overseen){
   return {rows,late,conflict};
 }
 
-// Ethics: starts at 100. Each case counts once, at its current status: a confirmed finding, an open investigation, or an
-// investigation that ended without a finding. Allegations are listed but cost nothing; "None found" checks are ignored.
-// Stock-trading deductions (from tradeChecks) are added on top, each capped. Never below 0.
-export function ethicsScore(ethics,trading){
-  const n={finding:0,open:0,closed:0,allegation:0};
-  for(const e of ethics||[]){
-    if(e.outcome==='None found')continue;
-    if(e.status==='finding')n.finding++;
-    else if(e.status==='investigation')n[e.stage==='open'?'open':'closed']++;
-    else if(e.status==='allegation')n.allegation++;
-  }
-  const caseCost=n.finding*ETHICS_COST.finding+n.open*ETHICS_COST.open+n.closed*ETHICS_COST.closed+n.allegation*ETHICS_COST.allegation;
-  const late=(trading&&trading.late)||0, conflict=(trading&&trading.conflict)||0;
-  const lateCost=Math.min(TRADE_COST.lateCap,late*TRADE_COST.late), conflictCost=Math.min(TRADE_COST.conflictCap,conflict*TRADE_COST.conflict);
-  const raw=100-caseCost-lateCost-conflictCost;
-  return Object.assign({pct:Math.max(0,raw),raw,caseCost,late,conflict,lateCost,conflictCost},n);
+// Each index is 0-100, higher meaning more of what its name says, or null with the reason when there isn't enough data.
+const pct=(n,d)=>d?n/d*100:0;
+const ceiling=(v,max)=>Math.min(100,v/max*100);
+// The middle of a disclosed amount range: "$1,001 - $15,000" -> 8000.5. A single amount is itself; unreadable is null.
+export function amountMid(text){
+  const n=String(text||'').replace(/,/g,'').match(/\$?\s*(\d+(?:\.\d+)?)(?:\s*[-–]\s*\$?\s*(\d+(?:\.\d+)?))?/);
+  return n?(Number(n[1])+Number(n[2]??n[1]))/2:null;
+}
+const caseStatus=e=>e.outcome==='None found'?null:e.status==='finding'?'finding':e.status==='investigation'?(e.stage==='open'?'open':'closed'):e.status==='allegation'?'allegation':null;
+
+// Legal Trouble Index: each case's status points × its kind × its age, totaled, with a ceiling of 100. It keeps its exact
+// value (a case can be worth 22.5 or 3.75), and only the Ethics grade is rounded, so the shown math adds up. Each case counts
+// once, at its current status; "None found" checks are ignored. asOfYear is the year of the reviewed research.
+// stockActCovered: when the person's trades are reviewed, a STOCK Act late-disclosure case counts in the Stock
+// Disclosure Dodger Index instead, so the same late report never costs twice.
+export function legalTrouble(ethics,{asOfYear=null,stockActCovered=false}={}){
+  const rows=[],n={finding:0,open:0,closed:0,allegation:0};
+  (ethics||[]).forEach((e,i)=>{
+    const status=caseStatus(e);if(!status)return;
+    n[status]++;
+    const kind=CASE_KIND[e.kind]?e.kind:'ethics';
+    const old=status!=='open'&&!!asOfYear&&e.decided!=null&&e.decided<asOfYear-CASE_AGE.years;
+    const covered=stockActCovered&&e.type==='STOCK Act';
+    const points=covered?0:ETHICS_COST[status]*CASE_KIND[kind]*(old?CASE_AGE.factor:1);
+    rows.push({i,status,kind,old,covered,points});
+  });
+  const total=rows.reduce((t,r)=>t+r.points,0);
+  return Object.assign({index:Math.min(100,Math.round(total*100)/100),total,rows},n);
+}
+
+// Insider Trading Index, from reviewed trades (tradeChecks rows). covered: false when the disclosures don't cover the
+// person (not in Congress). inDonors: how many of the trades were in a donor's company. Late reports are left to the
+// Stock Disclosure Dodger Index.
+export function insiderTrading(rows,{covered=true,inDonors=0}={}){
+  rows=rows||[];
+  if(!covered)return {index:null,why:'No trading data',n:0,parts:null};
+  if(!rows.length)return {index:0,why:'No trades',n:0,parts:null};
+  const single=rows.filter(r=>(r.asset||'stock')==='stock');
+  // Dollar values are the middle of each disclosed range; if any is missing, each trade counts once instead.
+  const dollars=single.map(r=>amountMid(r.amount)),byDollar=dollars.every(v=>v!=null);
+  const conflictShare=byDollar?pct(single.reduce((t,r,i)=>t+(r.conflict?dollars[i]:0),0),dollars.reduce((t,v)=>t+v,0)):pct(single.filter(r=>r.conflict).length,single.length);
+  const dates=rows.map(r=>Date.parse(r.traded)).filter(Number.isFinite),years=Math.max(1,dates.length?(Math.max(...dates)-Math.min(...dates))/(365.25*DAY):1);
+  const parts={conflicts:conflictShare,nearVotes:pct(rows.filter(r=>r.flag||r.nearVote).length,rows.length),donors:pct(Math.min(inDonors,rows.length),rows.length),activity:ceiling(single.length/years,INSIDER.activityCeiling)};
+  const W=INSIDER.weights,index=Math.round(Object.keys(W).reduce((t,k)=>t+W[k]*parts[k],0));
+  if(rows.length<INSIDER.minTrades)return {index:null,why:'Not enough data',n:rows.length,parts};
+  return {index,why:null,n:rows.length,single:single.length,byDollar,parts};
+}
+
+// Stock Disclosure Dodger Index: late or missing trade reports (required), and annual financial disclosures filed after
+// their due date. annual: [{year, due, filed}] from the reviewed research; when there are none the trade part counts alone.
+export function disclosureDodger(rows,annual=[],{covered=true}={}){
+  rows=rows||[];annual=annual||[];
+  if(!covered)return {index:null,why:'No trading data',n:0,parts:null};
+  const lateAnnual=annual.filter(a=>!a.filed||(a.due&&a.filed>a.due)).length;
+  const parts={trades:rows.length?pct(rows.filter(r=>r.late).length,rows.length):null,annual:annual.length?pct(lateAnnual,annual.length):null};
+  if(parts.trades==null)return {index:null,why:'No trades',n:annual.length,parts};
+  if(rows.length+annual.length<DODGER.minFilings)return {index:null,why:'Not enough data',n:rows.length+annual.length,parts};
+  const W=DODGER.weights,use=Object.keys(W).filter(k=>parts[k]!=null),w=use.reduce((t,k)=>t+W[k],0);
+  return {index:Math.round(use.reduce((t,k)=>t+W[k]*parts[k],0)/w),why:null,n:rows.length+annual.length,late:rows.filter(r=>r.late).length,lateAnnual,parts};
+}
+
+// Ethics: 100 − Legal Trouble Index − a tenth of the Insider Trading Index − a tenth of the Stock Disclosure Dodger Index,
+// rounded, never below 0. An index without enough data costs nothing. trading: {rows, covered, inDonors, annual}.
+export function ethicsScore(ethics,trading={},{asOfYear=null}={}){
+  const rows=trading.rows||[],covered=trading.covered!==false;
+  const legal=legalTrouble(ethics,{asOfYear,stockActCovered:covered&&rows.length>0});
+  const insider=insiderTrading(rows,{covered,inDonors:trading.inDonors||0});
+  const dodger=disclosureDodger(rows,trading.annual,{covered});
+  const insiderCost=(insider.index||0)*INDEX_COST, dodgerCost=(dodger.index||0)*INDEX_COST;
+  const raw=100-legal.index-insiderCost-dodgerCost;
+  return {pct:Math.max(0,Math.round(raw)),raw,legal,insider,dodger,insiderCost,dodgerCost,
+    finding:legal.finding,open:legal.open,closed:legal.closed,allegation:legal.allegation,
+    late:rows.filter(r=>r.late).length,conflict:rows.filter(r=>r.conflict).length};
 }
 
 // Workers > Profit: actions on bills marked People or Profit by a cited nonpartisan analysis of who gains.
