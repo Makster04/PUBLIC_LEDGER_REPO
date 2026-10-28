@@ -2,7 +2,8 @@
 # public/portraits/index.json listing who has one and where each photo came from.
 #
 # Photos: official congressional portraits (public domain, U.S. government works) from
-# https://github.com/unitedstates/images, for everyone in research.json with a Bioguide ID. Other photos, supplied
+# https://github.com/unitedstates/images, for everyone in research.json with a Bioguide ID and every other sitting senator
+# in public/senate.json (from scripts/build-senate.mjs). Other photos, supplied
 # for use here, are kept in data/portraits/ and listed in scripts/portrait-extra.json, which takes precedence:
 #   {"<person id>": {"file": "data/portraits/<id>.jpg", "credit": "Photo: <who>, used with permission", "url": optional}}
 # For a photo whose cut-out keeps a halo of a light background, add "tighten": true (refit the edge to the photo's own
@@ -199,6 +200,11 @@ def trim(rgba):
     return out
 
 
+def visible(img):
+    """The share of the cut-out that is solid: near zero when the segmentation lost the person."""
+    return 0 if img is None else float((np.array(img.convert('RGBA'))[..., 3] > 200).mean())
+
+
 def main():
     D = json.load(open(os.path.join(ROOT, 'public', 'research.json'), encoding='utf8'))
     extra_path = os.path.join(ROOT, 'scripts', 'portrait-extra.json')
@@ -208,9 +214,15 @@ def main():
     old = json.load(open(old_path, encoding='utf8'))['people'] if os.path.exists(old_path) else {}
     people, missing, listed = {}, [], set()
     seg = mp.solutions.selfie_segmentation.SelfieSegmentation(model_selection=0)
+    seg_alt = mp.solutions.selfie_segmentation.SelfieSegmentation(model_selection=1)
     det = [mp.solutions.face_detection.FaceDetection(model_selection=m, min_detection_confidence=0.5) for m in (1, 0)]
     only = set(sys.argv[sys.argv.index('--only') + 1].split(',')) if '--only' in sys.argv else None
-    for s in D['members'] + D.get('cands', []) + D.get('featured', []):
+    # Every other sitting senator (public/senate.json) gets the same official portrait, for their basic profile's card.
+    senate_path = os.path.join(ROOT, 'public', 'senate.json')
+    senate = json.load(open(senate_path, encoding='utf8'))['senators'] if os.path.exists(senate_path) else []
+    profiled = {s['id'] for s in D['members'] + D.get('cands', []) + D.get('featured', [])}
+    basic = [{'id': x['id'], 'bioguide': x['bioguide']} for x in senate if x['id'] not in profiled]
+    for s in D['members'] + D.get('cands', []) + D.get('featured', []) + basic:
         if only is not None and s['id'] not in only:
             if s['id'] in old:
                 people[s['id']] = old[s['id']]
@@ -225,12 +237,25 @@ def main():
             continue
         listed.add(s['id'])
         # Of the versions of the photo, use the one that fills the frame best; on a near tie, the sharper one.
-        best = None
+        best, measured = None, []
         for path, url in options:
             m = measure(path, det)
-            if m and m['gap'] >= 36 and (not best or m['cover'] > best[0]['cover'] + 8 or (m['cover'] > best[0]['cover'] - 8 and m['gap'] > best[0]['gap'])):
-                best = (m, url)
-        img = cutout(best[0], seg, extra.get(s['id'], {})) if best else None
+            if m and m['gap'] >= 36:
+                measured.append((m, url))
+                if not best or m['cover'] > best[0]['cover'] + 8 or (m['cover'] > best[0]['cover'] - 8 and m['gap'] > best[0]['gap']):
+                    best = (m, url)
+        opts = extra.get(s['id'], {})
+        img = cutout(best[0], seg, opts) if best else None
+        # Now and then the segmentation loses the person and leaves an empty cut-out: try the other segmentation model,
+        # then the other versions of the photo.
+        if best and visible(img) < 0.2:
+            img = cutout(best[0], seg_alt, opts)
+            for alt in [x for x in measured if x is not best]:
+                if visible(img) >= 0.2:
+                    break
+                img, best = cutout(alt[0], seg, opts), alt
+            if visible(img) < 0.2:
+                img = None
         if img is None:
             missing.append(s['id'])
             if s['id'] in old and os.path.exists(os.path.join(OUT, s['id'] + '.webp')):
