@@ -1935,7 +1935,7 @@ function renderMethod(sub){
       <li><b>Scale:</b> A is 90–100, B 80–89, C 70–79, D 60–69 and F below 60, after rounding to a whole percentage.</li>
       <li><b>Not graded:</b> shown when there isn't enough evidence. It is never a zero.</li>
       <li><b>Where the rules live:</b> one file, <span class="mono">public/grades.js</span>. The inputs are the same records shown on each profile.</li>
-      <li><b>Full methodology:</b> with worked examples and open decisions, in <span class="mono">.02_POLITICAL_SCORECARD_METHODOLOGY.md</span>.</li>
+      <li><b>Full methodology:</b> with worked examples and open decisions, in <span class="mono">Scores/00_POLITICAL_SCORECARD_METHODOLOGY.md</span>.</li>
     </ul>
     <h3>Rule 1: actions count more than words</h3>
     <ul class="list">
