@@ -208,13 +208,17 @@ export async function getProfile(env,id) {
   for(const s of Object.values(sections))if(Array.isArray(s.rows)&&s.rows.every(r=>r&&r.date!==undefined))s.rows.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
   votes.sort((a,b)=>b.date.localeCompare(a.date)||b.number-a.number);
   // Merged views: one row per trade, state bill and article, whichever sources reported it.
-  const tradeLists=['trades-bargo','trades-eulerpool','trades-fmp'].map(k=>sections[k]?.rows).filter(Boolean);
+  // The official reports first, so their descriptions and dates win; then the three services.
+  const official=['trades-house','trades-senate'].filter(k=>sections[k]);
+  const tradeLists=[...official,'trades-bargo','trades-eulerpool','trades-fmp'].map(k=>sections[k]?.rows).filter(Boolean);
   const merged={};
-  if(tradeLists.length)merged.trades=mergeTrades(tradeLists,sections['house-fd']?.rows||[],global['sec-sic']?.[0]?.byTicker||{}).slice(0,200);
+  if(tradeLists.length)merged.trades=mergeTrades(tradeLists,sections['house-fd']?.rows||[],global['sec-sic']?.[0]?.byTicker||{},{officialFrom:official.length?`${config.year-1}-01-01`:null}).slice(0,200);
+  // Official reports that couldn't be read (filed on paper, or no text), for review by hand.
+  merged.tradesUnread=official.flatMap(k=>sections[k].unread||[]);
   if(sections['state-openstates']||sections['state-legiscan'])merged.stateBills=mergeStateBills(sections['state-openstates']?.rows,sections['state-legiscan']?.rows).slice(0,150);
   if(sections['news-gdelt']||sections['news-nyt'])merged.news=mergeNews(sections['news-gdelt']?.rows,sections['news-nyt']?.rows).slice(0,60);
-  const official=sections['senate-committees']||sections['house-committees'];
-  if(official)merged.committees={rows:official.rows,checkedAt:official.checkedAt,...committeeDiff(official.rows,COMMITTEES.people[id]||[])};
+  const lists=sections['senate-committees']||sections['house-committees'];
+  if(lists)merged.committees={rows:lists.rows,checkedAt:lists.checkedAt,...committeeDiff(lists.rows,COMMITTEES.people[id]||[])};
   // Bills this person sponsored or cosponsored this Congress, and CRS reports on them or on the key bills.
   const theirBills=new Set([...(sections.legislation?.rows||[]),...(sections.cosponsored?.rows||[])].map(r=>r.bill||String(r.id).toLowerCase()));
   merged.crs=(global.crs||[]).flatMap(c=>Object.entries(c.byBill||{}).filter(([b])=>theirBills.has(b)).flatMap(([b,list])=>list.map(r=>({...r,bill:b})))).slice(0,30);

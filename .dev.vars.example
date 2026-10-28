@@ -29,11 +29,12 @@ LEGISCAN_API_KEY=
 # https://lda.gov/
 LDA_API_KEY=
 
-# Stock trades: all three services run together, checked against the official House filings.
+# Stock trades: the official House and Senate reports are read without a key. These three services are an optional
+# cross-check and run together.
 # Optional. Bargo: last 3 months (works without a key at a lower limit). https://www.bargo.ai/free-apis/dash
 BARGO_API_KEY=
 
-# Eulerpool: 100,000 requests a month free. https://eulerpool.com/developers/register
+# Optional. Eulerpool: 100,000 requests a month free. https://eulerpool.com/developers/register
 EULERPOOL_API_KEY=
 
 # Optional. Financial Modeling Prep, if its free plan includes congressional trades.
@@ -72,7 +73,7 @@ SEC_USER_AGENT=
 THREADS_ACCESS_TOKEN=
 
 # No key needed: Senate and House roll calls, Senate and House committee lists, the House
-# disclosure index, members' press-release feeds on their official websites, Federal Register,
+# disclosure index, members' trade reports (House Clerk PDFs and the Senate eFD site), members' press-release feeds on their official websites, Federal Register,
 # Bluesky, Wayback Machine, GDELT, DOJ press releases, ProPublica Nonprofit Explorer, FARA,
 # USAspending. To find more Bluesky accounts, run: npm run social:bluesky
 
