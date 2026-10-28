@@ -207,7 +207,7 @@ python3 -m venv .local/pv
 .local/pv/bin/python scripts/build-portraits.py --only osborn,alme   # rebuild just those people
 ```
 
-A newly appointed senator may have no official portrait yet; their card keeps the initials until unitedstates/images adds one (Alan Armstrong and Darline Graham Nordone, as of October 2026). If a cut-out comes out empty, the script retries with MediaPipe's other segmentation model and then the other photo size.
+A newly appointed senator may have no official portrait in unitedstates/images yet; their card keeps the initials until one is added there or a photo is supplied as described below (Alan Armstrong's and Darline Graham Nordone's were supplied in October 2026). If a cut-out comes out empty, the script retries with MediaPipe's other segmentation model and then the other photo size.
 
 To add or replace a photo, save one you have permission to use as `data/portraits/<id>.jpg`, list it in `scripts/portrait-extra.json` with its credit, and rebuild: `"talarico": {"file": "data/portraits/talarico.jpg", "credit": "Photo: Talarico campaign, used with permission"}`. If a cut-out keeps a light halo from a bright background, add `"tighten": true` and `"choke": 2` to that entry (as for El-Sayed and Jackson) and rebuild. If something wider than the frame, like a hat brim, is cut off on one side, `"nudge": <px>` moves the portrait sideways, and `"zoom": 0.85` shrinks it when it is wider than the whole frame (as for Byrd). A photo that is already a transparent PNG cut-out keeps its own outline.
 
