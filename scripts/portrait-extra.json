@@ -161,5 +161,13 @@
     "file": "data/portraits/mgp.jpg",
     "credit": "Official congressional portrait (public domain), supplied by the site's editor",
     "tighten": true
+  },
+  "armstrong": {
+    "file": "data/portraits/armstrong.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "grahamnordone": {
+    "file": "data/portraits/grahamnordone.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
   }
 }

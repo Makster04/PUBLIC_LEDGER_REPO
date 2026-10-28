@@ -577,6 +577,10 @@
       "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
       "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/M001242.jpg"
     },
+    "armstrong": {
+      "file": "portraits/armstrong.webp",
+      "credit": "Photo supplied by the site's editor for use on this site"
+    },
     "lankford": {
       "file": "portraits/lankford.webp",
       "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
@@ -611,6 +615,10 @@
       "file": "portraits/whitehouse.webp",
       "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
       "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/W000802.jpg"
+    },
+    "grahamnordone": {
+      "file": "portraits/grahamnordone.webp",
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "tscott": {
       "file": "portraits/tscott.webp",
