@@ -8,7 +8,8 @@
 #   {"<person id>": {"file": "data/portraits/<id>.jpg", "credit": "Photo: <who>, used with permission", "url": optional}}
 # For a photo whose cut-out keeps a halo of a light background, add "tighten": true (refit the edge to the photo's own
 # colors), "tighten": "left" or "right" (only that side of the photo, keeping the hair on top), and/or "choke": <px> (trim
-# that many output pixels off the edge). For something wider than the frame on one
+# that many output pixels off the edge). Where the outline strays into a background of a similar color (blond hair against
+# a light wall), "model": 1 uses MediaPipe's other segmentation model. For something wider than the frame on one
 # side, such as a hat brim, "nudge": <px> moves the portrait sideways (positive is right) without changing its size;
 # if it is wider than the whole frame, "zoom": <factor below 1> shrinks that portrait to fit.
 # A supplied photo that already has a transparent background (a PNG cut-out) keeps its own outline.
@@ -261,15 +262,16 @@ def main():
                 if not best or m['cover'] > best[0]['cover'] + 8 or (m['cover'] > best[0]['cover'] - 8 and m['gap'] > best[0]['gap']):
                     best = (m, url)
         opts = extra.get(s['id'], {})
-        img = cutout(best[0], seg, opts) if best else None
+        first, other = (seg_alt, seg) if opts.get('model') == 1 else (seg, seg_alt)
+        img = cutout(best[0], first, opts) if best else None
         # Now and then the segmentation loses the person and leaves an empty cut-out: try the other segmentation model,
         # then the other versions of the photo.
         if best and visible(img) < 0.2:
-            img = cutout(best[0], seg_alt, opts)
+            img = cutout(best[0], other, opts)
             for alt in [x for x in measured if x is not best]:
                 if visible(img) >= 0.2:
                     break
-                img, best = cutout(alt[0], seg, opts), alt
+                img, best = cutout(alt[0], first, opts), alt
             if visible(img) < 0.2:
                 img = None
         if img is None:
