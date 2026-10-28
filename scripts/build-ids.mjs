@@ -3,6 +3,7 @@
 //   node scripts/build-ids.mjs              download the current files
 //   node scripts/build-ids.mjs --dir <dir>  use copies already downloaded (same file names, .json)
 // Writes data/config.json (lis, ids, social, official, campaignSite for each profiled person) and public/committees.json.
+// Profiled people are those in public/research.json, plus the senators scripts/build-senate.mjs adds (basic: true).
 // People who never served in Congress are looked up in Wikidata by their FEC candidate ID when Wikidata is reachable.
 import fs from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
@@ -14,12 +15,14 @@ const KEEP_SOCIAL=['twitter','facebook','youtube','youtube_id','instagram','mast
 const root=new URL('../',import.meta.url);
 const arg=process.argv.indexOf('--dir'),dir=arg>0?process.argv[arg+1]:null;
 
-async function load(name){
-  if(dir)return JSON.parse(await fs.readFile(`${dir}/${name}.json`,'utf8'));
+async function load(name,from=dir){
+  if(from)return JSON.parse(await fs.readFile(`${from}/${name}.json`,'utf8'));
   const r=await fetch(BASE+name+'.json',{signal:AbortSignal.timeout(60000)});
   if(!r.ok)throw new Error(`${name}: HTTP ${r.status}`);
   return r.json();
 }
+// The five congress-legislators files: current, historical, social, committees, committee membership.
+export const loadFiles=from=>Promise.all(FILES.map(name=>load(name,from)));
 const pick=(o,keys)=>Object.fromEntries(keys.filter(k=>o?.[k]!=null&&o[k]!=='').map(k=>[k,o[k]]));
 // A sitting member's official website and the RSS feed congress-legislators lists for it (often out of date; the
 // press-release job also looks for the feed on the website itself), from their current term.
@@ -79,20 +82,19 @@ async function wikidata(fecIds){
   }catch(e){console.warn(`Wikidata not reachable (${e.message}); existing Wikidata IDs left unchanged.`);return null;}
 }
 
-if(import.meta.url===pathToFileURL(process.argv[1]).href){
-  const [current,historical,social,committees,membership]=await Promise.all(FILES.map(load));
-  const configURL=new URL('data/config.json',root),config=JSON.parse(await fs.readFile(configURL,'utf8'));
-  const research=JSON.parse(await fs.readFile(new URL('public/research.json',root),'utf8'));
+// Fills in config.people (in place) and returns the committee file and a summary line.
+export async function buildIds([current,historical,social,committees,membership],config,research){
   const profiles=new Map([...research.members,...research.cands,...(research.featured||[])].map(s=>[s.id,s]));
-  const people=config.people.filter(p=>profiles.has(p.id));
+  const profiled=p=>profiles.has(p.id)||p.basic;
+  const people=config.people.filter(profiled);
   const matched=matchPeople(people,[...current,...historical]);
   const socialBy=new Map(social.map(s=>[s.id.bioguide,s.social]));
   const curMatched=new Map([...matched].filter(([,x])=>current.includes(x)));
   const wd=await wikidata(people.filter(p=>!matched.has(p.id)&&p.fecCand).map(p=>p.fecCand));
   let withLis=0,withIds=0,withWd=0;
   for(const p of config.people){
-    if(!profiles.has(p.id))continue;
-    const x=matched.get(p.id),s=profiles.get(p.id),bluesky=p.social?.bluesky||[],threads=p.social?.threads||[];
+    if(!profiled(p))continue;
+    const x=matched.get(p.id),s=profiles.get(p.id)||{},bluesky=p.social?.bluesky||[],threads=p.social?.threads||[];
     if(x){
       p.lis=x.id.lis||null;if(p.lis)withLis++;
       p.ids=pick(x.id,KEEP_IDS);withIds++;
@@ -116,9 +118,20 @@ if(import.meta.url===pathToFileURL(process.argv[1]).href){
   // Key bills for the bill-detail job: the bills behind the selected votes and the bills marked People or Profit.
   const {billKeyFromText}=await import('../public/grades.js');
   config.keyBills=[...new Set([...research.votes,...research.hvotes].map(v=>billKeyFromText(v.bill?.measure)).concat((research.bills||[]).map(b=>b.id)).filter(k=>k&&Number(k.split('-')[0])>=93))].sort();
-  await fs.writeFile(configURL,JSON.stringify(config,null,2));
   const out=buildCommittees(committees,membership,curMatched,config.congress);
   out.checked=new Date().toISOString().slice(0,10);
-  await fs.writeFile(new URL('public/committees.json',root),JSON.stringify(out,null,1)+'\n');
-  console.log(`${matched.size} of ${people.length} profiled people matched; ${withLis} with Senate LIS IDs; ${Object.keys(out.people).length} with current committee assignments; ${withWd} matched in Wikidata only.`);
+  return {committees:out,summary:`${matched.size} of ${people.length} profiled people matched; ${withLis} with Senate LIS IDs; ${Object.keys(out.people).length} with current committee assignments; ${withWd} matched in Wikidata only.`};
+}
+export async function writeIds(config,committees){
+  await fs.writeFile(new URL('data/config.json',root),JSON.stringify(config,null,2));
+  await fs.writeFile(new URL('public/committees.json',root),JSON.stringify(committees,null,1)+'\n');
+}
+
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
+  const files=await loadFiles();
+  const config=JSON.parse(await fs.readFile(new URL('data/config.json',root),'utf8'));
+  const research=JSON.parse(await fs.readFile(new URL('public/research.json',root),'utf8'));
+  const {committees,summary}=await buildIds(files,config,research);
+  await writeIds(config,committees);
+  console.log(summary);
 }

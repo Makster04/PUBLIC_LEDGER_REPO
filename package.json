@@ -13,6 +13,7 @@
     "seed:export": "node --env-file-if-exists=.dev.vars scripts/export-seed.mjs",
     "scores:monthly": "node scripts/scores-monthly.mjs",
     "social:bluesky": "node scripts/find-bluesky.mjs",
+    "senate:build": "node scripts/build-senate.mjs",
     "cloudflare:preview": "wrangler dev",
     "cloudflare:deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply public-ledger --remote"

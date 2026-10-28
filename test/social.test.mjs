@@ -100,5 +100,6 @@ test('Bluesky account finder: profile links on a page, and verified accounts wit
 test('official websites come from the member\'s current term, upgraded to https',()=>{
   assert.deepEqual(officialOf({terms:[{url:'http://old.house.gov'},{url:'https://kaptur.house.gov/',rss_url:'http://kaptur.house.gov/index.php?format=feed&amp;type=rss'}]}),{site:'https://kaptur.house.gov',feed:'https://kaptur.house.gov/index.php?format=feed&type=rss'});
   assert.equal(officialOf({terms:[{}]}),null);
-  for(const p of config.people.filter(p=>p.official))assert.match(p.official.site,/^https:\/\/[a-z0-9.-]+\.(senate|house)\.gov$/,p.id);
+  // A few offices' sites start at a path (https://www.boozman.senate.gov/public).
+  for(const p of config.people.filter(p=>p.official))assert.match(p.official.site,/^https:\/\/[a-z0-9.-]+\.(senate|house)\.gov(\/[a-z0-9._-]+)*$/i,p.id);
 });

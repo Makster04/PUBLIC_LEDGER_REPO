@@ -313,6 +313,54 @@
    "url": null,
    "jurisdiction": null
   },
+  "JCSE": {
+   "name": "Commission on Security and Cooperation in Europe",
+   "chamber": "J",
+   "url": "http://www.csce.gov/",
+   "jurisdiction": null
+  },
+  "JSEC": {
+   "name": "Joint Economic Committee",
+   "chamber": "J",
+   "url": "http://www.jec.senate.gov/",
+   "jurisdiction": null
+  },
+  "JSLC": {
+   "name": "Joint Committee of Congress on the Library",
+   "chamber": "J",
+   "url": "https://cha.house.gov/jointcommittees/joint-committee-library",
+   "jurisdiction": null
+  },
+  "JSPR": {
+   "name": "Joint Committee on Printing",
+   "chamber": "J",
+   "url": "https://cha.house.gov/jointcommittees/joint-committee-on-printing",
+   "jurisdiction": null
+  },
+  "JSTX": {
+   "name": "Joint Committee on Taxation",
+   "chamber": "J",
+   "url": "https://www.jct.gov",
+   "jurisdiction": null
+  },
+  "SCNC": {
+   "name": "United States Senate Caucus on International Narcotics Control",
+   "chamber": "S",
+   "url": "http://www.drugcaucus.senate.gov/",
+   "jurisdiction": "The Senate Caucus on International Narcotics Control was created to “monitor and encourage United States Government and private programs seeking to expand international cooperation against drug abuse and narcotics trafficking” and to “monitor and promote international compliance with narcotics control treaties.” As a formal organization of the U.S. Senate, the Caucus has the status of a standing committee. The Caucus exercises oversight on a wide range of issues, including international counternarcotics assistance and domestic drug prevention and treatment programs. The Caucus has held numerous hearings over the years and has issued a number of reports on U.S. narcotics control policy."
+  },
+  "SLET": {
+   "name": "Senate Select Committee on Ethics",
+   "chamber": "S",
+   "url": "http://www.ethics.senate.gov/",
+   "jurisdiction": "The Senate Select Committee on Ethics is authorized to receive and investigate allegations of improper conduct which may reflect upon the Senate, violations of law, violations of the Senate Code of Official Conduct and violations of rules and regulations of the Senate; recommend disciplinary action; recommend additional Senate rules or regulations to insure proper standards of conduct; and report violations of law to the proper federal and state authorities."
+  },
+  "SLIA": {
+   "name": "Senate Committee on Indian Affairs",
+   "chamber": "S",
+   "url": "http://www.indian.senate.gov/",
+   "jurisdiction": "The Senate Committee on Indian Affairs has jurisdiction to study the unique problems of American Indian, Native Hawaiian, and Alaska Native peoples and to propose legislation to alleviate these difficulties. These issues include, but are not limited to, Indian education, economic development, land management, trust responsibilities, health care, and claims against the United States. Additionally, all legislation proposed by Members of the Senate that specifically pertains to American Indians, Native Hawaiians, or Alaska Natives is under the jurisdiction of the Committee."
+  },
   "SLIN": {
    "name": "Senate Select Committee on Intelligence",
    "chamber": "S",
@@ -337,6 +385,10 @@
   },
   "SSAF14": {
    "name": "Conservation, Forestry, Natural Resources, and Biotechnology",
+   "parent": "SSAF"
+  },
+  "SSAF15": {
+   "name": "Rural Development, Energy, and Credit",
    "parent": "SSAF"
   },
   "SSAF16": {
@@ -419,11 +471,31 @@
    "name": "Readiness and Management Support",
    "parent": "SSAS"
   },
+  "SSAS16": {
+   "name": "Strategic Forces",
+   "parent": "SSAS"
+  },
+  "SSAS17": {
+   "name": "Personnel",
+   "parent": "SSAS"
+  },
+  "SSAS20": {
+   "name": "Emerging Threats and Capabilities",
+   "parent": "SSAS"
+  },
+  "SSAS21": {
+   "name": "Cybersecurity",
+   "parent": "SSAS"
+  },
   "SSBK": {
    "name": "Senate Committee on Banking, Housing, and Urban Affairs",
    "chamber": "S",
    "url": "http://banking.senate.gov/",
    "jurisdiction": "The Senate Committee on Banking, Housing, and Urban Affairs not only has legislative jurisdiction on the topics listed in its name, but also on a range of other topics such as economic stability, federal monetary policy, and government contracts."
+  },
+  "SSBK04": {
+   "name": "Securities, Insurance, and Investment",
+   "parent": "SSBK"
   },
   "SSBK05": {
    "name": "National Security and International Trade and Finance",
@@ -433,8 +505,16 @@
    "name": "Financial Institutions and Consumer Protection",
    "parent": "SSBK"
   },
+  "SSBK09": {
+   "name": "Housing, Transportation, and Community Development",
+   "parent": "SSBK"
+  },
   "SSBK12": {
    "name": "Economic Policy",
+   "parent": "SSBK"
+  },
+  "SSBK13": {
+   "name": "Digital Assets",
    "parent": "SSBK"
   },
   "SSBU": {
@@ -487,6 +567,10 @@
    "name": "Public Lands, Forests, and Mining",
    "parent": "SSEG"
   },
+  "SSEG04": {
+   "name": "National Parks",
+   "parent": "SSEG"
+  },
   "SSEG07": {
    "name": "Water and Power",
    "parent": "SSEG"
@@ -519,8 +603,16 @@
    "url": "http://www.finance.senate.gov/",
    "jurisdiction": "The Senate Committee on Finance has legislative jurisdiction on matters relating to taxation, debt, customs, foreign trade, and health programs under the Social Security Act such as Medicare, Medicaid, the Children's Health Insurance Program (CHIP), Temporary Assistance to Needy Families (TANF) and other health and human services programs financed by a specific tax or trust fund."
   },
+  "SSFI02": {
+   "name": "Social Security, Pensions, and Family Policy",
+   "parent": "SSFI"
+  },
   "SSFI10": {
    "name": "Health Care",
+   "parent": "SSFI"
+  },
+  "SSFI11": {
+   "name": "Taxation and IRS Oversight",
    "parent": "SSFI"
   },
   "SSFI12": {
@@ -529,6 +621,10 @@
   },
   "SSFI13": {
    "name": "International Trade, Customs, and Global Competitiveness",
+   "parent": "SSFI"
+  },
+  "SSFI14": {
+   "name": "Fiscal Responsibility and Economic Growth",
    "parent": "SSFI"
   },
   "SSFR": {
@@ -545,6 +641,10 @@
    "name": "East Asia, the Pacific, and International Cybersecurity Policy",
    "parent": "SSFR"
   },
+  "SSFR06": {
+   "name": "Western Hemisphere, Transnational Crime, Civilian Security, Democracy, Human Rights, and Global Women's Issues",
+   "parent": "SSFR"
+  },
   "SSFR07": {
    "name": "Near East, South Asia, Central Asia, and Counterterrorism",
    "parent": "SSFR"
@@ -556,6 +656,28 @@
   "SSFR14": {
    "name": "State Department and USAID Management, International Operations, and Bilateral International Development",
    "parent": "SSFR"
+  },
+  "SSFR15": {
+   "name": "Multilateral International Development, Multilateral Institutions, and International Economic, Energy, and Environmental Policy",
+   "parent": "SSFR"
+  },
+  "SSGA": {
+   "name": "Senate Committee on Homeland Security and Governmental Affairs",
+   "chamber": "S",
+   "url": "http://www.hsgac.senate.gov/",
+   "jurisdiction": "The Senate Committee on Homeland Security and Governmental Affairs is the Senate’s primary oversight committee with broad jurisdiction over government operations generally and the Department of Homeland Security in particular. Its primary responsibilities are to study the efficiency, economy, and effectiveness of all agencies and departments of the federal government; evaluate the effects of laws enacted to reorganize the legislative and executive branches of government; and study the intergovernmental relationships between the U.S. and states and municipalities, and between the U.S. and international organizations of which the U.S. is a member."
+  },
+  "SSGA01": {
+   "name": "Permanent Subcommittee on Investigations",
+   "parent": "SSGA"
+  },
+  "SSGA20": {
+   "name": "Disaster Management, District of Columbia, and Census",
+   "parent": "SSGA"
+  },
+  "SSGA22": {
+   "name": "Border Management, Federal Workforce, and Regulatory Affairs",
+   "parent": "SSGA"
   },
   "SSHR": {
    "name": "Senate Committee on Health, Education, Labor, and Pensions",
@@ -597,6 +719,18 @@
    "name": "Crime and Counterterrorism",
    "parent": "SSJU"
   },
+  "SSJU25": {
+   "name": "Federal Courts, Oversight, Agency Action, and Federal Rights",
+   "parent": "SSJU"
+  },
+  "SSJU26": {
+   "name": "Intellectual Property",
+   "parent": "SSJU"
+  },
+  "SSJU28": {
+   "name": "Privacy, Technology, and the Law",
+   "parent": "SSJU"
+  },
   "SSRA": {
    "name": "Senate Committee on Rules and Administration",
    "chamber": "S",
@@ -617,6 +751,421 @@
   }
  },
  "people": {
+  "boozman": [
+   {
+    "id": "JCSE",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "mcconnell": [
+   {
+    "id": "JSLC",
+    "rank": 1,
+    "party": "majority",
+    "title": "Vice Chairman"
+   },
+   {
+    "id": "JSPR",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAF",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   }
+  ],
+  "hoeven": [
+   {
+    "id": "SLIA",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   }
+  ],
+  "ernst": [
+   {
+    "id": "SSAF",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   }
+  ],
+  "hydesmith": [
+   {
+    "id": "JSLC",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEG",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 6,
+    "party": "majority"
+   }
+  ],
   "marshall": [
    {
     "id": "SSAF",
@@ -674,6 +1223,750 @@
     "rank": 1,
     "party": "majority",
     "title": "Chairman"
+   }
+  ],
+  "tuberville": [
+   {
+    "id": "SPAG",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSHR",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 8,
+    "party": "majority"
+   }
+  ],
+  "justice": [
+   {
+    "id": "SPAG",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 9,
+    "party": "majority"
+   }
+  ],
+  "grassley": [
+   {
+    "id": "JSTX",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SCNC",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   }
+  ],
+  "thune": [
+   {
+    "id": "SLIN",
+    "rank": 10,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 3,
+    "party": "majority"
+   }
+  ],
+  "fischer": [
+   {
+    "id": "JSLC",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "JSPR",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SLET",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP08",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSCM",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 5,
+    "party": "majority"
+   }
+  ],
+  "moran": [
+   {
+    "id": "SLIA",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   }
+  ],
+  "klobuchar": [
+   {
+    "id": "JSEC",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "JSLC",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSRA",
+    "rank": 4,
+    "party": "minority"
+   }
+  ],
+  "bennet": [
+   {
+    "id": "SLIN",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 7,
+    "party": "minority"
+   }
+  ],
+  "smith": [
+   {
+    "id": "SLIA",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI14",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
+  "durbin": [
+   {
+    "id": "SSAF",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
    }
   ],
   "booker": [
@@ -748,6 +2041,404 @@
    {
     "id": "SSSB",
     "rank": 4,
+    "party": "minority"
+   }
+  ],
+  "lujan": [
+   {
+    "id": "SCNC",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SLIA",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSBU",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 4,
+    "party": "minority"
+   }
+  ],
+  "warnock": [
+   {
+    "id": "SPAG",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI",
+    "rank": 12,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
+  "welch": [
+   {
+    "id": "SSAF",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF15",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 13,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 8,
+    "party": "minority"
+   }
+  ],
+  "fetterman": [
+   {
+    "id": "JCSE",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF16",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
+  "schiff": [
+   {
+    "id": "SSAF",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF14",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSJU",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 9,
+    "party": "minority"
+   }
+  ],
+  "slotkin": [
+   {
+    "id": "SSAF",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF13",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAF17",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS",
+    "rank": 13,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 9,
     "party": "minority"
    }
   ],
@@ -841,6 +2532,545 @@
     "party": "majority"
    }
   ],
+  "murkowski": [
+   {
+    "id": "SLIA",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "capito": [
+   {
+    "id": "SSAP",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 14,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 13,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 8,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 5,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 8,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSRA",
+    "rank": 3,
+    "party": "majority"
+   }
+  ],
+  "kennedy": [
+   {
+    "id": "SSAP",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBU",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "hagerty": [
+   {
+    "id": "JSPR",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 7,
+    "party": "majority"
+   }
+  ],
+  "britt": [
+   {
+    "id": "JCSE",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 8,
+    "party": "majority"
+   }
+  ],
+  "rounds": [
+   {
+    "id": "JCSE",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SLIA",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 13,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP08",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
   "husted": [
    {
     "id": "SPAG",
@@ -928,6 +3158,1094 @@
     "party": "majority"
    }
   ],
+  "murray": [
+   {
+    "id": "SSAP",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP08",
+    "rank": 3,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 9,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 7,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 7,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 2,
+    "party": "minority"
+   }
+  ],
+  "reed": [
+   {
+    "id": "SLIN",
+    "rank": 9,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAP",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 7,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 2,
+    "party": "minority"
+   }
+  ],
+  "shaheen": [
+   {
+    "id": "JCSE",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SLET",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSSB",
+    "rank": 3,
+    "party": "minority"
+   }
+  ],
+  "merkley": [
+   {
+    "id": "JSPR",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEV",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 5,
+    "party": "minority"
+   }
+  ],
+  "coons": [
+   {
+    "id": "SLET",
+    "rank": 1,
+    "party": "minority",
+    "title": "Vice Chairman"
+   },
+   {
+    "id": "SSAP",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 5,
+    "party": "minority"
+   }
+  ],
+  "schatz": [
+   {
+    "id": "SLET",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SLIA",
+    "rank": 1,
+    "party": "minority",
+    "title": "Vice Chairman"
+   },
+   {
+    "id": "SSAP",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 2,
+    "party": "minority"
+   }
+  ],
+  "baldwin": [
+   {
+    "id": "SSAP",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSHR",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 3,
+    "party": "minority"
+   }
+  ],
+  "cmurphy": [
+   {
+    "id": "SSAP",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP02",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP18",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP20",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 4,
+    "party": "minority"
+   }
+  ],
+  "vanhollen": [
+   {
+    "id": "SSAP",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP23",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
+  "heinrich": [
+   {
+    "id": "JSEC",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP08",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 7,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 4,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   }
+  ],
+  "peters": [
+   {
+    "id": "SSAP",
+    "rank": 12,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP14",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP22",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSGA",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 4,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   }
+  ],
+  "gillibrand": [
+   {
+    "id": "SLIN",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SPAG",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAP",
+    "rank": 13,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP01",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP16",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP17",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP19",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAP24",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 2,
+    "party": "minority"
+   }
+  ],
   "ossoff": [
    {
     "id": "SLIN",
@@ -969,6 +4287,166 @@
     "id": "SSRA",
     "rank": 6,
     "party": "minority"
+   }
+  ],
+  "wicker": [
+   {
+    "id": "JCSE",
+    "rank": 1,
+    "party": "majority",
+    "title": "Cochairman"
+   },
+   {
+    "id": "SLIN",
+    "rank": 11,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 8,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "cotton": [
+   {
+    "id": "JSEC",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAS",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 4,
+    "party": "majority"
    }
   ],
   "sullivan": [
@@ -1037,6 +4515,1357 @@
    {
     "id": "SSVA",
     "rank": 5,
+    "party": "majority"
+   }
+  ],
+  "cramer": [
+   {
+    "id": "SSAS",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 7,
+    "party": "majority"
+   }
+  ],
+  "rscott": [
+   {
+    "id": "SPAG",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAS",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "budd": [
+   {
+    "id": "JSEC",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSSB",
+    "rank": 7,
+    "party": "majority"
+   }
+  ],
+  "schmitt": [
+   {
+    "id": "JSEC",
+    "rank": 1,
+    "party": "majority",
+    "title": "Vice Chairman"
+   },
+   {
+    "id": "SSAS",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "banks": [
+   {
+    "id": "SSAS",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 9,
+    "party": "majority"
+   }
+  ],
+  "sheehy": [
+   {
+    "id": "SSAS",
+    "rank": 13,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 13,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 10,
+    "party": "majority"
+   }
+  ],
+  "moody": [
+   {
+    "id": "JSEC",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SPAG",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 14,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 5,
+    "party": "majority"
+   }
+  ],
+  "blumenthal": [
+   {
+    "id": "SCNC",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
+  "hirono": [
+   {
+    "id": "SSAS",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 4,
+    "party": "minority"
+   }
+  ],
+  "kaine": [
+   {
+    "id": "SSAS",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 4,
+    "party": "minority"
+   }
+  ],
+  "king": [
+   {
+    "id": "SLIN",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS13",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEG",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSVA",
+    "rank": 6,
+    "party": "minority"
+   }
+  ],
+  "warren": [
+   {
+    "id": "SPAG",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSBK",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 4,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 6,
+    "party": "minority"
+   }
+  ],
+  "duckworth": [
+   {
+    "id": "SSAS",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS15",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS17",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSVA",
+    "rank": 7,
+    "party": "minority"
+   }
+  ],
+  "rosen": [
+   {
+    "id": "SSAS",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS21",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSCM",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 7,
+    "party": "minority"
+   }
+  ],
+  "kelly": [
+   {
+    "id": "JSEC",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SPAG",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS",
+    "rank": 12,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS14",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSAS16",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSAS20",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 3,
+    "party": "minority"
+   }
+  ],
+  "tscott": [
+   {
+    "id": "SSBK",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 5,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "crapo": [
+   {
+    "id": "JSTX",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 4,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 12,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 10,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI14",
+    "rank": 3,
+    "party": "majority",
+    "title": "Ex Officio"
+   }
+  ],
+  "tillis": [
+   {
+    "id": "JCSE",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSVA",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "lummis": [
+   {
+    "id": "SSBK",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSCM",
+    "rank": 15,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 14,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 3,
     "party": "majority"
    }
   ],
@@ -1109,6 +5938,1002 @@
     "party": "majority"
    }
   ],
+  "moreno": [
+   {
+    "id": "SCNC",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 3,
+    "party": "majority"
+   }
+  ],
+  "mccormick": [
+   {
+    "id": "JSEC",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SPAG",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 13,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 3,
+    "party": "majority"
+   }
+  ],
+  "warner": [
+   {
+    "id": "SLIN",
+    "rank": 1,
+    "party": "minority",
+    "title": "Vice Chairman"
+   },
+   {
+    "id": "SSBK",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 3,
+    "party": "minority"
+   }
+  ],
+  "cortezmasto": [
+   {
+    "id": "SLIA",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEG",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 5,
+    "party": "minority"
+   }
+  ],
+  "kim": [
+   {
+    "id": "SPAG",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK05",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 12,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSHR",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 7,
+    "party": "minority"
+   }
+  ],
+  "gallego": [
+   {
+    "id": "JCSE",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK13",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEG",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 8,
+    "party": "minority"
+   }
+  ],
+  "bluntrochester": [
+   {
+    "id": "SSBK",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK12",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 13,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 12,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 8,
+    "party": "minority"
+   }
+  ],
+  "alsobrooks": [
+   {
+    "id": "SPAG",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK04",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK08",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSBK09",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 11,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 6,
+    "party": "minority"
+   }
+  ],
+  "cruz": [
+   {
+    "id": "SSCM",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 15,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSRA",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "blackburn": [
+   {
+    "id": "JSEC",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 13,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSVA",
+    "rank": 6,
+    "party": "majority"
+   }
+  ],
+  "young": [
+   {
+    "id": "SLIN",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFI",
+    "rank": 9,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 5,
+    "party": "majority"
+   }
+  ],
+  "curtis": [
+   {
+    "id": "SSCM",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSSB",
+    "rank": 8,
+    "party": "majority"
+   }
+  ],
+  "cantwell": [
+   {
+    "id": "JSTX",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SLIA",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSCM33",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 13,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM36",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM37",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSSB",
+    "rank": 2,
+    "party": "minority"
+   }
+  ],
+  "markey": [
+   {
+    "id": "SSCM",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM34",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM35",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSCM38",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSSB",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
   "hickenlooper": [
    {
     "id": "SSCM",
@@ -1175,6 +7000,1153 @@
    {
     "id": "SSSB",
     "rank": 8,
+    "party": "minority"
+   }
+  ],
+  "lee": [
+   {
+    "id": "SSBU",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 9,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 8,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 5,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 7,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "barrasso": [
+   {
+    "id": "SSEG",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 10,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 4,
+    "party": "majority"
+   }
+  ],
+  "risch": [
+   {
+    "id": "SCNC",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SLET",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSSB",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "daines": [
+   {
+    "id": "SLIA",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFR07",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "cassidy": [
+   {
+    "id": "SSEG",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG04",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI14",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 8,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 8,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 10,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSVA",
+    "rank": 3,
+    "party": "majority"
+   }
+  ],
+  "wyden": [
+   {
+    "id": "JSTX",
+    "rank": 1,
+    "party": "minority"
+   },
+   {
+    "id": "SLIN",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 3,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 11,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 9,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI14",
+    "rank": 2,
+    "party": "minority",
+    "title": "Ex Officio"
+   }
+  ],
+  "padilla": [
+   {
+    "id": "JSLC",
+    "rank": 1,
+    "party": "minority"
+   },
+   {
+    "id": "JSPR",
+    "rank": 1,
+    "party": "minority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 10,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG01",
+    "rank": 7,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG03",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSEG07",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 8,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSRA",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   }
+  ],
+  "whitehouse": [
+   {
+    "id": "JCSE",
+    "rank": 1,
+    "party": "minority"
+   },
+   {
+    "id": "SCNC",
+    "rank": 1,
+    "party": "minority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSBU",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSEV08",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 5,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 8,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 6,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSFI",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSJU25",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSJU26",
+    "rank": 2,
+    "party": "minority"
+   }
+  ],
+  "sanders": [
+   {
+    "id": "SSBU",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV09",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV10",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSEV15",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 9,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI02",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 7,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 7,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 9,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSVA",
+    "rank": 3,
+    "party": "minority"
+   }
+  ],
+  "cornyn": [
+   {
+    "id": "JSTX",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SCNC",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SLIN",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI13",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFR",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR02",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR06",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU04",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "lankford": [
+   {
+    "id": "SLET",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SLIN",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSGA",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   }
+  ],
+  "johnson": [
+   {
+    "id": "SPAG",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSBU",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSFI",
+    "rank": 11,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSFI14",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSGA",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 2,
+    "party": "majority"
+   }
+  ],
+  "hassan": [
+   {
+    "id": "JSEC",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI10",
+    "rank": 1,
+    "party": "minority",
+    "title": "Ranking Member"
+   },
+   {
+    "id": "SSFI11",
+    "rank": 4,
+    "party": "minority"
+   },
+   {
+    "id": "SSFI12",
+    "rank": 3,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 2,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 6,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 5,
+    "party": "minority"
+   },
+   {
+    "id": "SSVA",
+    "rank": 5,
+    "party": "minority"
+   }
+  ],
+  "paul": [
+   {
+    "id": "SSFR",
+    "rank": 8,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR01",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR09",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR14",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSFR15",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 5,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSGA22",
+    "rank": 6,
+    "party": "majority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSHR",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR09",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 3,
+    "party": "majority"
+   }
+  ],
+  "hawley": [
+   {
+    "id": "SSGA",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA01",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSGA20",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSHR",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 4,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU01",
+    "rank": 2,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU21",
+    "rank": 5,
+    "party": "majority"
+   },
+   {
+    "id": "SSJU22",
+    "rank": 1,
+    "party": "majority",
+    "title": "Chairman"
+   },
+   {
+    "id": "SSJU28",
+    "rank": 3,
+    "party": "majority"
+   },
+   {
+    "id": "SSSB",
+    "rank": 6,
+    "party": "majority"
+   }
+  ],
+  "armstrong": [
+   {
+    "id": "SLIA",
+    "rank": 6,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR",
+    "rank": 12,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR11",
+    "rank": 7,
+    "party": "majority"
+   },
+   {
+    "id": "SSHR12",
+    "rank": 9,
+    "party": "majority"
+   }
+  ],
+  "schumer": [
+   {
+    "id": "SLIN",
+    "rank": 10,
+    "party": "minority",
+    "title": "Ex Officio"
+   },
+   {
+    "id": "SSRA",
+    "rank": 2,
     "party": "minority"
    }
   ],
@@ -1707,5 +8679,5 @@
    }
   ]
  },
- "checked": "2026-10-24"
+ "checked": "2026-10-28"
 }

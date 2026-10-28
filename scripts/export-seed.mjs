@@ -5,7 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 import config from '../data/config.json' with {type:'json'};
-import {seedScope} from '../src/refresh.mjs';
+import {seedScope,voterHashes} from '../src/refresh.mjs';
 import {HOSTS} from '../src/sources.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const db=new DatabaseSync(path.join(root,'.local','records.sqlite'),{readOnly:true});
@@ -17,9 +17,9 @@ if(unfinished.length){
 }
 const rows=db.prepare('SELECT j.id,j.kind,j.subject,j.args,j.last_success,j.checked_through,s.run_id,s.payload FROM jobs j JOIN snapshots s ON s.job_id=j.id WHERE j.last_success IS NOT NULL ORDER BY j.kind,j.id').all();
 const jobs=rows.map(r=>({id:r.id,kind:r.kind,subject:r.subject,args:JSON.parse(r.args),lastSuccess:r.last_success,checkedThrough:r.checked_through,run:r.run_id,snapshot:JSON.parse(r.payload)}));
-const seed={version:1,exportedAt:new Date().toISOString(),scope:seedScope(config),jobs};
+const seed={version:1,exportedAt:new Date().toISOString(),scope:seedScope(config),voters:voterHashes(),jobs};
 // One job per line keeps future seed updates reviewable as diffs.
-const text=`{"version":1,"exportedAt":${JSON.stringify(seed.exportedAt)},"scope":${JSON.stringify(seed.scope)},"jobs":[\n${jobs.map(j=>JSON.stringify(j)).join(',\n')}\n]}\n`;
+const text=`{"version":1,"exportedAt":${JSON.stringify(seed.exportedAt)},"scope":${JSON.stringify(seed.scope)},"voters":${JSON.stringify(seed.voters)},"jobs":[\n${jobs.map(j=>JSON.stringify(j)).join(',\n')}\n]}\n`;
 
 // Every key named in sources.mjs is checked, as is any link that still carries a key parameter.
 const names=[...new Set(Object.values(HOSTS).flatMap(h=>h.keys||[]))];

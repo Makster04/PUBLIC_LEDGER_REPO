@@ -133,7 +133,7 @@ export const RecordLive={
     try{const s=await status();const successes=s.jobs.filter(j=>j.last_success).length;const blocked=s.jobs.filter(j=>j.status==='blocked').length;
       element.innerHTML=`<span>Research snapshot: ${esc(s.reviewedAt)}. Official records refresh separately.</span><a href="#updates">${successes} sources updated${blocked?' · '+blocked+' awaiting setup':''}</a>`;
       const pane=document.querySelector('#pane'),hash=location.hash;
-      if(pane&&/^#[a-zA-Z0-9]+(-[a-z]+)?$/.test(hash)&&!pane.querySelector('.snapshot-note')){pane.insertAdjacentHTML('afterbegin',`<div class="snapshot-note"><b>Reviewed research:</b> as of ${esc(s.reviewedAt)}. Figures below keep their original reporting dates. <a href="${esc('#'+hash.slice(1).split('-')[0]+'-latest')}">See latest official records</a>.</div>`);
+      if(pane&&!pane.dataset.basic&&/^#[a-zA-Z0-9]+(-[a-z]+)?$/.test(hash)&&!pane.querySelector('.snapshot-note')){pane.insertAdjacentHTML('afterbegin',`<div class="snapshot-note"><b>Reviewed research:</b> as of ${esc(s.reviewedAt)}. Figures below keep their original reporting dates. <a href="${esc('#'+hash.slice(1).split('-')[0]+'-latest')}">See latest official records</a>.</div>`);
         const own=pane.querySelector('#live-records'),a=pane.querySelector('.snapshot-note a');if(own&&a)a.addEventListener('click',e=>{e.preventDefault();own.scrollIntoView({behavior:'smooth',block:'start'});});}
     }catch{element.innerHTML='Saved research is available. The update service is offline.';}
   },
@@ -162,13 +162,14 @@ export const RecordLive={
     }catch{host.innerHTML=`<section class="section"><h1>${title}</h1><p>The update service is offline. Restart the local server to resume checks.</p><a href="#home">Return to saved research</a></section>`;}
   },
   // parts limits it to some sections (campaign, pac, outside, legislation, votes), for a profile tab that shows only those.
-  async profile(person,host,parts){
+  // intro replaces the line under the heading (a basic profile has no reviewed research above it).
+  async profile(person,host,parts,{intro}={}){
     if(!host)return;
     const want=k=>!parts||parts.includes(k);
     host.innerHTML='<p>Loading latest official records…</p>';
     try{const [p,s]=await Promise.all([get('/api/profile?id='+encodeURIComponent(person.id)),status()]);if(!host.isConnected)return;
       const {campaign,pac,outside,legislation}=p.sections;
-      host.innerHTML=`${parts?'<h2>Latest official records</h2><p class="live-meta">These update on their own from official sources, separately from the reviewed research above.':'<div class="live-label">Latest official records</div><h2>Recorded activity</h2><p class="live-meta">These records update independently of the reviewed profile.'} <a href="#updates">Check all sources and refresh history</a>.</p>
+      host.innerHTML=`${parts?`<h2>Latest official records</h2><p class="live-meta">${esc(intro||'These update on their own from official sources, separately from the reviewed research above.')}`:'<div class="live-label">Latest official records</div><h2>Recorded activity</h2><p class="live-meta">These records update independently of the reviewed profile.'} <a href="#updates">Check all sources and refresh history</a>.</p>
       ${want('campaign')?`<div class="live-card"><h3>Campaign finances</h3>${campaign?`${freshness(s,person.id,'campaign',campaign.checkedAt)}<p class="live-meta">Report covers ${date(campaign.start)}–${date(campaign.end)} · ${link(campaign.source,'FEC committee summary')}</p><div class="live-stats">${stat('Campaign receipts',cash(campaign.receipts))}${stat('Cash on hand',cash(campaign.cash))}${stat('Disbursements',cash(campaign.disbursements))}${stat('Debts',cash(campaign.debts))}</div>`:empty(s,person.id,'campaign')}</div>`:''}
       ${want('pac')?`<div class="live-card"><h3>PAC contributions</h3>${pac?freshness(s,person.id,'pac',pac.checkedAt)+transactions(pac,'pac'):empty(s,person.id,'pac')}</div>`:''}
       ${want('outside')?`<div class="live-card"><h3>Outside spending</h3>${outside?freshness(s,person.id,'outside',outside.checkedAt)+transactions(outside,'outside'):empty(s,person.id,'outside')}</div>`:''}

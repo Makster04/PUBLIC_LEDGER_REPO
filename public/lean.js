@@ -88,3 +88,13 @@ export function positionByCategory(issues,evidence){
     return {label,status:'placed',issues:sided,lib:libItems,con:conItems,n,record,stated,lean:Math.round((lib-con)/(lib+con)*100)};
   });
 }
+
+// A senator's or representative's place in their chamber from Voteview's DW-NOMINATE pool ([score, party, name,
+// bioguide] for each current member), in the shape the profiles use: lo is the share of the rest of the chamber more
+// liberal, plo the share of their party (an independent is compared with the Democrats they caucus with).
+export function poolIdeo(pool,bioguide,party){
+  const me=(pool||[]).find(p=>p[3]===bioguide);if(!me)return null;
+  const others=pool.filter(p=>p!==me),side=party==='R'?['R']:party==='I'?['D','I']:['D'],group=others.filter(p=>side.includes(p[1]));
+  const pct=(list)=>list.length?Math.round(list.filter(p=>p[0]<me[0]).length/list.length*1000)/10:0;
+  return {dim1:me[0],lo:pct(others),plo:pct(group),n:others.length,np:group.length};
+}

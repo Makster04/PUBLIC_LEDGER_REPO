@@ -6,7 +6,7 @@ import {fecNext,normalizeCampaign,normalizeTransaction,normalizeVote,requestSour
 import {addJob,initialize,runRefresh,seedScope,statement,getProfile,getStatus} from '../src/refresh.mjs';
 import worker from '../src/worker.mjs';
 import {openDatabase} from '../scripts/sqlite.mjs';
-import {feedSignature} from '../src/refresh.mjs';
+import {feedSignature,voterHashes} from '../src/refresh.mjs';
 const migration=await fs.readFile(new URL('../migrations/0001_initial.sql',import.meta.url),'utf8');
 const args={committee:'C00314575',candidate:'S6ME00159',cycle:2026};
 const campaign=(receipts=1000)=>({committee_id:args.committee,cycle:2026,coverage_start_date:'2025-01-01',coverage_end_date:'2026-06-30',receipts,last_cash_on_hand_end_period:200,last_debts_owed_by_committee:0,disbursements:800});
@@ -66,7 +66,7 @@ test('a published vote is never scheduled again and does not go stale',async()=>
 test('a new database starts from the bundled seed; a mismatched seed or an existing database is left alone',async()=>{
   const config=JSON.parse(await fs.readFile(new URL('../data/config.json',import.meta.url),'utf8'));
   const checked='2026-10-01T12:00:00.000Z',vote={chamber:'S',congress:117,session:1,number:1};
-  const seed={version:1,exportedAt:checked,scope:seedScope(config),jobs:[
+  const seed={version:1,exportedAt:checked,scope:seedScope(config),voters:voterHashes(),jobs:[
     {id:'campaign:collins',kind:'campaign',subject:'collins',args:{committee:args.committee,cycle:2026},lastSuccess:checked,checkedThrough:'2026-06-30',run:'r1',snapshot:normalizeCampaign(campaign(4321),args.committee,2026)},
     {id:'vote:S:117:1:1',kind:'vote',subject:'117-1-1',args:vote,lastSuccess:checked,checkedThrough:null,run:'r2',snapshot:{id:'117-1-1',chamber:'S',number:1,date:'2021-01-06',positions:{collins:'Yea'}}}]};
   const fresh=()=>{const db=openDatabase(':memory:');db.exec(migration);return db;};
@@ -99,4 +99,21 @@ test('House vote mapping uses Bioguide IDs; Senate uses LIS member IDs, never na
   assert.throws(()=>normalizeVote(senate,{chamber:'S',congress:119,session:2,number:2},people),/identity/);
   const house=parser.parse('<rollcall-vote><vote-metadata><rollcall-num>1</rollcall-num><action-date>6-Jan-2026</action-date><vote-question>Passage</vote-question></vote-metadata><vote-data><recorded-vote><legislator name-id="C001035">Another name</legislator><vote>Yea</vote></recorded-vote></vote-data></rollcall-vote>');
   assert.equal(normalizeVote(house,{chamber:'H',year:2026,number:1},people).positions.collins,'Yea');
+});
+
+test('adding a senator reads the Senate roll calls already read once more, so their positions are filled in',async()=>{
+  const db=openDatabase(':memory:');db.exec(migration);await initialize(db);
+  await statement(db,"UPDATE jobs SET status='ready',last_success='2026-10-01T00:00:00Z',next_due=? WHERE kind='vote'",Date.now()+864e5).run();
+  const senateVote=(await statement(db,"SELECT id FROM jobs WHERE id LIKE 'vote:S:%' LIMIT 1").first()).id,houseVote=(await statement(db,"SELECT id FROM jobs WHERE id LIKE 'vote:H:%' LIMIT 1").first())?.id;
+  const {default:config}=await import('../data/config.json',{with:{type:'json'}});
+  config.people.push({id:'newsenator',name:'New Senator',short:'Senator',bioguide:'N000001',lis:'S999',chamber:'S',state:'ME',ids:{},social:{bluesky:[],threads:[]},inOffice:true,official:null});
+  try{
+    await initialize(db);
+    assert.equal((await statement(db,'SELECT status FROM jobs WHERE id=?',senateVote).first()).status,'pending');
+    if(houseVote)assert.equal((await statement(db,'SELECT status FROM jobs WHERE id=?',houseVote).first()).status,'ready','House roll calls are not read again for a senator');
+    assert.ok(await statement(db,"SELECT id FROM jobs WHERE id='legislation:newsenator'").first(),'the new senator gets their own jobs');
+    await statement(db,"UPDATE jobs SET status='ready' WHERE kind='vote'").run();await initialize(db);
+    assert.equal((await statement(db,'SELECT status FROM jobs WHERE id=?',senateVote).first()).status,'ready','only once');
+  }finally{config.people.pop();}
+  db.close();
 });
