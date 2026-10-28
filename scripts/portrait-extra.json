@@ -190,5 +190,27 @@
   "capito": {
     "file": "data/portraits/capito.jpg",
     "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "shaheen": {
+    "file": "data/portraits/shaheen.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "gillibrand": {
+    "file": "data/portraits/gillibrand.png",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "model": 1
+  },
+  "klobuchar": {
+    "file": "data/portraits/klobuchar.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "moran": {
+    "file": "data/portraits/moran.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "risch": {
+    "file": "data/portraits/risch.png",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": "right"
   }
 }
