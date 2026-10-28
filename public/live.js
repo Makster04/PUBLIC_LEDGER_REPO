@@ -11,7 +11,7 @@ const kindLabel=j=>kindName[j.kind]||j.label||j.kind;
 const KEYS=[['FEC_API_KEY','https://api.open.fec.gov/developers/','Campaign totals, donors by employer, PAC contributions, outside spending, FEC enforcement records'],
   ['CONGRESS_API_KEY','https://api.congress.gov/sign-up/','Sponsored and cosponsored bills, House roll calls, bill details, CRS reports, committee meetings'],
   ['GOVINFO_API_KEY','https://www.govinfo.gov/api-signup','Floor speeches and hearing transcripts (the Congress.gov key also works)'],
-  ['VOTESMART_API_KEY','https://www.votesmart.org/votesmart-api','Issue positions and interest-group ratings'],
+  ['VOTESMART_API_KEY','https://www.votesmart.org/votesmart-api','Issue positions and interest-group ratings (optional: a paid license, not free)'],
   ['OPENSTATES_API_KEY','https://openstates.org/accounts/signup/','State legislators\' bills, votes and sponsorships'],
   ['LEGISCAN_API_KEY','https://legiscan.com/legiscan','State bills, cross-checked against Open States'],
   ['LDA_API_KEY','https://lda.gov/','Lobbying filings (optional: works without a key at a lower limit)'],

@@ -34,7 +34,7 @@ Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules 
   - [Congress.gov](https://api.congress.gov/sign-up/) (`CONGRESS_API_KEY`) for subjects, summaries and committee reports.
   - [GovInfo](https://www.govinfo.gov/api-signup) (`GOVINFO_API_KEY`) for full bill text.
   - [Regulations.gov](https://open.gsa.gov/api/regulationsgov/) (`REGULATIONS_API_KEY`) for union and company comments on related rules.
-- **Many groups at once:** [Vote Smart](https://www.votesmart.org/votesmart-api) (`VOTESMART_API_KEY`), with business and labor groups' key votes and ratings. Keep its data out of AI tools.
+- **Many groups at once (paid only):** [Vote Smart](https://www.votesmart.org/votesmart-api) has business and labor groups' key votes and ratings, but it needs a paid license ($4,850 a year to publish) and doesn't allow crediting it. Not planned; the groups' own scorecards above are free.
 - **White House position:** Statements of Administration Policy, from the [American Presidency Project](https://www.presidency.ucsb.edu/).
 - **Other scorecards:** Heritage Action, LCV, the ACLU and HRC mostly rate other issues, so they fit in Your match instead.
 - **Open question:** how to combine who gains, who took a side and who lobbied into one score, and what to do when they disagree.
