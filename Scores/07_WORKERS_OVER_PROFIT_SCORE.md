@@ -18,6 +18,26 @@ Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules 
 | [ ] | Rename the "People" side to "Workers" | In the charts and tables. |
 | [ ] | Decide whether agency estimates and tariffs can mark a bill | From the methodology's open decisions. |
 | [ ] | Decide the graph for each index | |
+| [ ] | Better bill marking | Score each bill from worker-backed to corporate-backed. See below. |
+
+## Better bill marking
+
+- **Problem:** the site needs a stronger, more consistent way to decide whether a bill mainly helps workers or corporations.
+- **Idea:** instead of a yes-or-no mark, score each bill on a scale from fully worker-backed to fully corporate-backed.
+- **Who gains (nonpartisan):** [CBO](https://www.cbo.gov/cost-estimates), [Joint Committee on Taxation](https://www.jct.gov/), [Tax Policy Center](https://www.taxpolicycenter.org/) and [Penn Wharton Budget Model](https://budgetmodel.wharton.upenn.edu/).
+- **Who took a side:**
+  - **Worker side:** the [AFL-CIO](https://aflcio.org/scorecard), [Economic Policy Institute](https://www.epi.org/) and [National Employment Law Project](https://www.nelp.org/).
+  - **Business side:** the [U.S. Chamber of Commerce](https://www.uschamber.com/how-they-voted), [NFIB](https://www.nfib.com/) and [National Association of Manufacturers](https://www.nam.org/).
+  - **Tax bills, one from each side:** the [Tax Foundation](https://taxfoundation.org/) and [ITEP](https://itep.org/).
+- **Who lobbied:** unions vs. corporations lobbying on each bill, from [LDA.gov](https://lda.gov/) (`LDA_API_KEY`).
+- **Bill details:**
+  - [Congress.gov](https://api.congress.gov/sign-up/) (`CONGRESS_API_KEY`) for subjects, summaries and committee reports.
+  - [GovInfo](https://www.govinfo.gov/api-signup) (`GOVINFO_API_KEY`) for full bill text.
+  - [Regulations.gov](https://open.gsa.gov/api/regulationsgov/) (`REGULATIONS_API_KEY`) for union and company comments on related rules.
+- **Many groups at once:** [Vote Smart](https://www.votesmart.org/votesmart-api) (`VOTESMART_API_KEY`), with business and labor groups' key votes and ratings. Keep its data out of AI tools.
+- **White House position:** Statements of Administration Policy, from the [American Presidency Project](https://www.presidency.ucsb.edu/).
+- **Other scorecards:** Heritage Action, LCV, the ACLU and HRC mostly rate other issues, so they fit in Your match instead.
+- **Open question:** how to combine who gains, who took a side and who lobbied into one score, and what to do when they disagree.
 
 ---
 
