@@ -13,7 +13,8 @@ CONGRESS_API_KEY=
 # https://www.govinfo.gov/api-signup
 GOVINFO_API_KEY=
 
-# Vote Smart: issue positions and interest-group ratings
+# Vote Smart: issue positions and interest-group ratings. Optional and NOT free: a paid license is needed
+# ($350 a month to build with, $4,850 a year to publish). Leave blank unless you buy one.
 # https://www.votesmart.org/votesmart-api
 VOTESMART_API_KEY=
 

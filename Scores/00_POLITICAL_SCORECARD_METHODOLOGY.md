@@ -377,7 +377,7 @@ Each data category below lists its free sources and the parts of the scorecard i
 
 *Feeds Rule 1 statements, Your match, and the Promise Score. All of these run together; GDELT and the New York Times are merged by link.*
 
-- **Vote Smart API** *(in use)*: candidates' issue positions, votes, and interest-group ratings. It needs a free key and does not allow bulk requests; a 2020 report said access was limited to select organizations, so confirm a key is available **(State and federal)**. [votesmart.org/votesmart-api](https://www.votesmart.org/votesmart-api)
+- **Vote Smart API** *(not used: paid license only)*: candidates' issue positions, votes, and interest-group ratings. Vote Smart quoted a Developer license (internal use only: $350 for 1 month, $1,000 for 3 months, $1,900 for 6) and a Public Distribution license, needed once the site shows its data, from $4,850 a year (October 2026). A license also forbids crediting Vote Smart or linking to it on the site. The refresh code stays off while the key is blank **(State and federal)**. [votesmart.org/votesmart-api](https://www.votesmart.org/votesmart-api)
 - **Google Fact Check Tools API** *(in use)*: published fact-checks of politicians' claims, with a free Google key, as leads for statement checks **(State and federal)**. [Docs](https://developers.google.com/fact-check-tools)
 - **GDELT DOC API** and the **New York Times Article Search API** *(in use)*: news coverage of each politician (GDELT with no key, back to 2017; NYT with a free key), as leads for statements and ethics cases **(State and federal)**. [GDELT](https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/) · [NYT](https://developer.nytimes.com/)
 - **Bluesky public API** *(in use, for accounts added by hand)*: officials' public posts, with no login or key **(State and federal)**. [Docs](https://docs.bsky.app/docs/category/http-reference)
@@ -459,6 +459,7 @@ Each data category below lists its free sources and the parts of the scorecard i
 
 ### Do not use (shut down, closing, or not free)
 
+- **Vote Smart API:** paid license only, from $350 a month to build with or $4,850 a year to publish, and the site may not credit Vote Smart **(State and federal)**.
 - **ProPublica Congress API:** no longer available and no new keys **(Federal only)**. [Shutdown notice](https://projects.propublica.org/api-docs/congress-api/)
 - **OpenSecrets API:** reported switched off in 2025; use FEC data directly instead. Its bulk-data sign-ups also reportedly go unanswered **(Federal only)**.
 - **Google Civic Information API, representative lookup:** shut down in April 2025 **(State and federal)**.
