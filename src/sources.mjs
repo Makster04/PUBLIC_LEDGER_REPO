@@ -16,7 +16,9 @@ export const HOSTS = {
   'api.congress.gov':{name:'Congress.gov',keys:['CONGRESS_API_KEY'],query:'api_key',perRun:40},
   'www.senate.gov':{name:'Senate.gov',perRun:10},
   'clerk.house.gov':{name:'House Clerk',perRun:10},
-  'disclosures-clerk.house.gov':{name:'House Clerk disclosures'},
+  'disclosures-clerk.house.gov':{name:'House Clerk disclosures',perRun:10},
+  // The Senate's financial disclosure site. It is a website, not an API: a session agrees to its terms first.
+  'efdsearch.senate.gov':{name:'Senate eFD',perRun:10,ua:'PublicLedger/1.0 (public-records research; non-commercial)'},
   'api.govinfo.gov':{name:'GovInfo',keys:['GOVINFO_API_KEY','CONGRESS_API_KEY'],query:'api_key',perRun:15},
   'api.votesmart.org':{name:'Vote Smart',keys:['VOTESMART_API_KEY'],query:'key'},
   'v3.openstates.org':{name:'Open States',keys:['OPENSTATES_API_KEY'],header:'X-API-KEY'},
@@ -63,21 +65,28 @@ export function missingKey(host,env){
 }
 export class SourceError extends Error { constructor(message, retryAfter=0,statusCode=0){super(message);this.retryAfter=retryAfter;this.statusCode=statusCode;} }
 
-// as: 'json' (default), 'xml', 'text' or 'bytes'. A body is sent as JSON with POST. allow lists HTTP statuses that
-// return null instead of failing (allow404 is the same as allow:[404]). follow allows up to 3 redirects, each to an
-// approved https host; otherwise any redirect fails.
-export async function requestSource(url, env, {json=true,as=json?'json':'xml',allow404=false,allow=allow404?[404]:[],follow=false,body=null}={}) {
+// as: 'json' (default), 'xml', 'text' or 'bytes'. A body is sent as JSON with POST, and a form as an HTML form post.
+// allow lists HTTP statuses that return null instead of failing (allow404 is the same as allow:[404]); a 3xx in allow
+// is returned rather than followed. follow allows up to 3 redirects, each to an approved https host; otherwise any
+// redirect fails. headers adds request headers (never a credential header); withHeaders returns {body, status,
+// headers} so a caller can read the response's cookies.
+export async function requestSource(url, env, {json=true,as=json?'json':'xml',allow404=false,allow=allow404?[404]:[],follow=false,body=null,form=null,headers:extra=null,withHeaders=false}={}) {
   let u=new URL(url),h=hostRule(u.hostname); if(u.protocol!=='https:' || !h) throw new SourceError('Unapproved data source');
   const missing=missingKey(u.hostname,env);if(missing)throw new SourceError(`${missing} API key needed`);
   const headers={Accept:as==='json'?'application/json':as==='xml'?'application/rss+xml,application/atom+xml,application/xml,text/xml':'*/*'};
   const key=h.keys&&h.keys.map(k=>env[k]).find(Boolean);
   if(key){if(h.query)u.searchParams.set(h.query,key);else headers[h.header]=(h.prefix||'')+key;}
+  if(h.ua)headers['User-Agent']=h.ua;
   if(h.agent)headers['User-Agent']=env[h.agent];
+  for(const [k,v] of Object.entries(extra||{}))if(v!=null&&!/^(authorization|x-api-key)$/i.test(k))headers[k]=String(v);
   if(body)headers['Content-Type']='application/json';
+  if(form)headers['Content-Type']='application/x-www-form-urlencoded';
+  const payload=form?new URLSearchParams(form).toString():body?JSON.stringify(body):undefined;
+  const manual=follow||allow.some(s=>s>=300&&s<400);
   let response;
   for(let hop=0;;hop++){
-    response=await (env.fetch||fetch)(u,{method:body?'POST':'GET',headers,body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000),redirect:follow?'manual':'error'});
-    if(!follow||response.status<300||response.status>=400)break;
+    response=await (env.fetch||fetch)(u,{method:payload?'POST':'GET',headers,body:payload,signal:AbortSignal.timeout(20000),redirect:manual?'manual':'error'});
+    if(!follow||response.status<300||response.status>=400||allow.includes(response.status))break;
     const to=response.headers.get('location');
     if(!to||hop>=3)throw new SourceError('Source redirected too many times');
     const next=new URL(to,u);
@@ -85,21 +94,29 @@ export async function requestSource(url, env, {json=true,as=json?'json':'xml',al
     if(next.protocol!=='https:'||!hostRule(next.hostname)||(key&&next.hostname!==u.hostname))throw new SourceError('Source redirected to an unapproved address');
     u=next;
   }
-  if(allow.includes(response.status)) return null;
+  const out=b=>withHeaders?{body:b,status:response.status,headers:response.headers}:b;
+  if(allow.includes(response.status)) return out(null);
   if(!response.ok) {
     const retry=response.headers.get('retry-after');
     const seconds=retry ? (Number.isFinite(Number(retry))?Number(retry):Math.max(0,(Date.parse(retry)-Date.now())/1000)):0;
     throw new SourceError(`${u.hostname} returned HTTP ${response.status}`,seconds*1000,response.status);
   }
-  if(as==='bytes'){const b=new Uint8Array(await response.arrayBuffer());if(b.length>40_000_000)throw new SourceError('Source response exceeds safe page size');return b;}
+  if(as==='bytes'){const b=new Uint8Array(await response.arrayBuffer());if(b.length>40_000_000)throw new SourceError('Source response exceeds safe page size');return out(b);}
   const text=await response.text(); if(text.length>12_000_000) throw new SourceError('Source response exceeds safe page size');
-  if(as==='text')return text;
+  if(as==='text')return out(text);
   if(as==='json') { try {
     // FEC identifiers can exceed JavaScript's safe integer range. Preserve them before parsing.
-    return JSON.parse(u.hostname==='api.open.fec.gov'?text.replace(/("(?:sub_id|original_sub_id|last_index)"\s*:\s*)(\d+)(?=\s*[,}])/g,'$1"$2"'):text);
+    return out(JSON.parse(u.hostname==='api.open.fec.gov'?text.replace(/("(?:sub_id|original_sub_id|last_index)"\s*:\s*)(\d+)(?=\s*[,}])/g,'$1"$2"'):text));
   }catch{throw new SourceError('Source returned invalid JSON');} }
-  return parseXML(text);
+  return out(parseXML(text));
 }
+// Cookies a response sets, added to a jar ({name: value}), and the Cookie header that sends them back.
+export function addCookies(jar,headers){
+  const list=headers?.getSetCookie?.()??String(headers?.get?.('set-cookie')||'').split(/,(?=\s*[^;,=\s]+=)/).filter(Boolean);
+  for(const c of list){const m=String(c).match(/^\s*([^=;\s]+)=([^;]*)/);if(m)jar[m[1]]=m[2];}
+  return jar;
+}
+export const cookieHeader=jar=>Object.entries(jar||{}).map(([k,v])=>`${k}=${v}`).join('; ');
 export function parseXML(text){
   if(!text.trim().startsWith('<')||XMLValidator.validate(text)!==true||/<html[\s>]/i.test(text)) throw new SourceError('Source returned an invalid XML document');
   return xml.parse(text);

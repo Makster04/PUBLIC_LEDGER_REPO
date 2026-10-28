@@ -1727,7 +1727,7 @@ const orgKey=v=>String(v||'').toLowerCase().replace(/\b(pac|political action com
 function liveStock(s,p,top,stake){
   const el=document.getElementById('f-live-stock');if(!el)return [];
   const trades=p.merged?.trades||[];
-  if(!trades.length){el.innerHTML=`<p class="small muted" style="margin:8px 0 0">The latest reported trades fill in from the daily refresh once the keys are set. <b>Sources:</b> Bargo, Eulerpool and Financial Modeling Prep, checked against the official filings. <a href="#updates">Update status</a></p>`;return [];}
+  if(!trades.length){el.innerHTML=`<p class="small muted" style="margin:8px 0 0">The latest reported trades fill in from the daily refresh once the keys are set. <b>Sources:</b> the member's own trade reports (House Clerk and Senate eFD), cross-checked with Bargo, Eulerpool and Financial Modeling Prep. <a href="#updates">Update status</a></p>`;return [];}
   if(!top.length){el.innerHTML=`<p class="small muted" style="margin:8px 0 0">${trades.length} reported trade${trades.length===1?' is':'s are'} on file. They are checked against the top donor organizations once the FEC refresh lists them.</p>`;return [];}
   const lobbied=new Set(stake.map(l=>corp(l.org)));
   const hits=tradesInDonors(trades.map(t=>({...t,company:t.asset||t.ticker})),top.map(o=>({org:o.name,stake:lobbied.has(corp(o.name))})));
@@ -2033,7 +2033,7 @@ function renderMethod(sub){
       <li><b>Nothing new changes a grade by itself:</b> new votes, bills, speeches, trades, filings and leads are listed for review. A grade changes only after the reviewed research is updated and the monthly recalculation runs.</li>
       <li><b>Merging:</b> where several sources cover the same thing, each record shows once.
         <ul class="list">
-          <li><b>Stock trades:</b> Bargo, Eulerpool and Financial Modeling Prep are matched by member, company, date, buy or sell and amount range. They are then matched to the member's official House filing, whose date wins.</li>
+          <li><b>Stock trades:</b> read from the members' own reports: House members' PDFs from the House Clerk, and senators' reports from the Senate eFD site. Bargo, Eulerpool and Financial Modeling Prep are a cross-check, matched by member, company, date, buy or sell and amount range. The official report's date wins, a trade only a service reports goes to review, and a report filed on paper is listed to check by hand.</li>
           <li><b>State bills:</b> Open States and LegiScan, by state, session year and bill number.</li>
           <li><b>News:</b> GDELT and the New York Times, by link.</li>
         </ul></li>

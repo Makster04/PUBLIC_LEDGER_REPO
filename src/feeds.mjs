@@ -3,7 +3,8 @@
 // create, how to fetch one page, and how to summarize the validated records into the published snapshot.
 // Response formats follow each source's published documentation; live responses need your keys and are not verified
 // here. Every adapter checks the identity and shape of what comes back and refuses to publish anything else.
-import {SourceError,requestSource,cleanURL,fecNext,list,day,unzipFile,parseXML} from './sources.mjs';
+import {SourceError,requestSource,cleanURL,fecNext,list,day,unzipFile,parseXML,addCookies,cookieHeader} from './sources.mjs';
+import {pdfText} from './pdf.mjs';
 import {billKey} from '../public/grades.js';
 import {sectorForSic} from '../public/sectors.js';
 import COMMITTEES from '../public/committees.json' with {type:'json'};
@@ -443,9 +444,52 @@ export const FEEDS={
       return {rows:numberTrades(rows),next:null};
     },
     summarize:rows=>({count:rows.length,rows:top(rows,200,'traded'),rowLimit:200})},
-  // The House Clerk's yearly index of every financial disclosure filing: the official record trades are checked against.
+  // Trades read straight from each House member's official trade reports (PDFs), listed in the House Clerk's index
+  // (the house-fd jobs, this year and last). An electronically filed report has text; one filed on paper is a scanned
+  // image, so it is listed for review. Reports already read are kept from the last run and not downloaded again.
+  'trades-house':{host:'disclosures-clerk.house.gov',label:'Stock trades (House Clerk reports)',tab:'ethics',
+    jobs:c=>profiled(c).filter(p=>p.inOffice&&p.chamber==='H').map(p=>({id:`trades-house:${p.id}`,subject:p.id,args:{}})),
+    async page(job,a,env){
+      const c=state(job.cursor);
+      if(!c){
+        const index=await snapshotsOf(env,'house-fd');need(index.length,'Waiting for the House disclosure index');
+        const filings=index.flatMap(x=>x.byPerson?.[job.subject]||[]).filter(f=>f.ptr&&f.url&&f.filed);
+        const {rows,done}=await carried(env,job.id);
+        const todo=filings.filter(f=>!done.has(f.id)).sort((x,y)=>y.filed.localeCompare(x.filed)).slice(0,80).map(f=>({doc:f.id,filed:f.filed,url:f.url}));
+        return {rows,next:todo.length?JSON.stringify({todo,i:0}):null};
+      }
+      const f=c.todo[c.i],found=housePtrTrades(await pdfText(await requestSource(f.url,env,{as:'bytes'})));
+      return {rows:officialRows('House Clerk',f,found,'Filed on paper (a scanned image) or not readable as text; check the report'),next:c.i+1<c.todo.length?JSON.stringify({...c,i:c.i+1}):null};
+    },
+    summarize:officialSummary},
+  // Trades read from each senator's reports on the Senate's financial disclosure site (eFD). A session agrees to the
+  // site's terms, as a visitor does, searches the senator's trade reports since January of last year, and reads each
+  // electronic report's table. A report filed on paper is a scanned image, so it is listed for review.
+  'trades-senate':{host:'efdsearch.senate.gov',label:'Stock trades (Senate eFD reports)',tab:'ethics',
+    jobs:c=>profiled(c).filter(p=>p.inOffice&&p.chamber==='S').map(p=>({id:`trades-senate:${p.id}`,subject:p.id,args:{last:surname(p),first:[firstName(p),...(p.nicknames||[])],from:c.year-1}})),
+    async page(job,a,env){
+      const c=state(job.cursor);
+      if(!c){
+        const session=await efdSession(env),reports=await efdReports(env,session,a);
+        const {rows,done}=await carried(env,job.id);
+        const todo=reports.filter(r=>!done.has(r.doc)).slice(0,80);
+        return {rows,next:todo.length?JSON.stringify({todo,i:0,jar:session.jar}):null};
+      }
+      const f=c.todo[c.i];let rows;
+      if(f.paper)rows=[unreadRow(f,'Filed on paper (a scanned image); check the report')];
+      else{
+        let html=await efdGet(env,c.jar,f.url);
+        // A session that has expired sends the visitor back to the agreement page: agree again once.
+        if(html===null){c.jar=(await efdSession(env)).jar;html=await efdGet(env,c.jar,f.url);need(html!==null,'Senate eFD session could not be restored');}
+        rows=officialRows('Senate eFD',f,efdTrades(html),'No trades could be read from this report; check the report');
+      }
+      return {rows,next:c.i+1<c.todo.length?JSON.stringify({...c,i:c.i+1}):null};
+    },
+    summarize:officialSummary},
+  // The House Clerk's yearly index of every financial disclosure filing (this year and last): the official record
+  // trades are checked against, and the list of trade reports the House reader opens.
   'house-fd':{host:'disclosures-clerk.house.gov',label:'House disclosure filings',tab:'ethics',scope:'global',
-    jobs:c=>[{id:'house-fd',subject:'House',args:{year:c.year}}],
+    jobs:c=>[c.year,c.year-1].map((year,i)=>({id:i?`house-fd:${year}`:'house-fd',subject:'House',args:{year}})),
     async page(job,a,env,config){
       const text=await unzipFile(await requestSource(`https://disclosures-clerk.house.gov/public_disc/financial-pdfs/${a.year}FD.zip`,env,{as:'bytes'}),new RegExp(`^${a.year}FD\\.xml$`,'i'));
       const filings=list(parseXML(text).FinancialDisclosure?.Member);need(filings.length,'House disclosure index is empty');
@@ -659,7 +703,7 @@ const NOT_ORG=/^(none|n\/?a|not employed|unemployed|retired|self[- ]?employed|se
 export const isOrg=e=>!!e&&!NOT_ORG.test(String(e).trim());
 
 // ---------- trades ----------
-const TYPES={purchase:'purchase',buy:'purchase',p:'purchase',sale:'sale',sell:'sale',s:'sale','sale (full)':'sale','sale (partial)':'sale',exchange:'exchange',e:'exchange'};
+const TYPES={purchase:'purchase',buy:'purchase',p:'purchase',sale:'sale',sell:'sale',s:'sale','sale (full)':'sale','sale (partial)':'sale','s (partial)':'sale',exchange:'exchange',e:'exchange'};
 export function amountRange(text){const n=String(text||'').replace(/,/g,'').match(/\$?(\d+)\s*-\s*\$?(\d+)/);return n?[Number(n[1]),Number(n[2])]:[null,null];}
 function trade(source,t){
   const traded=day(t.traded),disclosed=day(t.disclosed);need(traded,'Trade date missing');
@@ -670,6 +714,117 @@ function trade(source,t){
 // Identical trades within one service (two lots on the same day) keep separate IDs.
 function numberTrades(rows){const seen={};return rows.map(r=>{const k=tradeKey(r);seen[k]=(seen[k]||0)+1;return {...r,id:`${k}#${seen[k]}`};});}
 export const tradeKey=t=>[t.traded,t.ticker||fold(t.asset).replace(/[^a-z0-9]/g,'').slice(0,40),t.type,t.low,t.high].join('|');
+
+// ---------- the official trade reports (Periodic Transaction Reports) ----------
+const mdy=v=>{const m=String(v||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);return m?`${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:null;};
+// The House's asset codes: stocks and options are single companies; funds and bonds are not.
+const HOUSE_ASSET={ST:'stock',OP:'option',PS:'stock',EF:'fund',MF:'fund',ET:'fund',CS:'bond',GS:'bond',OT:'other'};
+const HOUSE_OWNER={SP:'spouse',JT:'joint',DC:'child'};
+// Lines that label a row's extra details (filing status, subholding, description...) or repeat the table header.
+const PTR_LABEL=/^(F\s*S|S\s*O|D|L|C|Filing\s*Status|Subholding\s*Of|Description|Location|Comments?)\s*:/i;
+const PTR_HEADER=/\b(Notification|Cap\.?\s*Gains|Transaction\s+Type|Owner\s+Asset|Periodic\s+Transaction|Filing\s+ID|Clerk of the House|Digitally Signed|I CERTIFY|Initial Public Offerings)\b/i;
+const ASSET_TAG=/\[([A-Z]{2})\]/;
+// One row of an electronically filed House trade report: the type, the two dates and the amount anchor it, and the
+// asset (with its ticker and [ST]-style code) is the text just before it, or wraps onto the next line.
+const PTR_ROW=/(?:^|[ \t\n])(P|S\s*\(partial\)|S|E)[ \t]+(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}\/\d{1,2}\/\d{4})\s+((?:Spouse\/DC\s+)?Over\s+\$[\d,]+|\$[\d,]+\s*-\s*\$[\d,]+|\$[\d,]+\s*-(?!\s*\$)|\$[\d,]+)/g;
+export function housePtrTrades(text){
+  const t=String(text||''),hits=[...t.matchAll(PTR_ROW)],out=[];
+  hits.forEach((m,k)=>{
+    const start=m.index+(m[0].length-m[0].trimStart().length),end=m.index+m[0].length;
+    const prevEnd=k?hits[k-1].index+hits[k-1][0].length:0,nextStart=k+1<hits.length?hits[k+1].index:t.length;
+    // Before: the rest of the row's own line, and earlier lines back to the previous row's details, its asset code,
+    // or a line starting with an owner code (which starts this row).
+    const before=t.slice(prevEnd,start).split('\n'),mine=[before.pop()];
+    for(const line of before.reverse()){const l=line.trim();if(!l)continue;if(PTR_LABEL.test(l)||PTR_HEADER.test(l)||ASSET_TAG.test(l))break;mine.unshift(l);if(/^(SP|JT|DC)\s/.test(l))break;}
+    let asset=mine.join(' '),amount=m[4].replace(/\s+/g,' ').trim();
+    // After: a range that wraps ("$1,001 -" then "$15,000") ends on the next line, and an asset that wraps past the
+    // dates continues there too, up to its [ST]-style code.
+    const rest=t.slice(end,nextStart).split('\n').slice(1,4).map(l=>l.trim()).filter(Boolean);
+    if(/-$/.test(amount)){const top=rest.slice(0,2).join(' ').match(/\$[\d,]+/);amount=top?`${amount} ${top[0]}`:amount.replace(/\s*-$/,'');}
+    if(!ASSET_TAG.test(asset))
+      for(const l of rest){if(PTR_LABEL.test(l)||PTR_HEADER.test(l)||/^(SP|JT|DC)\s/.test(l))break;asset+=' '+l.replace(/\$[\d,]+/g,'');if(ASSET_TAG.test(l))break;}
+    asset=asset.replace(/\s+/g,' ').trim();
+    const owner=asset.match(/^(SP|JT|DC)\s+/),code=asset.match(ASSET_TAG)?.[1]||null;
+    const ticker=[...asset.matchAll(/\(([A-Z][A-Z0-9.\-]{0,9})\)/g)].map(x=>x[1]).filter(x=>x!=='partial').pop()||null;
+    const name=asset.replace(/^(SP|JT|DC)\s+/,'').replace(ASSET_TAG,'').replace(ticker?`(${ticker})`:/$^/,'').replace(/\s+/g,' ').trim().replace(/\s*-\s*$/,'');
+    const [low,high]=amountRange(amount);
+    out.push({traded:mdy(m[2]),notified:mdy(m[3]),type:m[1].replace(/\s+/g,' '),ticker,asset:name||null,assetType:HOUSE_ASSET[code]||(code?'other':null),owner:owner?HOUSE_OWNER[owner[1]]:'self',
+      low,high:high??(/^(Spouse\/DC\s+)?Over/.test(amount)?null:low),amount});
+  });
+  return out;
+}
+// A Senate eFD report's transaction table. Columns are found by their headings.
+const SENATE_OWNER=v=>/spouse/i.test(v)?'spouse':/joint/i.test(v)?'joint':/child|dependent/i.test(v)?'child':'self';
+const SENATE_ASSET=v=>/option/i.test(v)?'option':/stock/i.test(v)?'stock':/fund|etf/i.test(v)?'fund':/bond|municipal|treasury|security|note/i.test(v)?'bond':v?'other':null;
+export function efdTrades(html){
+  const out=[];
+  for(const [table] of String(html||'').matchAll(/<table[\s\S]*?<\/table>/gi)){
+    if(!/Transaction\s*Date/i.test(table))continue;
+    const heads=[...(table.match(/<thead[\s\S]*?<\/thead>/i)?.[0]||'').matchAll(/<th[^>]*>([\s\S]*?)<\/th>/gi)].map(m=>fold(strip(m[1])));
+    const at=name=>heads.findIndex(h=>h===name||h.startsWith(name+' '));
+    const ci={traded:at('transaction date'),owner:at('owner'),ticker:at('ticker'),asset:at('asset name'),assetType:at('asset type'),type:at('type'),amount:at('amount')};
+    need(ci.traded>=0&&ci.type>=0&&ci.amount>=0,'Senate report table changed');
+    for(const [,row] of (table.match(/<tbody[\s\S]*?<\/tbody>/i)?.[0]||'').matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)){
+      const cells=[...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map(m=>m[1]),cell=i=>i>=0&&cells[i]!=null?strip(cells[i]):'';
+      const amount=cell(ci.amount),[low,high]=amountRange(amount),ticker=cell(ci.ticker);
+      out.push({traded:mdy(cell(ci.traded)),type:cell(ci.type),ticker:/^[A-Z][A-Z0-9.\-]{0,9}$/.test(ticker)?ticker:null,asset:cell(ci.asset)||null,assetType:SENATE_ASSET(cell(ci.assetType)),owner:SENATE_OWNER(cell(ci.owner)),low,high,amount});
+    }
+  }
+  return out.filter(t=>t.traded);
+}
+const EFD='https://efdsearch.senate.gov';
+// Agree to the site's terms (the checkbox every visitor ticks), keeping the session's cookies.
+async function efdSession(env){
+  const home=await requestSource(`${EFD}/search/home/`,env,{as:'text',withHeaders:true}),jar=addCookies({},home.headers);
+  const input=String(home.body).match(/<input[^>]*name=["']csrfmiddlewaretoken["'][^>]*>/i)?.[0],token=input?.match(/value=["']([^"']+)/)?.[1];
+  need(token,'Senate eFD agreement form not found');
+  const agreed=await requestSource(`${EFD}/search/home/`,env,{as:'text',form:{csrfmiddlewaretoken:token,prohibition_agreement:'1'},headers:{Cookie:cookieHeader(jar),Referer:`${EFD}/search/home/`},allow:[301,302,303],withHeaders:true});
+  addCookies(jar,agreed.headers);need(jar.csrftoken,'Senate eFD did not start a session');
+  return {jar};
+}
+// The senator's trade reports (report type 11) since January of last year, newest first.
+async function efdReports(env,{jar},a){
+  const found=[];
+  for(let start=0;start<1000;start+=100){
+    const d=await requestSource(`${EFD}/search/report/data/`,env,{form:{start:String(start),length:'100',report_types:'[11]',filer_types:'[1]',submitted_start_date:`01/01/${a.from} 00:00:00`,submitted_end_date:'',candidate_state:'',senator_state:'',office_id:'',first_name:'',last_name:a.last,csrfmiddlewaretoken:jar.csrftoken},
+      headers:{Cookie:cookieHeader(jar),Referer:`${EFD}/search/`,'X-CSRFToken':jar.csrftoken,'X-Requested-With':'XMLHttpRequest'}});
+    need(Array.isArray(d?.data),'Senate eFD search response missing');
+    found.push(...d.data.filter(r=>Array.isArray(r)&&fold(r[1])===fold(a.last)));
+    if(start+100>=Number(d.recordsFiltered??d.recordsTotal??0))break;
+  }
+  // Another senator with the same last name: keep the rows whose first name matches.
+  const firsts=new Set(found.map(r=>fold(r[0]).split(/\s+/)[0]));
+  const rows=firsts.size>1?found.filter(r=>[a.first].flat().some(f=>fold(r[0]).startsWith(fold(f).slice(0,3)))):found;
+  const out=[];
+  for(const r of rows){
+    const href=String(r[3]).match(/href=["']([^"']+)["']/)?.[1],m=href?.match(/^\/search\/view\/(ptr|paper)\/([0-9a-f-]{8,40})\/?$/i);
+    if(m)out.push({doc:m[2].toLowerCase(),paper:m[1].toLowerCase()==='paper',filed:mdy(r[4]),url:`${EFD}${href}`});
+  }
+  return out.sort((x,y)=>String(y.filed).localeCompare(String(x.filed)));
+}
+async function efdGet(env,jar,url){
+  const html=await requestSource(url,env,{as:'text',headers:{Cookie:cookieHeader(jar),Referer:`${EFD}/search/`},allow:[301,302,303]});
+  return html===null||!/Transaction|transactions/i.test(html)?null:html;
+}
+// The rows one official report gives: its trades, numbered and tagged with the report, or one "not read" row.
+const unreadRow=(f,why)=>({id:`unread:${f.doc}`,doc:f.doc,unread:{doc:f.doc,filed:f.filed,url:f.url,why}});
+function officialRows(source,f,found,why){
+  const official={doc:f.doc,filed:f.filed,url:f.url};
+  const rows=found.filter(t=>t.traded).map(t=>({...trade(source,{...t,disclosed:f.filed,link:f.url}),assetType:t.assetType||null,doc:f.doc,official}));
+  return rows.length?numberTrades(rows).map(r=>({...r,id:`${f.doc}:${r.id}`})):[unreadRow(f,why)];
+}
+function officialSummary(rows){
+  const trades=rows.filter(r=>!r.unread),unread=rows.filter(r=>r.unread).map(r=>r.unread);
+  return {count:trades.length,rows:top(trades,2000,'traded'),rowLimit:2000,unread:top(unread,200,'filed'),reports:new Set(rows.map(r=>r.doc).filter(Boolean)).size};
+}
+// The last published snapshot of a job, or of every job of a kind.
+async function snapshotsOf(env,kind){return (await env.DB.prepare('SELECT s.payload FROM snapshots s JOIN jobs j ON j.id=s.job_id WHERE j.kind=?').bind(kind).all()).results.map(r=>JSON.parse(r.payload));}
+// What the last run already read: its trades and unreadable reports carry over, and those reports aren't fetched again.
+async function carried(env,jobId){
+  const r=await env.DB.prepare('SELECT payload FROM snapshots WHERE job_id=?').bind(jobId).first(),last=r?JSON.parse(r.payload):null;
+  const rows=[...(last?.rows||[]),...(last?.unread||[]).map(u=>({id:`unread:${u.doc}`,doc:u.doc,unread:u}))];
+  return {rows,done:new Set(rows.map(x=>x.doc).filter(Boolean))};
+}
 
 export const FEED_KINDS=Object.keys(FEEDS);
 export const FEEDS_VERSION=1;
