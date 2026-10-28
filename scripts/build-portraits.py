@@ -79,14 +79,20 @@ def extend(rgba, pad_b, pad_s, k):
     solid = np.where(f[..., 3:4] >= 217, f, 0)  # only clothing that reaches the edge is carried on, not stray background
     h = f.shape[0]
     bottom = cv2.GaussianBlur(solid[h - 6:].mean(axis=0, keepdims=True), (2 * k + 1, 1), 0)
-    # Below the photo, the carried-on clothing blends toward its average color and darkens toward the frame's bottom edge,
-    # like the card's own shade, so stripes such as a shirt and tie fade into shadow instead of running on.
+    # Below the photo, the carried-on clothing blends toward its average color, so stripes such as a shirt and tie fade into
+    # the fabric instead of running on, and then fades out into the card's circle. It keeps the clothing's own brightness:
+    # no shading toward the bottom, and no flat band of color on a tightly cropped photo.
     t = np.minimum(1, np.arange(pad_b, dtype=np.float32) / max(1, 0.9 * k))[:, None, None]
     a = bottom[..., 3:4]
     avg = bottom[..., :3].sum(axis=1, keepdims=True) / max(1e-3, a.sum()) * a  # the average color, at each column's opacity
     edge = solid[h - 3:].mean(axis=0, keepdims=True)  # the photo's own last rows, unblurred, so there is no seam
     below = np.repeat(bottom, pad_b, axis=0)
-    below[..., :3] = ((1 - t) * edge[..., :3] + t * avg) * (1 - 0.6 * t)
+    below[..., :3] = (1 - t) * edge[..., :3] + t * avg
+    # The fade starts a little above the photo's last row (only seen when the photo ends inside the frame) and ends soon
+    # below it, so the clothing dissolves into the circle instead of leaving a band.
+    r = min(h, max(2, int(0.6 * k)))
+    f[h - r:] *= np.linspace(1, 0.55, r, dtype=np.float32)[:, None, None]
+    below *= np.clip(0.55 * (1 - np.arange(pad_b, dtype=np.float32) / max(1, 1.2 * k)), 0, 1)[:, None, None]
     f = np.vstack([f, below])
     solid = np.vstack([solid, below])
     left = cv2.GaussianBlur(solid[:, :4].mean(axis=1, keepdims=True), (1, k), 0)

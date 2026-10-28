@@ -169,5 +169,27 @@
   "grahamnordone": {
     "file": "data/portraits/grahamnordone.jpg",
     "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "sanders": {
+    "file": "data/portraits/sanders.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "whitehouse": {
+    "file": "data/portraits/whitehouse.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "schumer": {
+    "file": "data/portraits/schumer.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true,
+    "choke": 2
+  },
+  "reed": {
+    "file": "data/portraits/reed.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "capito": {
+    "file": "data/portraits/capito.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
   }
 }
