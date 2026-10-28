@@ -212,5 +212,25 @@
     "file": "data/portraits/risch.png",
     "credit": "Photo supplied by the site's editor for use on this site",
     "tighten": "right"
+  },
+  "markey": {
+    "file": "data/portraits/markey.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "boozman": {
+    "file": "data/portraits/boozman.png",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "cotton": {
+    "file": "data/portraits/cotton.png",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "gallego": {
+    "file": "data/portraits/gallego.png",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "kelly": {
+    "file": "data/portraits/kelly.png",
+    "credit": "Photo supplied by the site's editor for use on this site"
   }
 }

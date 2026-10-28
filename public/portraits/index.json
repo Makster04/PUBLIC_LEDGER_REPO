@@ -284,23 +284,19 @@
     },
     "boozman": {
       "file": "portraits/boozman.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/B001236.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "cotton": {
       "file": "portraits/cotton.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/C001095.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "gallego": {
       "file": "portraits/gallego.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/G000574.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "kelly": {
       "file": "portraits/kelly.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/K000377.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "padilla": {
       "file": "portraits/padilla.webp",
@@ -427,8 +423,7 @@
     },
     "markey": {
       "file": "portraits/markey.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/M000133.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "warren": {
       "file": "portraits/warren.webp",
