@@ -62,8 +62,9 @@ test('Congress.gov: cosponsored bills, House votes, bill details, CRS reports an
   await assert.rejects(run('bill','117-hr-1',{bill:'117-hr-1'},[[/bill\/117\/hr\/1\?/,{bill:{congress:117,type:'HR',number:'2',title:'x'}}]]),/identity/);
   const crs=await run('crs','CRS',{days:60},[[/crsreport\?/,{CRSReports:[{id:'R47202',title:'Tax Provisions in the Inflation Reduction Act'}]}],[/crsreport\/R47202/,{CRSReport:{id:'R47202',title:'Tax Provisions',publishDate:'2022-08-10T00:00:00Z',relatedMaterials:[{congress:117,type:'HR',number:5376}],formats:[{format:'PDF',url:'https://www.congress.gov/crs_external_products/R/PDF/R47202/R47202.pdf'}]}}]]);
   assert.deepEqual(Object.keys(crs.snapshot.byBill),['117-hr-5376']);
-  const m=await run('meeting','115538',{chamber:'house',congress:119,event:'115538'},[[/committee-meeting/,{committeeMeeting:{eventId:115538,title:'Hearing on drug prices',date:'2026-03-24T13:00:00Z',chamber:'House',committees:[{systemCode:'hsif14'},{systemCode:'hsif00'}],witnesses:[{name:'A. Witness',organization:'Example Co.'}],witnessDocuments:[{documentType:'Witness Statement',url:'https://www.congress.gov/119/meeting/house/115538/witnesses/x.pdf'}],meetingDocuments:[{documentType:'Support Document',url:'http://insecure.example/doc.pdf'}]}}]]);
+  const m=await run('meeting','115538',{chamber:'house',congress:119,event:'115538'},[[/committee-meeting/,{committeeMeeting:{eventId:115538,title:'Hearing on drug prices',date:'2026-03-24T13:00:00Z',chamber:'House',committees:[{systemCode:'hsif14'},{systemCode:'hsif00'}],witnesses:[{name:'A. Witness',organization:'Example Co.'}],hearingTranscript:[{jacketNumber:59876,url:'https://api.congress.gov/v3/hearing/119/house/59876'}],witnessDocuments:[{documentType:'Witness Statement',url:'https://www.congress.gov/119/meeting/house/115538/witnesses/x.pdf'}],meetingDocuments:[{documentType:'Support Document',url:'http://insecure.example/doc.pdf'}]}}]]);
   const row=m.rows[0];assert.deepEqual(row.committees,['HSIF14','HSIF']);assert.equal(row.documents.length,1,'non-https documents are dropped');
+  assert.deepEqual(row.transcripts,['59876'],'the transcript it points to, by jacket number');
   for(const id of row.people)assert.ok((await import('../public/committees.json',{with:{type:'json'}})).default.people[id].some(c=>c.id.startsWith('HSIF')));
 });
 
@@ -75,13 +76,16 @@ test('GovInfo: Record issues become day jobs, and speeches are matched to member
     [/PgS100\/summary/,{granuleId:'CREC-2026-10-01-pt1-PgS100',title:'HEALTH CARE',dateIssued:'2026-10-01',granuleClass:'SENATE',members:[{bioGuideId:'C001035',role:'SPEAKING'},{bioGuideId:'X000000',role:'SPEAKING'}]}],
     [/PgH5\/summary/,{granuleId:'CREC-2026-10-01-pt1-PgH5',title:'TAXES',members:[{bioGuideId:'Z999999'}]}]]);
   assert.equal(day.calls.length,3,'the Daily Digest is skipped');assert.deepEqual(Object.keys(day.snapshot.byPerson),['collins']);
+  const h=await run('hearing','CHRG-119hhrg59876',{pkg:'CHRG-119hhrg59876'},[[/CHRG-119hhrg59876\/summary/,{packageId:'CHRG-119hhrg59876',title:'HEARING ON DRUG PRICES',dateIssued:'2026-09-01',heldDates:['2026-03-24'],committees:[{committeeName:'Energy and Commerce'}],members:[{bioGuideId:'C001035'}]}]]);
+  assert.deepEqual([h.rows[0].date,h.rows[0].held],['2026-09-01','2026-03-24'],'published months after the day it was held');
 });
 
 test('Vote Smart, Bluesky, Wayback, fact-checks, YouTube and news',async()=>{
   const vs=await run('votesmart','collins',{candidate:'379'},[[/Rating\.getCandidateRating/,{candidateRating:{rating:[{ratingId:1,ratingName:'League of Conservation Voters',rating:'63',timespan:'2024'}]}}],[/Npat\.getNpat/,{npat:{passed:'N'}}]]);
   assert.equal(vs.snapshot.ratings[0].group,'League of Conservation Voters');assert.equal(vs.snapshot.npat.took,'no');assert.match(vs.calls[0].url,/key=vk/);
-  const bs=await run('bluesky','x',{handles:['someone.bsky.social']},[[/getAuthorFeed/,{feed:[{post:{uri:'at://did:plc:a/app.bsky.feed.post/3k',author:{handle:'someone.bsky.social'},record:{text:'Hello',createdAt:'2026-10-01T00:00:00Z'}}},{post:{uri:'at://x/y/z',author:{handle:'other.bsky.social'},record:{text:'Repost'}}}]}]]);
+  const bs=await run('bluesky','x',{handles:['someone.bsky.social']},[[/getAuthorFeed/,{feed:[{post:{uri:'at://did:plc:a/app.bsky.feed.post/3k',author:{handle:'someone.bsky.social'},record:{text:'Hello',createdAt:'2026-10-01T00:00:00Z',embed:{external:{uri:'https://www.collins.senate.gov/newsroom/press/release-1'}},facets:[{features:[{uri:'http://insecure.example/x'}]}]}}},{post:{uri:'at://x/y/z',author:{handle:'other.bsky.social'},record:{text:'Repost'}}}]}]]);
   assert.equal(bs.rows.length,1);assert.equal(bs.rows[0].url,'https://bsky.app/profile/someone.bsky.social/post/3k');
+  assert.deepEqual(bs.rows[0].links,['https://www.collins.senate.gov/newsroom/press/release-1'],'links in the post are kept, https only');
   const wb=await run('wayback','talarico',{site:'https://jamestalarico.com',from:2025},[[/cdx/,[['timestamp','original','statuscode','digest'],['20250301120000','https://jamestalarico.com/','200','AAA'],['20260101120000','https://jamestalarico.com/','200','BBB']]]]);
   assert.equal(wb.snapshot.count,2);assert.equal(wb.snapshot.first,'2025-03-01');
   await assert.rejects(run('wayback','x',{site:'https://a.com',from:2025},[[/cdx/,[['other']]]]),/columns/);
@@ -162,8 +166,8 @@ test('ethics leads: court records, FEC enforcement and DOJ releases stay leads a
   assert.equal(c.rows[0].url,'https://www.courtlistener.com/docket/9/example/');assert.equal(c.calls[0].init.headers.Authorization,'Token ct');
   const f=await run('fec-legal','collins',{name:'Susan M. Collins',committee:'C00314575'},[[/legal\/search/,{murs:[{no:'8000',name:'Collins for Senator',respondents:['Collins for Senator'],open_date:'2024-01-01',close_date:'2025-01-01'},{no:'8001',name:'Unrelated PAC',respondents:['Someone']}],admin_fines:[{no:'4000',name:'Other committee',committee_id:'C00314575'}]}]]);
   assert.deepEqual(f.rows.map(r=>r.id),['mur-8000','af-4000']);
-  const d=await run('doj','collins',{last:'Collins'},[[/press_releases/,{results:[{uuid:'u1',title:'Statement',body:'Senator Susan Collins announced',url:'https://www.justice.gov/opa/pr/x',date:'1767225600'},{uuid:'u2',title:'Man named Collins sentenced',body:'John Collins was sentenced',url:'https://www.justice.gov/opa/pr/y'}]}]]);
-  assert.equal(d.rows.length,1);assert.equal(d.rows[0].date,'2026-01-01');
+  const d=await run('doj','collins',{last:'Collins'},[[/press_releases/,{results:[{uuid:'u1',title:'Statement',body:'Senator Susan Collins announced the plea in case 1:25-cr-00042-ABC',url:'https://www.justice.gov/opa/pr/x',date:'1767225600'},{uuid:'u2',title:'Man named Collins sentenced',body:'John Collins was sentenced',url:'https://www.justice.gov/opa/pr/y'}]}]]);
+  assert.equal(d.rows.length,1);assert.equal(d.rows[0].date,'2026-01-01');assert.deepEqual(d.rows[0].dockets,['25-cr-42']);
   assert.ok(namesPerson('Sen. Susan Collins',person('collins')));assert.ok(!namesPerson('Mike Collins',person('collins')));
   assert.ok(namesCampaign('Collins for Senator',person('collins')));assert.ok(namesCampaign('Friends of Susan Collins',person('collins')));assert.ok(!namesCampaign('Collins Aerospace PAC',person('collins')));
 });

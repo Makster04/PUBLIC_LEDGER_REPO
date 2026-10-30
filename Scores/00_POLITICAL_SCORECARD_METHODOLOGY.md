@@ -31,7 +31,7 @@ Donald Trump has a featured profile: a card beside the home page's title and a f
 
 - **Promise Score:** from PolitiFact's promise trackers instead of the site's own statement checks (see Promise Score).
 - **Workers > Profit:** from the bills the president signed or vetoed and the president's executive orders, instead of votes and sponsorships (see Workers > Profit).
-- **Stock trading:** a president reports trades on OGE Form 278-T, not the STOCK Act reports members of Congress file, and those reports are not imported yet (see Stock trading).
+- **Stock trading:** a president reports trades on OGE Form 278-T, not the STOCK Act reports members of Congress file. Trump's are listed on the Ethics tab, from Disclosed Capitol's open dataset of the OGE reports, but not scored yet (see Stock trading).
 - **Money & Influence:** with no 2026 race, the card and profile show the money of the 2024 Trump campaign committee, which still files with the FEC, from the daily refresh.
 
 ## Rule 1: Actions count more than words
@@ -189,7 +189,7 @@ From reviewed Periodic Transaction Reports, which members of Congress file under
 ### Who has trading data
 
 - **State-only officials and candidates who never served in Congress** show "No trading data," since these filings cover Congress only and state disclosure rules vary.
-- **A president** files OGE Form 278-T transaction reports instead, under the same 30- and 45-day deadlines. They are public but not imported yet, so the president shows "No trading data" for now. The committee-conflict rule has no direct equivalent for a president (see Open decisions).
+- **A president** files OGE Form 278-T transaction reports instead, under the same 30- and 45-day deadlines. Trump's are listed on the Ethics tab from Disclosed Capitol's open dataset of the OGE reports (CC BY 4.0), with how many were reported more than 45 days after the trade as a lead. They're not scored yet, so the two trading indexes show "Not scored for a president". The committee-conflict rule has no direct equivalent for a president (see Open decisions).
 - **Votes on stock-trading-ban bills** are policy positions, so they are scored in Your match and Promise, not here.
 
 ## Workers > Profit Score
@@ -413,7 +413,8 @@ Each data category below lists its free sources and the parts of the scorecard i
 - **Bargo Congress Trades API** *(in use)*: free with limits, and works without a key at a lower limit. Its published description has no late-filing field, so lateness comes from the dates. The free tier covers only the last 3 months of trades, so older trades need the official filings **(Federal only)**. [API](https://www.bargo.ai/free-apis/congress/v1) · [Free key](https://www.bargo.ai/free-apis/dash)
 - **Eulerpool** *(optional cross-check; its path is unconfirmed)*: free tier of 100,000 requests a month, with party and committee filters **(Federal only)**. [Docs](https://eulerpool.com/financial-data-api/congress-trading-data) · [Free key](https://eulerpool.com/developers/register)
 - **Financial Modeling Prep** *(in use when its key is set)*: has a free plan, but check whether it includes congressional trades **(Federal only)**. [Senate trading API docs](https://site.financialmodelingprep.com/developer/docs/senate-trading-api)
-- **Disclosed Capitol** *(not used yet: waiting for written permission)*: members' trades, and it says the president's and cabinet's too, with a free key. The free tier covers the last 90 days, and each call uses free credits. Its terms bar showing its content publicly without written permission; once allowed, it would be a backup when the three services above fall behind **(Federal only)**. [Docs](https://www.disclosedcapitol.com/developers) · [Terms](https://www.disclosedcapitol.com/terms)
+- **Disclosed Capitol API** *(not used: paid after a one-time trial)*: members' trades, and the president's and cabinet's, with a free key. A new account's 750 credits are a one-time trial, and calls cost money after that **(Federal only)**. [Docs](https://www.disclosedcapitol.com/developers) · [Terms](https://www.disclosedcapitol.com/terms)
+- **Disclosed Capitol's executive-branch-trades dataset** *(in use, by hand: `npm run exec:build`)*: the president's, vice president's, cabinet's and senior appointees' trades, parsed from their OGE reports and refreshed nightly, with no key, under CC BY 4.0 (credited wherever shown). About 70% of Trump's trades have no report date in it, and a few dates were misread, so it's listed, not scored, and should be spot-checked against the PDFs **(Federal only)**. [GitHub](https://github.com/disclosedcapitol/executive-branch-trades)
 - **SEC EDGAR** *(in use)*: each traded company's ticker and industry code, with no key, so trades can be sorted by sector for the committee-conflict rule and the trades-by-sector chart **(Federal only)**. [SEC developer resources](https://www.sec.gov/search-filings/edgar-application-programming-interfaces)
 
 ### Ethics and legal cases
@@ -423,7 +424,7 @@ Each data category below lists its free sources and the parts of the scorecard i
 - **CourtListener API** *(in use, weekly)*: court opinions and dockets, with a free account. Since May 2026, free accounts reportedly get about 125 requests a day *(unconfirmed)*; paid memberships get more. Pulling new documents from PACER costs PACER's fees **(State and federal)**. [Docs](https://www.courtlistener.com/help/api/rest/)
 - **FEC enforcement records** *(in use)*: closed enforcement cases (MURs), advisory opinions, and fines, with the existing FEC key **(Federal only)**. [FEC legal search](https://www.fec.gov/legal-resources/how-to-use-fec-legal-search-systems)
 - **DOJ press releases API** *(in use)*: indictments, plea deals, and settlements, with no key **(Federal only)**. [R client documenting it](https://cran.r-universe.dev/usdoj)
-- **Office of Government Ethics** *(not used yet)*: executive-branch financial disclosures, for candidates who held federal executive posts and for the president: yearly OGE Form 278e reports and Form 278-T transaction reports, the president's equivalent of the STOCK Act trade reports. No API, and the reports are scanned PDFs, so they would be entered by hand **(Federal only)**. [OGE Form 278e](https://oge.gov/web/278eGuide.nsf/Overview)
+- **Office of Government Ethics** *(the president's reports through Disclosed Capitol's dataset, under Stock trades; not used directly)*: executive-branch financial disclosures, for candidates who held federal executive posts and for the president: yearly OGE Form 278e reports and Form 278-T transaction reports, the president's equivalent of the STOCK Act trade reports. No API, and many reports are scanned PDFs **(Federal only)**. [OGE Form 278e](https://oge.gov/web/278eGuide.nsf/Overview)
 
 ### Donations and outside spending
 
@@ -519,5 +520,5 @@ These values are placeholders or interpretations of the original notes. Confirm 
 - [x] **Shared bill marks:** a People or Profit mark applies to everyone who acted on the bill, so a president's signature and members' votes on the same bill are scored from the same mark.
 - [ ] **Agency estimates:** decide whether a government agency's own estimate (for example the CFPB's estimate of what its overdraft-fee rule saved consumers) can mark a bill, or only the CBO, the Joint Committee on Taxation and the Tax Policy Center. The repeal of that rule, which Trump signed in 2025, would be the next mark.
 - [ ] **Tariffs:** analyses find the 2025 tariffs cost lower-income households the most as a share of income, but show no group that gains. Decide whether a policy like that can be marked.
-- [ ] **The president's trades:** whether to import the OGE Form 278-T reports, and what replaces the committee-conflict rule for a president (for example, trades in companies or industries the president's own executive orders or signed bills directly affected), or whether conflicts are left out.
+- [ ] **The president's trades:** now listed, from Disclosed Capitol's dataset of the OGE reports, but not scored. Decide what replaces the committee-conflict rule for a president (for example, trades in companies or industries the president's own executive orders or signed bills directly affected), or whether conflicts are left out, and whether 278-T reports filed more than 45 days after a trade count in the Stock Disclosure Dodger Index.
 - [ ] **Featured profiles on the score pages:** the president is left out of the score pages, which rank the 2026 candidates. Decide whether to show the president there too.

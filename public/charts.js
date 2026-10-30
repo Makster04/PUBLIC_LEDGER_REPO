@@ -4,7 +4,7 @@
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const dayMs=86400000;
-export const money=n=>{if(n==null)return '—';const a=Math.abs(n);return (n<0?'−$':'$')+(a>=1e6?(a/1e6).toFixed(a>=1e7?1:2)+'M':a>=1e3?(a/1e3).toFixed(a>=1e5?0:1)+'K':Math.round(a));};
+export const money=n=>{if(n==null)return '—';const a=Math.abs(n);return (n<0?'−$':'$')+(a>=1e9?(a/1e9).toFixed(a>=1e10?1:2)+'B':a>=1e6?(a/1e6).toFixed(a>=1e7?1:2)+'M':a>=1e3?(a/1e3).toFixed(a>=1e5?0:1)+'K':Math.round(a));};
 const when=d=>{const m=/^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(d||'');return m?`${m[3]?+m[3]+' ':''}${MON[+m[2]-1]} ${m[1]}`:d||'';};
 // People and Profit share their colors everywhere: the diverging bars, the tree map and the outside-spending sectors.
 export const ALIGN_COLOR={people:'var(--s1)',profit:'var(--s5)',other:'var(--cx-other)'};

@@ -106,21 +106,45 @@ const SECTIONS={
   regulations:{title:'Comments on federal rules by top donors',body:x=>ul(x.rows.slice(0,30),r=>li(r.url,r.title||r.id,`${esc(r.org)} · ${esc(r.agency||'')} · ${date(r.date)}`),'No comments found.')},
   sam:{title:'Company federal IDs (SAM.gov)',body:x=>ul(x.rows,r=>li(null,r.org,r.uei?`UEI ${esc(r.uei)} · ${esc(r.name)}`:`<span class="live-warning">${esc(r.review)}</span>`),'No organizations checked yet.')},
   contracts:{title:'Federal contracts to top donor organizations',body:x=>`<p class="live-meta">${cash(x.total)} in the largest awards found. <b>Context only:</b> not proof of influence.</p>${ul(x.rows.slice(0,20),r=>li(r.url,`${r.org} · ${cash(r.amount)}`,`${esc(r.agency||'')} · ${date(r.date)}${r.description?' · '+esc(r.description):''}`),'No contracts found.')}`},
+  // Sources that cover the same thing, joined into one card each (src/merge.mjs). sources: the jobs behind the card, so
+  // each one's status shows and a source that hasn't run yet is visible.
+  hearings:{title:'Hearings and committee meetings',merged:true,sources:[['meetings','Congress.gov meetings'],['hearing-index','GovInfo transcripts']],
+    body:x=>`<p class="live-footnote"><b>Joined:</b> a committee meeting and its transcript show as one hearing. The meeting gives the witnesses, documents and bills; the transcript gives the text and who attended.</p>${ul(x.slice(0,30),r=>{
+      const names=r.committeeNames?.length?r.committeeNames:(r.committees||[]).map(c=>window.COMMITTEES?.committees?.[c]?.name).filter(Boolean),w=r.witnesses||[];
+      return `<li>${link(r.meeting?.url||r.transcript?.url,r.title||'Hearing')}<small>${date(r.date)}${names.length?' · '+esc([...new Set(names)].join('; ')):''}${w.length?' · Witnesses: '+esc(w.slice(0,4).map(x=>x.name+(x.organization?` (${x.organization})`:'')).join('; '))+(w.length>4?` and ${w.length-4} more`:''):''}${(r.documents||[]).length?' · '+r.documents.slice(0,3).map(d=>link(d.url,d.type||'Document')).join(', '):''} · ${r.transcript?`${link(r.transcript.url,'Transcript')}${r.attended?' (attended)':''}`:'Transcript not published yet'} · ${chips(r.sources)}</small></li>`;},'No hearings of their committees found.')}`},
+  legal:{title:'Legal leads',merged:true,sources:[['courts','CourtListener'],['fec-legal','FEC enforcement'],['doj','DOJ press releases']],
+    body:x=>`<p class="live-footnote"><b>Leads only:</b> a case is scored only after its status is confirmed from an official record. <b>Joined:</b> a docket and an opinion in the same case, and a DOJ release that cites the case's docket number, show as one case.</p>${ul(x.slice(0,40),r=>`<li>${esc(r.title||'Record')}<small>${esc(r.kinds.join(' · '))}${r.court?' · '+esc(r.court):''}${r.docket?' · '+esc(r.docket):''}${r.opened?' · opened '+date(r.opened):''}${r.closed?' · closed '+date(r.closed):''} · ${date(r.date)} · ${chips(r.sources)}</small><small>${r.links.map(l=>link(l.url,`${l.label}${l.date?', '+date(l.date):''}`)).join(' · ')}</small></li>`,'No court records, FEC enforcement records or DOJ press releases name them.')}`},
+  statements:{title:'Statements across channels',merged:true,sources:[['press','Press releases'],['bluesky','Bluesky'],['threads','Threads'],['youtube','YouTube']],
+    body:x=>`${pts([['Joined','The same message posted in more than one place shows once: a post that links to the press release, or repeats most of its words within 3 days. The press release leads.'],
+      x.feed&&['Press releases',`from ${link(x.feed,"the office's own feed")} on its official website`],x.accounts?.length&&['Bluesky',x.accounts.map(h=>'@'+esc(h)).join(', ')],x.missing?.length&&['No Bluesky account at',x.missing.map(esc).join(', ')],
+      ['Threads','found by searching the account for each of the site\'s issues, so only posts that mention one are listed']])}${ul(x.rows.slice(0,40),r=>`<li>${link(r.url,r.text||'Statement')}<small>${esc(r.source)} · ${date(r.date)}${r.also.length?' · Also on '+r.also.map(a=>link(a.url,a.source)).join(', '):''}${r.issues?.length?' · '+chips(r.issues.map(issueName)):''}</small></li>`,'No statements found.')}`},
+  donorOrgs:{title:'Top donor organizations across sources',merged:true,sources:[['donors','FEC donors'],['lobbying','LDA.gov'],['fara','FARA'],['regulations','Regulations.gov'],['sam','SAM.gov'],['contracts','USAspending']],
+    body:(x,p,person)=>{const nc='<span class="muted">Not checked yet</span>',none='—',n=(v,one,many)=>`${v} ${v===1?one:many}`;
+      return `<p class="live-footnote">The ${x.rows.length} organizations whose employees gave the most (itemized gifts grouped by employer; donors' names are never shown), with what each other source found for the same organization. <b>Context only:</b> not proof of influence.</p>
+      <div class="tablewrap"><table class="keep"><thead><tr><th>Organization</th><th class="r">Employees gave</th><th>Lobbying</th><th>Foreign agent</th><th>Rule comments</th><th>Federal contracts</th></tr></thead><tbody>${x.rows.map(r=>`<tr><td>${org(r.org,EMPLOYER_ABOUT)}</td><td class="r">${cash(r.given)}</td>
+        <td>${!x.checked.lobbying?nc:r.lobbying.n?`${link(r.lobbying.url,n(r.lobbying.n,'filing','filings'))}${r.lobbying.amount?` · ${cash(r.lobbying.amount)}`:''}${r.lobbying.issues.length?`<div class="live-meta">${esc(r.lobbying.issues.join(', '))}</div>`:''}`:none}</td>
+        <td>${!x.checked.fara?nc:r.fara.length?r.fara.map(f=>link(f.url,'Registration '+f.id)).join(', '):none}</td>
+        <td>${!x.checked.regulations?nc:r.comments.n?`${link(r.comments.latest?.url,n(r.comments.n,'comment','comments'))}`:none}</td>
+        <td>${!x.checked.sam?nc:r.samReview?`<span class="live-warning">${esc(r.samReview)}</span>`:!r.uei?none:!x.checked.contracts?nc:r.contracts.n?`${link(r.contracts.top?.url,cash(r.contracts.total))} in ${n(r.contracts.n,'award','awards')}`:'None found'}</td></tr>`).join('')}</tbody></table></div>
+      ${['lobbying','regulations','sam','contracts'].filter(k=>p.sections[k]).map(k=>`<details><summary>${esc(SECTIONS[k].title)}</summary>${SECTIONS[k].body(p.sections[k],p,person)}</details>`).join('')}${p.merged?.fara?.length?`<details><summary>${esc(SECTIONS.fara.title)}</summary>${SECTIONS.fara.body(p.merged.fara)}</details>`:''}`;}},
   'outside-groups':{title:'Groups behind outside spending',body:x=>ul(x.rows,r=>r.ein?li(r.url,r.name,`Nonprofit (501(c)(${esc(r.subsection??'?')})) · ${r.filings.map(f=>`${esc(f.year)}: revenue ${cash(f.revenue)}`).join('; ')}`):li(r.irs527,r.group,esc(r.review)+' · search the IRS 527 filings'),'No outside spenders checked yet.')},
 };
 // Days from trade to disclosure, and late, for trades not reviewed yet (the same 45-day rule as the grade).
 const tradeDays=x=>x.map(t=>{const days=t.filed&&t.traded?Math.round((Date.parse(t.filed)-Date.parse(t.traded))/864e5):null;return {...t,company:t.asset||t.ticker,days,missing:!t.filed,late:!t.filed||days>LATE_DAYS};});
 const overseen=person=>{const C=window.COMMITTEES||{committees:{},people:{}},S=window.COMMITTEE_SECTORS||{};return [...new Set((C.people[person.id]||[]).flatMap(c=>(S[C.committees[c.id]?.parent||c.id]||{}).sectors||[]))];};
 const freshnessText=at=>`<div class="live-meta">Last successful check: ${time(at)}</div>`;
+// For a joined card: each source behind it, with its status, so it's clear which have reported and which haven't yet.
+const sourcesLine=(s,person,list)=>`<div class="live-meta"><b>Sources:</b> ${list.map(([kind,label])=>{const j=s.jobs.find(j=>j.kind===kind&&(j.subject===person.id||!j.person));return `${esc(label)} ${j?badge(j):'<span class="live-state">Not covered</span>'}`;}).join(' · ')}</div>`;
 function sourceCard(p,s,person,key){
   const def=SECTIONS[key];if(!def)return '';
   const data=def.merged?p.merged?.[key]:p.sections[key];
   // Sources that check everyone at once (the Record, hearings, meetings) report status on their discovery job.
-  const jobKind={stateBills:'state-openstates',trades:person.chamber==='S'?'trades-senate':'trades-house',news:'news-gdelt',committees:person.chamber==='S'?'senate-committees':'house-committees','crec-day':'crec-index',hearing:'hearing-index',meeting:'meetings'}[key]||key;
+  const jobKind={stateBills:'state-openstates',trades:person.chamber==='S'?'trades-senate':'trades-house',news:'news-gdelt',committees:person.chamber==='S'?'senate-committees':'house-committees','crec-day':'crec-index',hearing:'hearing-index',meeting:'meetings',hearings:'meetings',legal:'courts',statements:'press',donorOrgs:'donors'}[key]||key;
   const job=s.jobs.find(j=>j.kind===jobKind&&(j.subject===person.id||!j.person));
   const has=def.merged?(Array.isArray(data)?true:!!data):!!data;
   const why=job?.error||(!job?'This source does not cover this person.':!job.person&&job.last_success?`No records for ${person.name} in the latest check.`:'Waiting for the first complete refresh.');
-  const body=has?(def.merged?'':freshness(s,person.id,key,data.checkedAt))+def.body(data,p,person):`<div class="live-empty">${esc(why)} ${job?badge(job):''} <a href="${job?.site?'#websites':'#updates'}">View update status</a></div>`;
+  const status=def.sources?sourcesLine(s,person,def.sources):'';
+  const body=has?status+(def.merged?'':freshness(s,person.id,key,data.checkedAt))+def.body(data,p,person):`${status}<div class="live-empty">${esc(why)} ${job?badge(job):''} <a href="${job?.site?'#websites':'#updates'}">View update status</a></div>`;
   return `<div class="live-card"><h3>${esc(def.title)}</h3>${body}</div>`;
 }
 export const RecordLive={

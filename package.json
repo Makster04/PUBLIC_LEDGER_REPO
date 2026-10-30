@@ -14,6 +14,7 @@
     "scores:monthly": "node scripts/scores-monthly.mjs",
     "social:bluesky": "node scripts/find-bluesky.mjs",
     "senate:build": "node scripts/build-senate.mjs",
+    "exec:build": "node scripts/build-exec-trades.mjs",
     "cloudflare:preview": "wrangler dev",
     "cloudflare:deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply public-ledger --remote"

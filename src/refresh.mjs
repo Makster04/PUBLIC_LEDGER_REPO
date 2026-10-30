@@ -2,7 +2,7 @@ import config from '../data/config.json' with {type:'json'};
 import COMMITTEES from '../public/committees.json' with {type:'json'};
 import {fetchPage,summarize,SourceError,requestSource,missingKey,HOSTS,DEFAULT_PER_RUN} from './sources.mjs';
 import {FEEDS,FEED_KINDS,FEEDS_VERSION,normalizeHouseApiVote,houseApiURL} from './feeds.mjs';
-import {mergeTrades,mergeStateBills,mergeNews,committeeDiff} from './merge.mjs';
+import {mergeTrades,mergeStateBills,mergeNews,committeeDiff,mergeHearings,mergeLegal,mergeStatements,donorOrgs} from './merge.mjs';
 
 const DAY=86400000;
 // A recorded roll call does not change, so a published vote is never fetched again.
@@ -254,6 +254,13 @@ export async function getProfile(env,id) {
   const norm=v=>String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(inc|llc|corp|corporation|co|company|lp|llp)$/,'');
   const orgs=new Set((sections.donors?.orgs||[]).slice(0,20).map(o=>norm(o.employer)));
   merged.fara=(global.fara?.[0]?.rows||[]).filter(r=>orgs.has(norm(r.name))||orgs.has(norm(r.business)));
+  // Sources that cover the same thing, joined: each fills in what the others don't have yet (see src/merge.mjs).
+  const everyone=kind=>{const seen=new Map();for(const d of global[kind]||[])for(const r of Object.values(d.byPerson||{}).flat())seen.set(r.id,r);return [...seen.values()];};
+  if(sections.meeting||sections.hearing)merged.hearings=mergeHearings({meetings:sections.meeting?.rows||[],transcripts:sections.hearing?.rows||[]},{allMeetings:everyone('meeting'),allTranscripts:everyone('hearing')},id).slice(0,40);
+  if(sections.courts||sections['fec-legal']||sections.doj)merged.legal=mergeLegal(sections.courts?.rows,sections['fec-legal']?.rows,sections.doj?.rows).slice(0,60);
+  if(sections.press||sections.bluesky||sections.threads||sections.youtube)merged.statements={rows:mergeStatements({press:sections.press?.rows,bluesky:sections.bluesky?.rows,threads:sections.threads?.rows,youtube:sections.youtube?.rows}).slice(0,80),
+    feed:sections.press?.feed||null,accounts:sections.bluesky?.accounts||[],missing:sections.bluesky?.missing||[]};
+  merged.donorOrgs=donorOrgs(sections,global.fara?.length?merged.fara:null);
   const bills=Object.fromEntries((await statement(env.DB,"SELECT j.subject,s.payload FROM snapshots s JOIN jobs j ON j.id=s.job_id WHERE j.kind='bill'").all()).results.map(r=>[r.subject,JSON.parse(r.payload)]));
   return {person,sections,merged,bills,votes:votes.slice(0,60),voteScope:'Selected historical votes and the latest discovered roll calls. New votes do not change reviewed alignment scores.'};
 }
