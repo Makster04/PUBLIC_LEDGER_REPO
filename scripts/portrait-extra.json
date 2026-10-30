@@ -481,5 +481,30 @@
   "lummis": {
     "file": "data/portraits/lummis.jpg",
     "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "kaptur": {
+    "file": "data/portraits/kaptur.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true,
+    "choke": 1
+  },
+  "castor": {
+    "file": "data/portraits/castor.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "hageman": {
+    "file": "data/portraits/hageman.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "rogers": {
+    "file": "data/portraits/rogers.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "lawler": {
+    "file": "data/portraits/lawler.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
   }
 }

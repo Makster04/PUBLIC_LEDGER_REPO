@@ -38,8 +38,7 @@
     },
     "lawler": {
       "file": "portraits/lawler.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/L000599.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "evans": {
       "file": "portraits/evans.webp",
@@ -53,8 +52,7 @@
     },
     "kaptur": {
       "file": "portraits/kaptur.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/K000009.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "mgp": {
       "file": "portraits/mgp.webp",
@@ -67,8 +65,7 @@
     },
     "castor": {
       "file": "portraits/castor.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/C001066.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "talarico": {
       "file": "portraits/talarico.webp",
@@ -84,8 +81,7 @@
     },
     "rogers": {
       "file": "portraits/rogers.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/R000572.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "cooper": {
       "file": "portraits/cooper.webp",
@@ -166,8 +162,7 @@
     },
     "hageman": {
       "file": "portraits/hageman.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/H001096.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "thomas": {
       "file": "portraits/thomas.webp",
