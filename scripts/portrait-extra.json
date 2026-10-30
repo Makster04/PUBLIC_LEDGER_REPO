@@ -506,5 +506,29 @@
     "file": "data/portraits/lawler.jpg",
     "credit": "Photo supplied by the site's editor for use on this site",
     "tighten": true
+  },
+  "barr": {
+    "file": "data/portraits/barr.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "cruz": {
+    "file": "data/portraits/cruz.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "sununu": {
+    "file": "data/portraits/sununu.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "evans": {
+    "file": "data/portraits/evans.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "perry": {
+    "file": "data/portraits/perry.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true,
+    "clear": "red"
   }
 }

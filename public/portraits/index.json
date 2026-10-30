@@ -33,8 +33,7 @@
     },
     "perry": {
       "file": "portraits/perry.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/P000605.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "lawler": {
       "file": "portraits/lawler.webp",
@@ -42,8 +41,7 @@
     },
     "evans": {
       "file": "portraits/evans.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/450x550/E000300.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "millermeeks": {
       "file": "portraits/millermeeks.webp",
@@ -107,8 +105,7 @@
     },
     "sununu": {
       "file": "portraits/sununu.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/S001078.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "flanagan": {
       "file": "portraits/flanagan.webp",
@@ -132,8 +129,7 @@
     },
     "barr": {
       "file": "portraits/barr.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/B001282.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "wess": {
       "file": "portraits/wess.webp",
@@ -588,8 +584,7 @@
     },
     "cruz": {
       "file": "portraits/cruz.webp",
-      "credit": "Official congressional portrait (public domain), via the unitedstates/images project",
-      "src": "https://raw.githubusercontent.com/unitedstates/images/gh-pages/congress/original/C001098.jpg"
+      "credit": "Photo supplied by the site's editor for use on this site"
     },
     "curtis": {
       "file": "portraits/curtis.webp",
