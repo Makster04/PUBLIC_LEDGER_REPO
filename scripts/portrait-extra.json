@@ -248,9 +248,7 @@
   },
   "cmurphy": {
     "file": "data/portraits/cmurphy.jpg",
-    "credit": "Photo supplied by the site's editor for use on this site",
-    "tighten": true,
-    "choke": 2
+    "credit": "Photo supplied by the site's editor for use on this site"
   },
   "coons": {
     "file": "data/portraits/coons.jpg",
@@ -556,5 +554,10 @@
     "credit": "Photo supplied by the site's editor for use on this site",
     "tighten": true,
     "clear": "light"
+  },
+  "bluntrochester": {
+    "file": "data/portraits/bluntrochester.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
   }
 }
