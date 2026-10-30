@@ -530,5 +530,31 @@
     "credit": "Photo supplied by the site's editor for use on this site",
     "tighten": true,
     "clear": "red"
+  },
+  "mcollins": {
+    "file": "data/portraits/mcollins.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "peltola": {
+    "file": "data/portraits/peltola.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "brown": {
+    "file": "data/portraits/brown.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "gonzalez": {
+    "file": "data/portraits/gonzalez.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true,
+    "model": 1
+  },
+  "collins": {
+    "file": "data/portraits/collins.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true,
+    "clear": "light"
   }
 }
