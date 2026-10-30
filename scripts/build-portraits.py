@@ -188,7 +188,12 @@ def cutout(m, segmenter, opts):
     n, lab, stats, _ = cv2.connectedComponentsWithStats(core, connectivity=8)
     if n > 1:
         body = (lab == 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))).astype(np.uint8)
-        alpha *= cv2.dilate(body, disk, iterations=2)
+        near = cv2.dilate(body, disk, iterations=2)
+        # Below the chin there are only clothes, with a smooth edge: keep less around the body there, which also drops
+        # thin lines of a light background traced along the shoulders.
+        chin = int((m['eyes'][0][1] + m['eyes'][1][1]) / 2 + 1.3 * m['gap'])
+        near[chin:] = cv2.dilate(body, np.ones((3, 3), np.uint8), iterations=2)[chin:]
+        alpha *= near
     s = EYE_GAP / max(1.0, m['gap']) * opts.get('zoom', 1)
     if opts.get('choke'):
         c = max(1, round(opts['choke'] / s))
