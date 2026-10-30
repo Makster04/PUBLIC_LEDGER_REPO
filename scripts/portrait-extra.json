@@ -255,5 +255,128 @@
   "coons": {
     "file": "data/portraits/coons.jpg",
     "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "ricketts": {
+    "file": "data/portraits/ricketts.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "curtis": {
+    "file": "data/portraits/curtis.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "cornyn": {
+    "file": "data/portraits/cornyn.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "choke": 2
+  },
+  "murkowski": {
+    "file": "data/portraits/murkowski.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "britt": {
+    "file": "data/portraits/britt.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "hirono": {
+    "file": "data/portraits/hirono.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "schatz": {
+    "file": "data/portraits/schatz.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "grassley": {
+    "file": "data/portraits/grassley.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "crapo": {
+    "file": "data/portraits/crapo.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "duckworth": {
+    "file": "data/portraits/duckworth.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "choke": 2
+  },
+  "durbin": {
+    "file": "data/portraits/durbin.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "young": {
+    "file": "data/portraits/young.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "banks": {
+    "file": "data/portraits/banks.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "mcconnell": {
+    "file": "data/portraits/mcconnell.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "paul": {
+    "file": "data/portraits/paul.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "cassidy": {
+    "file": "data/portraits/cassidy.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "warren": {
+    "file": "data/portraits/warren.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "alsobrooks": {
+    "file": "data/portraits/alsobrooks.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "choke": 2
+  },
+  "vanhollen": {
+    "file": "data/portraits/vanhollen.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "king": {
+    "file": "data/portraits/king.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "peters": {
+    "file": "data/portraits/peters.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "slotkin": {
+    "file": "data/portraits/slotkin.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "smith": {
+    "file": "data/portraits/smith.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "schmitt": {
+    "file": "data/portraits/schmitt.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "wicker": {
+    "file": "data/portraits/wicker.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "daines": {
+    "file": "data/portraits/daines.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "sheehy": {
+    "file": "data/portraits/sheehy.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
+  },
+  "cramer": {
+    "file": "data/portraits/cramer.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site",
+    "tighten": true
+  },
+  "hoeven": {
+    "file": "data/portraits/hoeven.jpg",
+    "credit": "Photo supplied by the site's editor for use on this site"
   }
 }
