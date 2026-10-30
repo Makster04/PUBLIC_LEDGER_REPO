@@ -266,8 +266,7 @@
   },
   "cornyn": {
     "file": "data/portraits/cornyn.jpg",
-    "credit": "Photo supplied by the site's editor for use on this site",
-    "choke": 2
+    "credit": "Photo supplied by the site's editor for use on this site"
   },
   "murkowski": {
     "file": "data/portraits/murkowski.jpg",
@@ -347,7 +346,8 @@
   "slotkin": {
     "file": "data/portraits/slotkin.jpg",
     "credit": "Photo supplied by the site's editor for use on this site",
-    "tighten": true
+    "tighten": true,
+    "choke": 2
   },
   "smith": {
     "file": "data/portraits/smith.jpg",
