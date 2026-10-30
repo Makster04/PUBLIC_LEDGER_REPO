@@ -22,7 +22,7 @@ Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules 
 | [ ] | Confirm the placeholder weights | Criminal × 1.5, technical × 0.5, half after 10 years, and a tenth for each trading index. |
 | [ ] | Senators' annual financial disclosures | Not imported yet, so that part of the Stock Disclosure Dodger Index drops out for senators. |
 | [ ] | Decide who confirms leads before they count | Court records, FEC enforcement records and DOJ press releases. |
-| [ ] | The president's trades | Decide whether to import the OGE 278-T reports. |
+| [ ] | The president's trades | Decide whether to import the OGE 278-T reports. Disclosed Capitol says its API covers them too, if it gives written permission. |
 
 ---
 
@@ -90,6 +90,7 @@ The index is the total of every case's points, with a ceiling of 100.
 - **Trades:**
   - The members' own trade reports, from the House Clerk and Senate eFD: no key.
   - Cross-checks: `BARGO_API_KEY`, `EULERPOOL_API_KEY` and `FMP_API_KEY`, all optional.
+  - Backup, not used yet: `DISCLOSED_CAPITOL_API_KEY`, waiting for Disclosed Capitol's written permission.
 - **Company sectors:** `SEC_USER_AGENT`, your name and email (not a key).
 - **Committees and the sectors they oversee:** congress-legislators and the Senate and House committee lists. No key.
 - **Votes and bill actions:**
