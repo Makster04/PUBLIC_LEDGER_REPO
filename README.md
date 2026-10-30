@@ -82,6 +82,20 @@ No key is needed for the Senate and House roll calls, the Senate and House commi
 - **FEC enforcement:** enforcement cases (MURs), administrative fines, alternative dispute resolutions and advisory opinions naming the person, their campaign committee, or a committee named after them.
 - **DOJ press releases:** releases whose title names the person's surname and whose text names them in full.
 
+**Sources that cover the same thing work together** (`src/merge.mjs`): each record shows once, whichever source reported it first, and each source fills in what the others don't have yet. Each joined card lists every source behind it with its status.
+
+| What | Sources | How they're joined |
+|---|---|---|
+| Members' stock trades | House Clerk and Senate eFD reports, Bargo, Eulerpool, Financial Modeling Prep | Same member, company, date, type and amount. The official report's date and link win; a trade only a service has is kept and flagged until the official report is read; disagreements go to review. |
+| House roll calls | Congress.gov, House Clerk | Congress.gov first (2023 on), the House Clerk for any vote it doesn't have. |
+| State bills | Open States, LegiScan | Same state, session year and bill number. A bill only LegiScan has is kept. |
+| News | GDELT, New York Times | Same article address. |
+| Hearings | Congress.gov committee meetings, GovInfo transcripts | The transcript's jacket number, which the meeting lists; else the same title on the day it was held. The meeting adds witnesses, documents and bills; the transcript adds the text and who attended. |
+| Legal leads | CourtListener, FEC enforcement records, DOJ press releases | A docket and an opinion in the same court with the same docket number are one case, and a DOJ release that cites the docket number joins it. Nothing is joined on a name or date alone. |
+| Statements | Press releases, Bluesky, Threads, YouTube | A post that links to the press release, or repeats most of its words within 3 days. The press release leads. |
+| Top donor organizations | FEC (employees' gifts), LDA.gov, FARA, Regulations.gov, SAM.gov, USAspending | One row per organization with what each source found for it. A source that hasn't run yet shows "Not checked yet", not "none". |
+| Committee assignments | Official Senate and House lists, congress-legislators | Compared, and differences flagged. The saved list changes when `scripts/build-ids.mjs` is rerun. |
+
 **Nothing new changes a grade by itself.** New votes, bills, speeches, posts, positions, fact-checks, news, court and enforcement records, trades and filings are listed for review; a grade changes only when the reviewed research is updated and the monthly recalculation runs. An ethics lead becomes a scored case only after its status is confirmed from an official record.
 
 With every senator included there are about 3,300 checks, so the first full pass takes a few hours on the local server. When people who vote are added, the Senate or House roll calls already read are read once more so their positions are filled in. Each source is scheduled again 24 hours after completion (7 days for court records, FEC enforcement records, LegiScan, FARA, committee meetings and the campaign-committee lookup), except individual roll calls and Congressional Record issues: a published vote or Record issue is final and is not fetched again. Jobs that depend on another (the lobbying, rule-comment, company-ID and monthly-donor jobs wait for a person's top donor organizations; contracts wait for company IDs; nonprofit filings wait for the outside spenders) start as soon as it finishes. All pages must succeed before new records publish. Full replacements pick up revised totals, amendments and removed records instead of appending forever. Failed runs leave the last published snapshot intact and retry with backoff; source `Retry-After` is respected, and a rate limit pauses every job on that host. A database lock prevents overlapping refreshers. The UI provides on-page failure/staleness notices and a refresh history; external email or push alerts are not configured. An existing database gains the jobs for new sources the next time the server starts.
@@ -257,7 +271,7 @@ Deployment remains a later manual step because this version was requested to sta
 - `public/` — the site: `app.js` (pages), `live.js` (API updates, Website updates and latest official records), `grades.js` (every scoring rule, weight and threshold, and the outside-money ratio), `scoring.js` (each person's reviewed grades), `influence.js` (the Money & Influence Analysis), `charts.js` (chart builders), `lean.js` (liberal/conservative bill marks), `sectors.js` (industry sectors from SEC codes), `research.json` (reviewed research), `committees.json`, `committee-sectors.json`, `score-log.json` (every monthly score change), `funder-history.json`, `portraits/`
 - `src/sources.mjs` — approved hosts, how each key is sent, and the original FEC, Congress.gov and roll-call adapters
 - `src/feeds.mjs` — the adapters for every source added since, one per job kind
-- `src/merge.mjs` — merging the same trade, state bill or article from several sources
+- `src/merge.mjs` — joining what several sources report about the same thing: trades, state bills, articles, hearings, legal leads, statements and top donor organizations
 - `src/refresh.mjs` — persistent jobs, staging and publication
 - `src/worker.mjs` — Cloudflare API and scheduled handler
 - `scripts/local.mjs` — localhost server using the same backend
@@ -284,6 +298,7 @@ Sources: [FEC API](https://api.open.fec.gov/developers/) and [bulk files](https:
 - **Stock-trade history:** the refresh reads both chambers' official trade reports from the last two years. Older trades and yearly holdings come from `scripts/build-holdings.py`, checked by hand.
 - **Court records weekly, profiled people only:** CourtListener's free account allows about 125 requests a day.
 - **News from GDELT and the New York Times together,** merged by link.
+- **Overlapping sources are joined, not listed side by side:** hearings, legal leads, statements across channels and top donor organizations each show as one card fed by all their sources (see the table under What refreshes), so one source's gaps are filled by another's.
 - **Grades are computed from the reviewed research and logged monthly.** The page always reflects the reviewed file, and marks any grade that differs from the last monthly recalculation, so nothing changes silently between runs.
 - **Left out because they repeat work already done, not because of a key:** the `crec` package (the GovInfo API is used directly) and Capitol API (CapitolGains reads the same filings). Sources that are shut down, closing or paid are listed in [.01_API_SOURCES_USED.md](.01_API_SOURCES_USED.md).
 

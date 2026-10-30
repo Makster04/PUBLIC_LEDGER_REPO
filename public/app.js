@@ -711,8 +711,8 @@ async function fillBasic(root=document){
   for(const el of els)if(el.isConnected){const s=BASIC[el.dataset.basic];el.innerHTML=basicMoney(s,all?(all[s.id]||{}):null,{mini:el.dataset.mini!=='0'});}
 }
 // The records each tab adds from the daily refresh (public/live.js), the same groups the full profiles' tabs show.
-const BASIC_LIVE={match:['legislation','cosponsored','crs','committees','votes'],promises:['crec-day','hearing','meeting','press','bluesky','threads','youtube','factcheck','news'],
-  ethics:['trades','courts','fec-legal','doj'],pvp:['donors','lobbying'],finance:['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']};
+const BASIC_LIVE={match:['legislation','cosponsored','crs','committees','votes'],promises:['crec-day','hearings','statements','factcheck','news'],
+  ethics:['trades','legal'],pvp:['donorOrgs'],finance:['campaign','pac','outside','donorOrgs','outside-groups']};
 const BASIC_INTRO='These update on their own from official sources. Nothing here has been reviewed yet, so none of it counts toward a grade.';
 function renderBasic(s,tab,focus){
   if(!PANES[tab]||tab==='sources')tab='overview';
@@ -1065,7 +1065,7 @@ function paneFinance(s,pane){
   mountPacSectors(s);pacTable(s,$('#pachost'));
   ieItems(s,$('#iehost'));
   mountAnalysis(s);hoverTips(pane);
-  window.RecordLive.profile(s,$('#live-records'),['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']);
+  window.RecordLive.profile(s,$('#live-records'),['campaign','pac','outside','donorOrgs','outside-groups']);
   pane.querySelectorAll('.jump a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const t=document.getElementById(a.getAttribute('href').slice(1));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}));
   bindTips(pane);
 }
@@ -1080,7 +1080,7 @@ function paneFinanceOffice(s,pane){
   ${analysisBlock(s)}
   <section id="live-records" style="margin-top:28px"></section>`;
   mountAnalysis(s);hoverTips(pane);
-  window.RecordLive.profile(s,$('#live-records'),['campaign','pac','outside','donors','lobbying','fara','regulations','sam','contracts','outside-groups']);
+  window.RecordLive.profile(s,$('#live-records'),['campaign','pac','outside','donorOrgs','outside-groups']);
   bindTips(pane);
 }
 
@@ -1571,7 +1571,7 @@ function paneEthics(s,pane){
   const math=parts.length?`<p class="small gh-m"><b>How it was calculated:</b> 100 − ${parts.join(' − ')} = ${e.raw<0?`${total}, shown as <b>0%</b>`:+total===e.pct?`<b>${e.pct}%</b>`:`${total}, rounded to <b>${e.pct}%</b>`}.</p>`:'';
   pane.innerHTML=`${gradeHead('Ethics',e.pct,detail,gradeRule('eth'),math+monthlyNote(s,'ethics',e.pct))}${ethIndexes(s,e)}${ethicsHTML(s)}${caseTimelineBlock(s)}${tradingHTML(s)}<section id="live-records" style="margin-top:28px"></section>`;
   mountCaseTimeline(s);mountTradeCharts(s,personTrading(s).rows,'eth-tr');hoverTips(pane);
-  window.RecordLive.profile(s,pane.querySelector('#live-records'),['trades','courts','fec-legal','doj']);
+  window.RecordLive.profile(s,pane.querySelector('#live-records'),['trades','legal']);
 }
 
 // ---------- Workers > Profit tab: votes on scored bills, then who funds them and how those funders wanted them to vote ----------
@@ -1709,7 +1709,7 @@ function panePromises(s,pane){
     <div class="verdict"><span class="chip ${cls}">${AICON[x.assessment]} ${lab}</span><div class="note">${esc(x.note)}</div></div>
   </article>`}).join('')}`}
   <section id="live-records" style="margin-top:28px"></section>`;
-  window.RecordLive.profile(s,pane.querySelector('#live-records'),['crec-day','hearing','meeting','press','votesmart','bluesky','threads','youtube','wayback','factcheck','news']);
+  window.RecordLive.profile(s,pane.querySelector('#live-records'),['crec-day','hearings','statements','votesmart','wayback','factcheck','news']);
 }
 
 function paneSources(s,pane){
@@ -2261,6 +2261,10 @@ function renderMethod(sub){
       <li><b>Merging:</b> where several sources cover the same thing, each record shows once.
         <ul class="list">
           <li><b>Stock trades:</b> read from the members' own reports: House members' PDFs from the House Clerk, and senators' reports from the Senate eFD site. Bargo, Eulerpool and Financial Modeling Prep are a cross-check, matched by member, company, date, buy or sell and amount range. The official report's date wins, a trade only a service reports goes to review, and a report filed on paper is listed to check by hand.</li>
+          <li><b>Hearings:</b> a Congress.gov committee meeting and its GovInfo transcript are one hearing, matched by the transcript's number or the same title on the day it was held. The meeting gives the witnesses and documents, the transcript the text and who attended.</li>
+          <li><b>Legal leads:</b> a CourtListener docket and opinion in the same case are one case, and a DOJ press release that cites its docket number joins it. FEC enforcement records are listed alongside. Nothing is joined on a name or date alone.</li>
+          <li><b>Statements:</b> the same message as a press release, a Bluesky or Threads post, or a YouTube video shows once, when a post links to the release or repeats most of its words within 3 days.</li>
+          <li><b>Top donor organizations:</b> for each organization whose employees gave the most, what LDA.gov (lobbying), FARA, Regulations.gov, SAM.gov and USAspending found for the same name, in one row.</li>
           <li><b>The president's trades:</b> from the president's OGE Form 278e and 278-T reports, as compiled in <a href="https://github.com/disclosedcapitol/executive-branch-trades" target="_blank" rel="noopener">Disclosed Capitol's executive-branch-trades dataset ↗</a> (CC BY 4.0) and imported by hand. A trade listed on two reports shows once. Listed on the Ethics tab, not scored.</li>
           <li><b>State bills:</b> Open States and LegiScan, by state, session year and bill number.</li>
           <li><b>News:</b> GDELT and the New York Times, by link.</li>

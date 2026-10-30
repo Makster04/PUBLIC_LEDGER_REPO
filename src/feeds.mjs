@@ -36,6 +36,10 @@ export function billsInText(text,congress){
 const congressNext=(d,cursor)=>{let next=d.pagination?.next||null;if(next){const u=new URL(cleanURL(next));u.searchParams.set('format','json');next=u.href;need(next!==cursor,'Congress pagination stopped advancing');}return next;};
 const top=(rows,n,by='date')=>rows.slice().sort((a,b)=>String(b[by]||'').localeCompare(String(a[by]||''))).slice(0,n);
 const recent=(rows,n=50)=>({count:rows.length,rows:top(rows,n),rowLimit:n});
+// Federal docket numbers in text ("1:23-cr-00257-TSC", "23-cr-257"), as "23-cr-257": the year, the case type and the
+// number, so the same case matches however each source writes it.
+export const docketKey=v=>{const m=/(?:\b\d{1,2}:)?\b(\d{2})-([a-z]{2,4})-0*(\d{1,6})\b/i.exec(String(v||''));return m?`${m[1]}-${m[2].toLowerCase()}-${m[3]}`:null;};
+export const docketsIn=text=>[...new Set([...String(text||'').matchAll(/(?:\b\d{1,2}:)?\b\d{2}-(?:cr|cv|mj|mc|po|sw)-\d{1,6}\b/gi)].map(m=>docketKey(m[0])).filter(Boolean))];
 const byPersonOf=rows=>{const out={};for(const r of rows)for(const id of r.people||[])(out[id]||=[]).push(r);return out;};
 
 // ---------- Statements: social accounts and official press releases ----------
@@ -175,6 +179,8 @@ export const FEEDS={
         witnesses:list(m.witnesses).map(w=>({name:w.name,position:w.position||null,organization:w.organization||null})),
         documents:list(m.witnessDocuments).map(x=>({type:x.documentType,url:https(x.url)})).concat(list(m.meetingDocuments).map(x=>({type:x.documentType||x.name,url:https(x.url)}))).filter(x=>x.url),
         bills:list(m.relatedItems?.bills).map(b=>billKey(b.congress,b.type+b.number)).filter(Boolean),
+        // The hearing transcripts it points to, by jacket number: the number in GovInfo's package ID, so the two match.
+        transcripts:list(m.hearingTranscript).map(h=>String(h.jacketNumber??'')).filter(x=>/^\d+$/.test(x)),type:m.type||null,
         url:`https://www.congress.gov/event/${a.congress}th-congress/${a.chamber}-event/${a.event}`}],next:null};
     },
     summarize:rows=>{need(rows.length===1,'No validated record to publish');return {byPerson:byPersonOf(rows)};}},
@@ -289,7 +295,8 @@ export const FEEDS={
       const s=await requestSource(`https://api.govinfo.gov/packages/${a.pkg}/summary`,env);need(s&&s.packageId===a.pkg,'GovInfo package identity mismatch');
       const bios=new Map(config.people.filter(p=>p.bioguide).map(p=>[p.bioguide,p.id]));
       const people=[...new Set(list(s.members).map(m=>bios.get(m.bioGuideId)).filter(Boolean))];
-      return {rows:[{id:a.pkg,title:cut(s.title,300),date:day(s.dateIssued),committees:list(s.committees).map(c=>c.committeeName).filter(Boolean),people,url:`https://www.govinfo.gov/app/details/${a.pkg}`}],next:null};
+      // dateIssued is when the transcript was published, often months after the hearing; held is the day it was held.
+      return {rows:[{id:a.pkg,title:cut(s.title,300),date:day(s.dateIssued),held:day(list(s.heldDates)[0])||null,committees:list(s.committees).map(c=>c.committeeName).filter(Boolean),people,url:`https://www.govinfo.gov/app/details/${a.pkg}`}],next:null};
     },
     summarize:rows=>({byPerson:byPersonOf(rows)})},
 
@@ -317,7 +324,8 @@ export const FEEDS={
       const d=await requestSource(`https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=50&filter=posts_no_replies`,env,{allow:[400,404]});
       if(d===null)return {rows:[{id:`missing:${handle}`,missing:handle}],next:i+1<a.handles.length?String(i+1):null};
       need(Array.isArray(d.feed),'Bluesky feed missing');
-      const rows=d.feed.map(f=>f.post).filter(p=>p&&p.author?.handle===handle&&!p.reason).map(p=>({id:p.uri,handle,text:cut(p.record?.text,500),date:day(p.record?.createdAt),url:`https://bsky.app/profile/${handle}/post/${p.uri.split('/').pop()}`}));
+      const linksOf=r=>[...new Set([r?.embed?.external?.uri,...list(r?.facets).flatMap(f=>list(f.features).map(x=>x.uri))].map(u=>https(u)).filter(Boolean))];
+      const rows=d.feed.map(f=>f.post).filter(p=>p&&p.author?.handle===handle&&!p.reason).map(p=>({id:p.uri,handle,text:cut(p.record?.text,500),date:day(p.record?.createdAt),url:`https://bsky.app/profile/${handle}/post/${p.uri.split('/').pop()}`,links:linksOf(p.record)}));
       return {rows,next:i+1<a.handles.length?String(i+1):null};
     },
     summarize:(rows,a)=>{const posts=rows.filter(r=>!r.missing),missing=rows.filter(r=>r.missing).map(r=>r.missing);
@@ -565,7 +573,8 @@ export const FEEDS={
       const p=config.people.find(x=>x.id===job.subject);
       const d=await requestSource(`https://www.justice.gov/api/v1/press_releases.json?parameters%5Btitle%5D=${encodeURIComponent(a.last)}&sort=date&direction=DESC&pagesize=50`,env);
       need(Array.isArray(d.results),'DOJ press releases missing');
-      const rows=d.results.filter(r=>namesPerson(`${r.title||''} ${strip(r.body||r.teaser||'')}`,p)).map(r=>({id:r.uuid||r.url,title:cut(r.title,250),date:/^\d+$/.test(String(r.date))?new Date(Number(r.date)*1000).toISOString().slice(0,10):day(r.date),url:https(r.url)})).filter(r=>r.url);
+      const rows=d.results.filter(r=>namesPerson(`${r.title||''} ${strip(r.body||r.teaser||'')}`,p)).map(r=>({id:r.uuid||r.url,title:cut(r.title,250),date:/^\d+$/.test(String(r.date))?new Date(Number(r.date)*1000).toISOString().slice(0,10):day(r.date),url:https(r.url),
+        dockets:docketsIn(`${r.title||''} ${strip(r.body||r.teaser||'')}`)})).filter(r=>r.url);
       return {rows,next:null};
     },
     summarize:rows=>recent(rows,30)},
