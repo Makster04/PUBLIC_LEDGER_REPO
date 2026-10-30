@@ -10,7 +10,9 @@
 # colors), "tighten": "left" or "right" (only that side of the photo, keeping the hair on top), and/or "choke": <px> (trim
 # that many output pixels off the edge). Where the outline strays into a background of a similar color (blond hair against
 # a light wall), "model": 1 uses MediaPipe's other segmentation model; where a checked shirt steps the edge, "smooth": true
-# follows the outline more loosely. For something wider than the frame on one
+# follows the outline more loosely. Where a red flag stripe is kept beside the jaw or collar, "clear": "red" drops it, and
+# where a bright background shows through the hair, "clear": "light" paints it over with the hair (above the eyes only).
+# For something wider than the frame on one
 # side, such as a hat brim, "nudge": <px> moves the portrait sideways (positive is right) without changing its size;
 # if it is wider than the whole frame, "zoom": <factor below 1> shrinks that portrait to fit.
 # A supplied photo that already has a transparent background (a PNG cut-out) keeps its own outline.
@@ -142,6 +144,9 @@ def tighten(bgr, mask, r):
     gc = np.where(mask > 0.5, cv2.GC_PR_FGD, cv2.GC_PR_BGD).astype(np.uint8)
     gc[cv2.erode((mask > 0.9).astype(np.uint8), k) > 0] = cv2.GC_FGD
     gc[cv2.dilate((mask > 0.1).astype(np.uint8), k) == 0] = cv2.GC_BGD
+    # GrabCut starts from OpenCV's shared random generator: reset it, so a portrait comes out the same whichever other
+    # portraits were built before it in the run.
+    cv2.setRNGSeed(0)
     cv2.grabCut(bgr, gc, None, np.zeros((1, 65)), np.zeros((1, 65)), 5, cv2.GC_INIT_WITH_MASK)
     return np.isin(gc, (cv2.GC_FGD, cv2.GC_PR_FGD)).astype(np.float32)
 
@@ -181,6 +186,22 @@ def cutout(m, segmenter, opts):
         # checked or striped shirt whose pattern would otherwise step the edge.
         mask = cv2.ximgproc.guidedFilter(guide=bgr, src=mask, radius=max(4, int(m['gap'] / 16)), eps=1e-2 if opts.get('smooth') else 1e-4)
         alpha = np.clip((mask - 0.35) / 0.3, 0, 1)
+        if opts.get('clear'):
+            # A red flag stripe touching the outline (under a jaw, beside a collar), or a bright background seen through
+            # the hair, can be kept as part of the person. "red" drops strongly red pixels near the edge, anywhere, since
+            # lips and a red tie sit well inside the outline. "light" paints near-white pixels near the edge over with
+            # the hair around them (cutting them out would leave holes in the hair), only above the eyes, so earrings
+            # and white collars stay.
+            r, g, b = (rgb[..., i].astype(np.float32) for i in range(3))
+            edge = cv2.distanceTransform((alpha > 0.5).astype(np.uint8), cv2.DIST_L2, 5) < 0.4 * m['gap']
+            if opts['clear'] == 'red':
+                alpha[(r > 110) & (r > 2 * g) & (r > 1.6 * b) & edge] = 0
+            else:
+                lo, hi = np.minimum(np.minimum(r, g), b), np.maximum(np.maximum(r, g), b)
+                hit = (lo > 170) & (hi - lo < 30) & edge
+                hit[int(min(m['eyes'][0][1], m['eyes'][1][1])):] = False
+                hit = cv2.dilate(hit.astype(np.uint8), np.ones((3, 3), np.uint8), iterations=2)
+                rgb = cv2.inpaint(np.ascontiguousarray(rgb), hit, 3, cv2.INPAINT_TELEA)
     # Keep only the person: drop loose specks of background the segmentation picked up.
     r = max(2, int(m['gap'] / 20))
     disk = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))
