@@ -1,7 +1,7 @@
 import {KV_MIN,leanOfVote,whyNotMarked,sideTaken,keyVoteRows,keyVoteScore,positionByCategory,poolIdeo} from './lean.js';
 import {MIN_CHECKS,MIN_PVP_ACTIONS,ETHICS_COST,CASE_KIND,CASE_AGE,INDEX_COST,LATE_DAYS,WEIGHT,ACTION_TYPES,letter,billKey,matchScore,promiseScore,moneyRatio} from './grades.js';
 import {makeScorer,voteBill} from './scoring.js';
-import {hoverTips,tableView,legend,rankBars,stackRows,divergingRows,leanRows,categoryBars,drawScatter,drawDelay,drawTradeTimeline,drawCaseTimeline,drawTreemap,drawMonthly,sectorSpendBars} from './charts.js';
+import {money,hoverTips,tableView,legend,rankBars,stackRows,divergingRows,leanRows,categoryBars,drawScatter,drawDelay,drawTradeTimeline,drawCaseTimeline,drawTreemap,drawMonthly,sectorSpendBars} from './charts.js';
 import {makeOrgs,SMALL_DOLLAR_ABOUT,EMPLOYER_ABOUT} from './orgs.js';
 import {ALIGN_LABEL,SECTOR_LABEL_EXTRA,TOP_DONORS,WINDOW_MONTHS,SWING,categoryAlign,outsideBySector,topDonors,voteDonorAlignment,timingFlags,positionChangeFlags,stockFlags,tradesInDonors,corp,addMonths} from './influence.js';
 (function(){
@@ -1514,9 +1514,46 @@ function ethicsHTML(s){
 }
 // Stock trading: reviewed trades, each checked for a late or missing disclosure and for a committee conflict.
 const TRADE_OWNER={self:'Self',spouse:'Spouse',child:'Dependent child',joint:'Joint'};
+// A president's trades, from the OGE reports compiled in Disclosed Capitol's open dataset (public/exec-trades.json,
+// written by scripts/build-exec-trades.mjs, CC BY 4.0, so the credit line always shows). Listed, never scored.
+const EXEC=window.EXEC_TRADES||null;
+const TRADE_TYPE={buy:'Buy',sell:'Sell',other:'Other'};
+function presidentTradesHTML(s){
+  const x=EXEC?.people?.[s.id];
+  if(!x)return `<p class="small muted" style="margin:4px 0 0"><b>Not loaded:</b> a president reports trades on OGE Form 278e and 278-T reports. They couldn't be loaded right now.</p>`;
+  const n=v=>Number(v||0).toLocaleString('en-US'),pct=(a,b)=>b?Math.round(a/b*100):0,ext=(u,t)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)} ↗</a>`;
+  const bars=(rows,label,key,color)=>stackRows(rows.map(r=>({label:r[label],parts:{[key]:r.n},value:r.n,display:n(r.n)})),[{key,label:'Trades',color}]);
+  const years=x.byYear.map(y=>({label:y.year,parts:{buy:y.buy,sell:y.sell,other:y.other},value:y.buy+y.sell+y.other,display:n(y.buy+y.sell+y.other)}));
+  const late=x.late.of?pct(x.late.n,x.late.of):null, shown=x.recent.slice(0,25), more=x.recent.slice(25);
+  const row=t=>`<tr><td class="mono" style="white-space:nowrap">${esc(t.traded)}</td><td class="mono" style="white-space:nowrap">${t.filed?`${esc(t.filed)}${t.days!=null?`<div class="small muted">${n(t.days)} days</div>`:''}`:'<span class="muted">Not linked</span>'}</td><td>${esc(t.asset)}${t.ticker?` <span class="mono muted">${esc(t.ticker)}</span>`:''}</td><td>${TRADE_TYPE[t.type]||esc(t.type)}</td><td class="r" style="white-space:nowrap">${esc(t.amount)}</td><td>${esc(t.form||'—')}</td></tr>`;
+  const table=list=>`<div class="tablewrap"><table><thead><tr><th>Traded</th><th>Reported</th><th>Asset</th><th>Type</th><th class="r">Amount</th><th>Form</th></tr></thead><tbody>${list.map(row).join('')}</tbody></table></div>`;
+  return `<p class="small" style="margin:4px 0 8px">From ${esc(s.short)}'s own OGE reports: a Form 278-T for trades, and the yearly Form 278e. <b>Listed, not scored.</b></p>
+  <div style="margin:0 0 8px">${points([['Not scored','How to score a president\'s trades is still an open decision. The committee-conflict rule for members of Congress has no direct match for a president, so the Ethics grade above doesn\'t count them.'],
+    ['Amounts','Reports give ranges, not exact amounts.'],
+    ['Counted once',`${n(x.repeats)} rows repeat a trade with the same date, asset, type and amount, often because it was listed on two reports. So ${n(x.rows)} rows are ${n(x.trades)} trades. Two identical trades in separate accounts on the same day would also count once.`],
+    x.misdated&&['Dates that don\'t fit',`${n(x.misdated)} trades are dated more than a year before the report that lists them, so the date was likely misread (some are bonds whose due date was taken for the trade date). They're left out of the charts and the late count.`],
+    ['Deadline',`A 278-T is due within ${EXEC.deadline} days of a trade at the latest.`]],'small')}</div>
+  <div class="cx-stats">
+    <div class="cx-stat"><span>Trades</span><b>${n(x.trades)}</b><small>${n(x.buys)} buys and ${n(x.sells)} sells, ${fmtDate(x.first)} to ${fmtDate(x.last)}</small></div>
+    <div class="cx-stat"><span>Value traded</span><b>${money(x.value.low)}–${money(x.value.high)}</b><small>Buys and sells added together, from the disclosed ranges</small></div>
+    <div class="cx-stat"><span>Linked to a report</span><b>${pct(x.linked,x.trades-x.misdated)}%</b><small>${n(x.linked)} trades. The dataset has no report date for the rest, so when they were reported can't be shown</small></div>
+    <div class="cx-stat"><span>Reported after ${EXEC.deadline} days</span><b>${late==null?'—':late+'%'}</b><small>${late==null?'No 278-T trades with a report date':`${n(x.late.n)} of the ${n(x.late.of)} trades on a dated 278-T. A lead, not a finding: extensions and late fees aren't in the data`}</small></div></div>
+  <div class="chart"><h3>Trades by year</h3><div class="sub">${points([['Each bar','Buys and sells in the year the trade was made.'],['Left out',`Trades whose date doesn't fit their report.`]],'small')}</div>
+    ${stackRows(years,[{key:'buy',label:'Buys',color:'var(--s1)'},{key:'sell',label:'Sells',color:'var(--s2)'},{key:'other',label:'Other',color:'var(--cx-other)'}])}${legend([['var(--s1)','Buys'],['var(--s2)','Sells']])}
+    ${tableView(['Year','Count','Buys','Sells'],x.byYear.map(y=>[esc(y.year),n(y.buy+y.sell+y.other),n(y.buy),n(y.sell)]))}</div>
+  <div class="chart"><h3>What was traded</h3><div class="sub">${points([['Kind of asset','From the ticker the dataset gives. Most trades list a company by name with no ticker, so those are grouped together.']],'small')}</div>${bars(x.byKind,'label','kind','var(--s3)')}</div>
+  <div class="chart"><h3>Trades by amount</h3><div class="sub">${points([['Ranges','The value range each report gives. "Other ranges" are ranges that aren\'t one of OGE\'s, likely typed or read wrong.']],'small')}</div>${bars(x.byAmount,'label','amount','var(--s4)')}</div>
+  <div class="chart"><h3>The reports</h3><div class="sub">${points([['Each row','The reports the dataset ties trades to, by date. Two filed the same day are counted together.'],['Rows listed','As listed in the dataset, so a trade listed twice counts twice here.']],'small')}</div>
+    <div class="tablewrap"><table><thead><tr><th>Date</th><th>Form</th><th class="r">Reports</th><th class="r">Rows listed</th><th>Trades made</th></tr></thead><tbody>${x.reports.map(r=>`<tr><td class="mono" style="white-space:nowrap">${esc(r.filed)}</td><td>${esc(r.form||'Not given')}</td><td class="r">${r.count}</td><td class="r">${n(r.listed)}${r.misdated?`<div class="small muted">${n(r.misdated)} misdated</div>`:''}</td><td class="mono small" style="white-space:nowrap">${r.from?`${esc(r.from)} to ${esc(r.to)}`:'—'}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="chart"><h3>Latest trades</h3><div class="sub">${points([['Order','Newest trade first.'],['Reported','The date on the report, and how many days after the trade. "Not linked" when the dataset has no report for it.']],'small')}</div>
+    ${table(shown)}${more.length?`<details class="tv"><summary>Show ${more.length} more</summary>${table(more)}</details>`:''}
+    <p class="small muted" style="margin:8px 0 0">The full list: ${ext(x.profile||EXEC.source,`${s.short} on Disclosed Capitol`)}</p></div>
+  <p class="small muted" style="margin:12px 0 0"><b>Source:</b> ${ext(EXEC.source,EXEC.credit)}, under ${ext(EXEC.licenseUrl,EXEC.license)}, from ${esc(EXEC.from)}. ${esc(EXEC.changes)} Dataset refreshed ${fmtDate(EXEC.refreshed)}.</p>`;
+}
 function tradingHTML(s){
   const t=personTrading(s), sec=overseenSectors(s);
   const head=`<section class="recsec" id="eth-trades"><div class="kicker">Stock trading</div><h3 style="margin-top:4px">Stock trades</h3>`;
+  if(s.office)return head+presidentTradesHTML(s)+'</section>';
   if(!s.bioguide)return head+`<p class="small muted" style="margin:4px 0 0"><b>No trading data:</b> these reports cover members of Congress only. State rules vary.</p></section>`;
   if(!t.rows.length)return head+`<p class="small muted" style="margin:4px 0 0">No reviewed stock trades for ${esc(s.short)} yet. New trades from official reports show under Latest official records below. They count toward the grade only after review.</p></section>`;
   const e=personEthics(s),ip=e.insider.parts,dp=e.dodger.parts,n=v=>`${Math.round(v)}%`;
@@ -1869,12 +1906,12 @@ function influenceData(s){
   return {rows:rows.slice(0,8),allFlags:rows.flatMap(r=>r.flags).concat(stock),months,vda:voteDonorAlignment(funders),through,trades,inDonors,stock};
 }
 // Whose trades the disclosures cover: members of Congress file Periodic Transaction Reports (STOCK Act); a president files
-// OGE Form 278-T reports, not imported yet; anyone else has no trading data.
-const tradeCoverage=s=>s.office?{ok:false,why:`A president reports trades on OGE Form 278-T, which is not imported yet.`}
+// OGE Form 278-T reports, listed on the Ethics tab but not compared with donors; anyone else has no trading data.
+const tradeCoverage=s=>s.office?{ok:false,label:'Not compared with donors',short:'Not compared for a president',why:`A president's trades are listed on the Ethics tab, from OGE reports. They aren't compared with donors here, because the donor data covers the 2026 candidates' committees.`}
   :s.bioguide?{ok:true}:{ok:false,why:'Trade disclosures cover members of Congress only, and state disclosure rules vary.'};
 function stockBlock(s,d){
   const cov=tradeCoverage(s),tr=d.trades;
-  const body=!cov.ok?`<p class="small muted" style="margin:0"><b>No trading data:</b> ${esc(cov.why)}</p>`
+  const body=!cov.ok?`<p class="small muted" style="margin:0"><b>${esc(cov.label||'No trading data')}:</b> ${s.office?`${esc(s.short)}'s trades are listed from OGE reports on the <a href="#${s.id}-ethics">Ethics tab</a>. They aren't compared with donors here, because the donor data covers the 2026 candidates' committees.`:esc(cov.why)}</p>`
     :!tr.length?`<p class="small muted" style="margin:0">No reviewed trades for ${esc(s.short)} yet. The latest reported trades are checked against the top donors below, as leads. A trade counts once it is reviewed.</p>`
     :d.inDonors.length?`<div class="tablewrap"><table><thead><tr><th>Traded</th><th>Company</th><th>Type</th><th>Owner</th><th>Donor</th><th>Flag</th></tr></thead><tbody>${d.inDonors.map(({org,trade:t})=>`<tr><td class="mono" style="white-space:nowrap">${esc(t.traded||'')}</td><td>${esc(t.company||t.asset||'')}</td><td>${esc(t.type||'')}</td><td>${esc(t.owner||'Self')}</td><td>${esc(org)}</td><td>${d.stock.some(f=>f.trade===t)?`<b>${FLAG_TEXT.stock}</b>`:'<span class="muted">Donor took no position on a vote compared here</span>'}</td></tr>`).join('')}</tbody></table></div>`
     :`<p class="small muted" style="margin:0">None of ${esc(s.short)}'s ${tr.length} reviewed trade${tr.length===1?'':'s'} was in a donor's company.</p>`;
@@ -1894,7 +1931,7 @@ function analysisBlock(s){
       <div class="cx-stat"><span>Vote Donor Alignment</span><b>${v.pct==null?'—':v.pct+'%'}</b><small>${v.n?`${v.same} of ${v.n} votes went the way a donor that took a public position wanted (${v.rows.length} donor${v.rows.length===1?'':'s'})`:'No donor that gave to the campaign took a public position on a vote compared here'}</small></div>
       <div class="cx-stat"><span>Speech Donor Alignment</span><b>—</b><small>Not measured yet. Floor speeches are collected, but must be sorted by issue and side before they can be compared</small></div>
       <div class="cx-stat"><span>Timing flags</span><b>${d.allFlags.length}</b><small>for review, not scored${d.stock.length?`; ${d.stock.length} from stock in a donor`:''}</small></div>
-      <div class="cx-stat"><span>Stock in donors</span><b>${tradeCoverage(s).ok&&d.trades.length?d.inDonors.length:'—'}</b><small>${!tradeCoverage(s).ok?'No trading data':d.trades.length?`of ${d.trades.length} reviewed trade${d.trades.length===1?' was':'s were'} in a donor's company`:'No reviewed trades yet. The latest reports are checked below'}</small></div></div>
+      <div class="cx-stat"><span>Stock in donors</span><b>${tradeCoverage(s).ok&&d.trades.length?d.inDonors.length:'—'}</b><small>${!tradeCoverage(s).ok?esc(tradeCoverage(s).short||'No trading data'):d.trades.length?`of ${d.trades.length} reviewed trade${d.trades.length===1?' was':'s were'} in a donor's company`:'No reviewed trades yet. The latest reports are checked below'}</small></div></div>
     ${d.rows.length?`<div class="chart"><h3>Donations by month from donors with public positions</h3><div class="sub">${points([['Each row',`Contributions to the campaign from one group's PACs${d.months.length?`, ${monLabel(d.months[0])} – ${monLabel(d.months.at(-1))}`:''}. Each row has its own scale. The largest month is labeled at the right.`],['Triangles',`Votes the group took a side on. Green when ${esc(s.short)} voted its way, red when not.`],['Diamond at the top','A reviewed trade in that group\'s company.'],['Shaded window','A timing flag.'],['Source','FEC bulk data. The groups are the ones whose scorecards or key-vote letters are collected.']],'small')}</div>
       <div class="cx-plot" id="f-months"></div>${legend([['var(--s1)','Monthly contributions'],['var(--good)','Voted the way the donor wanted'],['var(--crit)','Voted the other way'],['var(--s4)','Trade in the donor\'s company'],['var(--warn)','Timing flag window']])}
       ${tableView(['Donor','Total','Votes compared','Flags'],d.rows.map(r=>[esc(r.label),fmtFull(r.total),r.markers.length,r.flags.length]))}</div>`:s.office?`<p class="small muted">The monthly donations from the ${GP.length} groups this app tracks cover the 2026 candidates' committees, not ${esc(s.short)}'s. There is no series to compare.</p>`:`<p class="small muted">None of the ${GP.length} groups this app tracks gave to ${esc(s.short)}'s campaign since ${H0()}, in the FEC data. There is no monthly series to compare yet.</p>`}
@@ -2159,7 +2196,7 @@ function renderMethod(sub){
           <li><b>Age:</b> × ${CASE_AGE.factor} when the case was decided more than ${CASE_AGE.years} years before the reviewed research. Open cases always count in full.</li>
           <li><b>Insider Trading Index 📈:</b> committee conflicts 40% (the dollar share of single-stock trades in sectors their committees oversee, using the middle of each disclosed range), trades near related votes 25%, trades in donors' companies 20%, and single-stock activity 15% (trades a year, with 50 counting as 100). It needs 5 reviewed trades; no trades scores 0.</li>
           <li><b>Stock Disclosure Dodger Index 🙈:</b> trade reports filed after the ${LATE_DAYS}-day deadline or never 70%, and annual financial disclosures filed late 30%. It needs 3 required filings. A STOCK Act late-disclosure case moves here from the Legal Trouble Index once the person's trades are reviewed, so a late report never costs twice.</li>
-          <li><b>Who counts:</b> spouse and dependent-child trades count and are labeled. People not in Congress show "No trading data". Only reviewed trades count; new reports are listed for review first. Returns are never scored.</li>
+          <li><b>Who counts:</b> spouse and dependent-child trades count and are labeled. A president's trades are listed on the Ethics tab, from OGE reports, but not scored. Other people not in Congress show "No trading data". Only reviewed trades count; new reports are listed for review first. Returns are never scored.</li>
         </ul></li>
       <li><b>Workers > Profit:</b> whether the record did more for working people or for the wealthy and corporations.
         <ul class="list">
@@ -2224,6 +2261,7 @@ function renderMethod(sub){
       <li><b>Merging:</b> where several sources cover the same thing, each record shows once.
         <ul class="list">
           <li><b>Stock trades:</b> read from the members' own reports: House members' PDFs from the House Clerk, and senators' reports from the Senate eFD site. Bargo, Eulerpool and Financial Modeling Prep are a cross-check, matched by member, company, date, buy or sell and amount range. The official report's date wins, a trade only a service reports goes to review, and a report filed on paper is listed to check by hand.</li>
+          <li><b>The president's trades:</b> from the president's OGE Form 278e and 278-T reports, as compiled in <a href="https://github.com/disclosedcapitol/executive-branch-trades" target="_blank" rel="noopener">Disclosed Capitol's executive-branch-trades dataset ↗</a> (CC BY 4.0) and imported by hand. A trade listed on two reports shows once. Listed on the Ethics tab, not scored.</li>
           <li><b>State bills:</b> Open States and LegiScan, by state, session year and bill number.</li>
           <li><b>News:</b> GDELT and the New York Times, by link.</li>
         </ul></li>

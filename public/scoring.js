@@ -17,13 +17,15 @@ export function makeScorer(data,committees={committees:{},people:{}},sectors={})
   const committeesOf=s=>committees.people[s.id]||[];
   const fullCommittee=id=>(committees.committees[id]||{}).parent||id;
   const overseen=s=>[...new Set(committeesOf(s).flatMap(c=>(sectors[fullCommittee(c.id)]||{}).sectors||[]))];
-  // The disclosures cover members of Congress (Periodic Transaction Reports). A president files OGE Form 278-T, which is
-  // not imported yet, and anyone else has no trading data.
+  // The disclosures scored cover members of Congress (Periodic Transaction Reports). A president's OGE 278-T trades are
+  // listed on the Ethics tab (public/exec-trades.json) but not scored: how to score them is still an open decision.
+  // Anyone else has no trading data.
   const coveredBy=s=>!!s.bioguide&&!s.office;
+  const uncovered=s=>s.office?'Not scored for a president':undefined;
   // Donors: the PACs that gave to the campaign and the groups whose positions are compared, matched to traded companies.
   const donorsOf=s=>[...(s.pac?.rows||[]).map(r=>({org:(data.pacNames||[])[r[0]]})),...(s.funderPos||[]).map(g=>({org:g.org}))].filter(d=>d.org);
   const trading=s=>{const t=tradeChecks(s.trades,overseen(s));
-    return Object.assign(t,{covered:coveredBy(s),annual:s.annualDisclosures||[],inDonors:new Set(tradesInDonors(t.rows,donorsOf(s)).map(x=>x.trade)).size});};
+    return Object.assign(t,{covered:coveredBy(s),why:uncovered(s),annual:s.annualDisclosures||[],inDonors:new Set(tradesInDonors(t.rows,donorsOf(s)).map(x=>x.trade)).size});};
   // Cases are aged against the date of the reviewed research ("asof"), so the page and the monthly log agree.
   const asOfYear=Number(String(data.asof||'').match(/\b(19|20)\d{2}\b/)?.[0])||null;
   return {

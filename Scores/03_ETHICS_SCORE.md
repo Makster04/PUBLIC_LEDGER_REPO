@@ -22,7 +22,8 @@ Back to [Updates & fixes in need](../.04_UPDATES_&_FIXES_IN_NEED.md). The rules 
 | [ ] | Confirm the placeholder weights | Criminal × 1.5, technical × 0.5, half after 10 years, and a tenth for each trading index. |
 | [ ] | Senators' annual financial disclosures | Not imported yet, so that part of the Stock Disclosure Dodger Index drops out for senators. |
 | [ ] | Decide who confirms leads before they count | Court records, FEC enforcement records and DOJ press releases. |
-| [ ] | The president's trades | Decide whether to import the OGE 278-T reports. Disclosed Capitol says its API covers them too, if it gives written permission. |
+| [x] | The president's trades listed | From Disclosed Capitol's open dataset of the OGE 278e and 278-T reports (`npm run exec:build`), on the Ethics tab. Not scored. |
+| [ ] | Score the president's trades? | Decide what replaces the committee-conflict rule for a president, and whether 278-T reports filed after 45 days count. Spot-check the dataset against the OGE PDFs first. |
 
 ---
 
@@ -79,7 +80,7 @@ The index is the total of every case's points, with a ceiling of 100.
 - Spouse and dependent-child trades count and are labeled.
 - Fewer than 5 reviewed trades means "Not enough data", with the raw flags still listed.
 - No trades at all scores 0, shown as "No trades".
-- People not in Congress show "No trading data".
+- People not in Congress show "No trading data". A president shows "Not scored for a president", with the trades listed.
 - Trades that made unusually good returns are shown as leads only, never scored.
 
 **Also shown on:** the Money & Influence tab, beside the trade list. It's the same number, not a second score.
@@ -90,7 +91,8 @@ The index is the total of every case's points, with a ceiling of 100.
 - **Trades:**
   - The members' own trade reports, from the House Clerk and Senate eFD: no key.
   - Cross-checks: `BARGO_API_KEY`, `EULERPOOL_API_KEY` and `FMP_API_KEY`, all optional.
-  - Backup, not used yet: `DISCLOSED_CAPITOL_API_KEY`, waiting for Disclosed Capitol's written permission.
+  - Not used: `DISCLOSED_CAPITOL_API_KEY`. Its free credits are a one-time trial.
+  - The president's trades: Disclosed Capitol's open dataset of the OGE reports, no key (`npm run exec:build`).
 - **Company sectors:** `SEC_USER_AGENT`, your name and email (not a key).
 - **Committees and the sectors they oversee:** congress-legislators and the Senate and House committee lists. No key.
 - **Votes and bill actions:**

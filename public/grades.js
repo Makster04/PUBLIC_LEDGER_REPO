@@ -127,11 +127,11 @@ export function legalTrouble(ethics,{asOfYear=null,stockActCovered=false}={}){
 }
 
 // Insider Trading Index, from reviewed trades (tradeChecks rows). covered: false when the disclosures don't cover the
-// person (not in Congress). inDonors: how many of the trades were in a donor's company. Late reports are left to the
+// person (not in Congress), with why saying so. inDonors: how many of the trades were in a donor's company. Late reports are left to the
 // Stock Disclosure Dodger Index.
-export function insiderTrading(rows,{covered=true,inDonors=0}={}){
+export function insiderTrading(rows,{covered=true,inDonors=0,why='No trading data'}={}){
   rows=rows||[];
-  if(!covered)return {index:null,why:'No trading data',n:0,parts:null};
+  if(!covered)return {index:null,why,n:0,parts:null};
   if(!rows.length)return {index:0,why:'No trades',n:0,parts:null};
   const single=rows.filter(r=>(r.asset||'stock')==='stock');
   // Dollar values are the middle of each disclosed range; if any is missing, each trade counts once instead.
@@ -146,9 +146,9 @@ export function insiderTrading(rows,{covered=true,inDonors=0}={}){
 
 // Stock Disclosure Dodger Index: late or missing trade reports (required), and annual financial disclosures filed after
 // their due date. annual: [{year, due, filed}] from the reviewed research; when there are none the trade part counts alone.
-export function disclosureDodger(rows,annual=[],{covered=true}={}){
+export function disclosureDodger(rows,annual=[],{covered=true,why='No trading data'}={}){
   rows=rows||[];annual=annual||[];
-  if(!covered)return {index:null,why:'No trading data',n:0,parts:null};
+  if(!covered)return {index:null,why,n:0,parts:null};
   const lateAnnual=annual.filter(a=>!a.filed||(a.due&&a.filed>a.due)).length;
   const parts={trades:rows.length?pct(rows.filter(r=>r.late).length,rows.length):null,annual:annual.length?pct(lateAnnual,annual.length):null};
   if(parts.trades==null)return {index:null,why:'No trades',n:annual.length,parts};
@@ -158,12 +158,12 @@ export function disclosureDodger(rows,annual=[],{covered=true}={}){
 }
 
 // Ethics: 100 − Legal Trouble Index − a tenth of the Insider Trading Index − a tenth of the Stock Disclosure Dodger Index,
-// rounded, never below 0. An index without enough data costs nothing. trading: {rows, covered, inDonors, annual}.
+// rounded, never below 0. An index without enough data costs nothing. trading: {rows, covered, why, inDonors, annual}.
 export function ethicsScore(ethics,trading={},{asOfYear=null}={}){
   const rows=trading.rows||[],covered=trading.covered!==false;
   const legal=legalTrouble(ethics,{asOfYear,stockActCovered:covered&&rows.length>0});
-  const insider=insiderTrading(rows,{covered,inDonors:trading.inDonors||0});
-  const dodger=disclosureDodger(rows,trading.annual,{covered});
+  const insider=insiderTrading(rows,{covered,inDonors:trading.inDonors||0,why:trading.why});
+  const dodger=disclosureDodger(rows,trading.annual,{covered,why:trading.why});
   const insiderCost=(insider.index||0)*INDEX_COST, dodgerCost=(dodger.index||0)*INDEX_COST;
   const raw=100-legal.index-insiderCost-dodgerCost;
   return {pct:Math.max(0,Math.round(raw)),raw,legal,insider,dodger,insiderCost,dodgerCost,

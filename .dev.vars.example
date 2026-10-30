@@ -42,9 +42,9 @@ EULERPOOL_API_KEY=
 # https://site.financialmodelingprep.com/developer/docs/senate-trading-api
 FMP_API_KEY=
 
-# Not used yet. Disclosed Capitol: members' and executive-branch stock trades, as a backup for the three services above.
-# Free key, 60 requests a minute, 750 credits to start (each call uses some; don't buy more). Its terms need written
-# permission before the site shows its data, so nothing reads this key until that comes. https://www.disclosedcapitol.com/developers
+# Not used. Disclosed Capitol's API: members' and executive-branch stock trades. The key is free, but its 750 credits are a
+# one-time trial and every call costs money after that, so nothing reads this key. The president's trades come from its
+# free open dataset instead (npm run exec:build, no key). https://www.disclosedcapitol.com/developers
 DISCLOSED_CAPITOL_API_KEY=
 
 # CourtListener: court opinions and dockets (free account, about 125 requests a day)

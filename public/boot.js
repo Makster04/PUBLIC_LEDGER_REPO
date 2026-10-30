@@ -7,6 +7,7 @@ try {
   const sectors=fetch('/committee-sectors.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
   const scoreLog=fetch('/score-log.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
   const senate=fetch('/senate.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
+  const execTrades=fetch('/exec-trades.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null);
   const response=await fetch('/research.json',{cache:'no-cache'});
   if(!response.ok)throw new Error('Research file unavailable');
   window.DATA=await response.json();
@@ -15,6 +16,7 @@ try {
   window.COMMITTEES=(await committees)||{committees:{},people:{}};
   window.COMMITTEE_SECTORS=(await sectors)?.committees||{};
   window.SCORELOG=(await scoreLog)?.entries||[];
+  window.EXEC_TRADES=await execTrades;
   const sen=await senate;window.SENATE=sen?.senators||[];window.SENATE_INFO=sen?{checked:sen.checked,source:sen.source,congress:sen.congress}:null;
   await import('./app.js');
   await RecordLive.banner();
